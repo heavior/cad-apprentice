@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "cad-apprentice": {
+      "type": "streamable-http",
+      "url": "https://cad-apprentice.web.app/mcp"
+    }
+  }
+}

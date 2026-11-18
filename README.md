@@ -224,6 +224,7 @@ the [project README](demos/suspension-bridge/README.md).
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
 | Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep, gallery pictures and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [pictures](skills/pictures/SKILL.md), [fix](skills/fix/SKILL.md) |
+| Design rules server | the rules for agents that don't have the kit installed, over MCP, read-only; optional | [mcp.json](mcp.json) |
 
 Every tool, its commands and options: [fusion/tools/README.md](fusion/tools/README.md).
 
@@ -313,8 +314,9 @@ shows you what it chose with the next iteration.
 
 ## Prerequisites, permissions and data
 
-The kit has no server and sends nothing anywhere itself ([PRIVACY.md](PRIVACY.md)). Your agent runs
-everything below on your Mac, and only for the design you asked for.
+The kit sends nothing anywhere itself ([PRIVACY.md](PRIVACY.md)). The one exception is the optional
+design rules server, and only if you connect it. Your agent runs everything below on your Mac, and
+only for the design you asked for.
 
 **Prerequisites:** a Mac, Autodesk Fusion, `git`, `python3`, and an AI coding agent that can run
 commands: Claude Code, Codex or another. Pillow for `python3`, only to crop pictures
