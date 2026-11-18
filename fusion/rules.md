@@ -22,6 +22,7 @@ steps, how a run works and how to read a failed one. To add a step or a helper t
    ask only the most important questions.
 3. **Do the work in Fusion yourself.** Run designs through the runner add-in. When something needs a
    click in Fusion, ask the person once to let you control it, then don't ask them to click.
+   If Fusion isn't running, start it yourself (`open -a "Autodesk Fusion"`); that needs no asking.
 4. **Never edit or save another design without being asked.** Open tabs can hold the person's unsaved work.
    A new design you built yourself is different: save it when the work is checked, without asking.
    **Build a new design once, then iterate in it.** After the first save, every run updates that same
