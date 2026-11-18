@@ -1,6 +1,6 @@
 ---
 name: cad-apprentice
-description: Design parts in Autodesk Fusion (Fusion 360) with the person, from a Python build script, with cad-apprentice's workflow, rules and library. Use for any CAD, Fusion 360, 3D model or 3D-print design task, including setting up the kit and running its parameter test.
+description: Design parts in Autodesk Fusion (Fusion 360) with the person, from a Python build script, with cad-apprentice's workflow, rules and library. Use for any CAD, Fusion 360, 3D model or 3D-print design task. Its sibling skills cover setup, the parameter test, print prep and fixing a failed run.
 ---
 
 # cad-apprentice: CAD in Autodesk Fusion
@@ -28,7 +28,7 @@ In the kit folder, read in this order:
    step type, how a run works and how to read a failed one.
 3. `fusion/rules.md`: the rules for every CAD job. Follow them. They cover working with the person,
    sketches, parameters, the timeline, build scripts and running them.
-4. `3dprinting/rules.md`, once a design is approved for printing. Follow them.
+4. Once a design is approved for printing, use the print skill.
 
 The docs write commands from the repo the kit came from, as `projects/hobby/cad-apprentice/...`. Run
 them with the kit folder instead, as below. Give a project folder as a full path. Keep the person's
@@ -36,13 +36,12 @@ design projects outside the kit folder.
 
 The `demos/` are full design projects made with the kit. You don't need to read them to work.
 
-## Set up, once
+## The other skills
 
-Follow the kit's SETUP.md. Link the runner add-in into Fusion's AddIns folder (a link,
-not a copy):
-`ln -s ~/cad-apprentice/fusion/runner/entry ~/Library/Application\ Support/Autodesk/Autodesk\ Fusion\ 360/API/AddIns/UpsertTestRunner`.
-Ask the person to restart Fusion. Then check the runner with `tests/ping.py`; the request is in
-`fusion/tests/README.md`. Tell the person what you set up and whether the check passed.
+- **setup:** set up the kit for Fusion, or check that it still works. Use it before the first design.
+- **test:** run the parameter test and fix what fails.
+- **print:** get an approved design ready to 3D print.
+- **fix:** find and fix why a run failed or never started.
 
 ## Start and run a design
 
@@ -63,7 +62,7 @@ Follow the workflow in the kit's README.md and fusion/rules.md:
 1. Show your understanding first: a picture of the idea and your questions, before any CAD.
 2. After the person confirms, start the design with `fusion_outputs.py new` and build it.
 3. Iterate with pictures. Each iteration is a saved version. Keep the person's own edits.
-4. When the person asks for the parameter test, follow Testing your design in the README.
+4. When the person asks for the parameter test, use the test skill.
 
 ## Evolving the library
 

@@ -169,7 +169,7 @@ the [project README](demos/suspension-bridge/README.md).
 | Checks | `precheck.py` reads a script before Fusion does; `check_slow.py` finds slow Fusion calls with no timer, and runs after every edit the agent makes | [precheck.py](fusion/lib/cad_apprentice/precheck.py), [check_slow.py](fusion/lib/cad_apprentice/check_slow.py) |
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
-| Skill file | tells the agent to use the skill for every CAD and Fusion 360 task; the plugin installs it in Claude Code | [skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md) |
+| Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [fix](skills/fix/SKILL.md) |
 
 Every tool, its commands and options: [fusion/tools/README.md](fusion/tools/README.md).
 
