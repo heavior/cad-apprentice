@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "cad-apprentice",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Human-friendly CAD, fast: an AI agent designs a part with you in Autodesk Fusion, with pictures each iteration, a saved version per iteration and your own edits kept.",
   "author": {
     "name": "Evgeny Balashov",
@@ -23,7 +23,7 @@
         "shortDescription": "Design 3D parts in Fusion 360",
         "longDescription": "An AI agent designs a part with you in Autodesk Fusion and gets it ready for 3D printing. You ask, it builds and shows you pictures, you say what to change, until you approve. Each iteration is a saved version in Fusion, and your own edits in Fusion are kept. Needs Autodesk Fusion on your Mac.",
         "developerName": "Evgeny Balashov",
-        "category": "Developer Tools",
+        "category": "Creativity",
         "capabilities": [
           "Build 3D parts in Fusion 360",
           "Show pictures of each iteration",
@@ -39,6 +39,60 @@
         "brandColor": "#1F4E85",
         "composerIcon": "./assets/icon.png",
         "logo": "./assets/icon.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "See which design rules exist",
+              "prompt": "What design rules does CAD Apprentice have for Fusion and 3D printing?",
+              "tools_triggered": "list_design_rules",
+              "expected_behavior": "Lists the rule sets (Fusion rules, the script reference, the library reference, tools, 3D printing, the kit README and the skills) with their headings, and offers to open one."
+            },
+            {
+              "description": "Sketches that survive changes",
+              "prompt": "My Fusion sketch breaks whenever I change a dimension. How should I set up sketches so the design survives changes?",
+              "tools_triggered": "search_design_rules",
+              "expected_behavior": "Finds Fusion rule 13 (a sketch is fully constrained and says what matters) and rule 26 (sketch from what's already there), explains them in plain words and gives their GitHub links."
+            },
+            {
+              "description": "A fillet that fails after a change",
+              "prompt": "In Fusion, my fillet fails every time I change a parameter. What do the CAD Apprentice rules say?",
+              "tools_triggered": "search_design_rules",
+              "expected_behavior": "Finds Fusion rule 30 (edge features before the cuts that change) and rule 19 (give every value a range and test across it), suggests moving the fillet before the cut that changes, with links."
+            },
+            {
+              "description": "Getting a part ready to print",
+              "prompt": "I finished a bracket in Fusion and want to 3D print it. What should I do before printing?",
+              "tools_triggered": "get_design_rules",
+              "expected_behavior": "Opens the 3d-printing rule set and walks through it: pick the printable parts, export each as its own STL, give each a filament, build the Bambu Studio .3mf. Links to the rules."
+            },
+            {
+              "description": "The Python library",
+              "prompt": "How do I make a thin-walled extrude with the cad_apprentice Python library?",
+              "tools_triggered": "search_design_rules",
+              "expected_behavior": "Finds Builder.extrude in the library reference and its thin argument, plus the Thin parts and Supported steps sections of the script reference, and shows the call with its GitHub link."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Finding a ready-made model to download. The plugin designs parts and has no model library or web search.",
+              "prompt": "Find me a free STL of a phone stand I can download and print."
+            },
+            {
+              "description": "Printing and shopping. The plugin can't reach a printer or buy anything.",
+              "prompt": "Send my bracket.3mf to my Bambu printer and order two spools of PETG."
+            },
+            {
+              "description": "3D art in another tool. The rules are for parametric parts in Autodesk Fusion, not sculpting in Blender.",
+              "prompt": "Sculpt a cartoon character in Blender for a short animation."
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "release_notes": "First release. CAD Apprentice is curated best practices for designing parts in Autodesk Fusion and getting them ready for 3D printing. Three read-only tools list, open and search the rules, including a reference of the kit's Python library. The plugin's skills let an agent build the part with you in Fusion on your Mac."
       }
     }
   }
