@@ -1,21 +1,43 @@
-# Changing cad-apprentice
+# Contributing to cad-apprentice
 
-What an agent needs to design with the kit is in the skill,
-[skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md). Adding to the library is in its
-[Evolving the library](skills/cad-apprentice/SKILL.md#evolving-the-library).
+Thanks for helping. Bug reports, fixes, new step types and doc fixes are all welcome.
 
-## No git outside README.md
+## Report a problem
 
-The kit doesn't assume git. Only README.md may show git commands. The skill, the other docs and the
-code don't run git or depend on it. The skill only checks for a newer kit once per session and
-offers the person to update.
+Open an issue at [github.com/heavior/cad-apprentice/issues](https://github.com/heavior/cad-apprentice/issues).
+Say what you asked for, what happened, and paste the last lines of the run's log. Leave out anything
+private about your design.
 
-## The kit's own README
+## Send a change
 
-The library and fusion/rules.md ship together, for AI agents: the rules count as features. Measure a
-benefit by how many times the designer has to step in and by the time from ask to finished design, not
-by seconds per run. The README's pitch is human-friendly CAD, fast. Key features comes first in
-Contents, in three groups the user picked: Human-friendly, Fast robust designs and Faster agentic
-work. No filler lines on what a feature saves; the feature says it. Then How to start, which also walks
-through the process, then the suspension bridge as the demo. Other AI CAD projects also check results
-and show renders, so those don't lead.
+1. Fork the repository and make your change on a branch.
+2. Keep the change general. Shapes, sizes and names from your own design stay in your design's
+   script; only steps, helpers and checks that other designs can use go into the library.
+3. Run the tests that cover what you changed (below).
+4. Open a pull request. Say what the change does and which design needed it.
+
+## Run the tests
+
+- **Without Fusion,** from the kit folder:
+  `python3 fusion/lib/cad_apprentice/test_precheck.py`,
+  `python3 fusion/lib/cad_apprentice/test_ranges.py` and
+  `python3 fusion/lib/cad_apprentice/test_thin.py`.
+- **Library changes,** in Fusion through the runner add-in: the tests in
+  [fusion/tests/README.md](fusion/tests/README.md). They run in throwaway designs.
+- **3MF tools:** `python3 3dprinting/tests/run_tests.py`, as
+  [3dprinting/3mf-test-scenarios.md](3dprinting/3mf-test-scenarios.md) says.
+
+## If an AI agent makes the change
+
+Point it at the skill, [skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md), and its
+[Evolving the library](skills/cad-apprentice/SKILL.md#evolving-the-library) section. A new step type
+follows Adding a step type in [fusion/lib/README.md](fusion/lib/README.md). This prompt works:
+
+```
+Read CONTRIBUTING.md and the cad-apprentice skill. Make the change, run the tests that cover it,
+and open a pull request that says what the change does and which design needed it.
+```
+
+## License
+
+By contributing, you agree that your work is shared under the [MIT License](LICENSE).

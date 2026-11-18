@@ -4,8 +4,8 @@ The person tunes the project in Bambu Studio: settings, orientation, copies, pla
 a design round changes only the meshes. Each part whose source_file is the STL's name gets the new
 mesh; transforms, settings, filaments and plates stay. See 3dprinting/rules.md.
 
-Usage (from the repo root):
-  python3 projects/hobby/cad-apprentice/3dprinting/update_3mf.py PROJECT.3mf --approved "<their words>" [--down PART=-y ...] a.stl b.stl ...
+Usage:
+  python3 ~/cad-apprentice/3dprinting/update_3mf.py PROJECT.3mf --approved "<their words>" [--down PART=-y ...] a.stl b.stl ...
 
 --approved "..."  the person's OK on the changed design, in their words, as in build_3mf.py. Required.
 

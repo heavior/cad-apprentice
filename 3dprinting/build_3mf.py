@@ -3,8 +3,8 @@
 Runs with no screen control: Bambu Studio's command line makes the meshes, then the files inside
 the .3mf (a zip) are edited directly. See 3dprinting/rules.md.
 
-Usage (from the repo root):
-  python3 projects/hobby/cad-apprentice/3dprinting/build_3mf.py OUT.3mf --approved "<their words>" [--settings-from REF.3mf] [--down PART=-y ...] a.stl b.stl ...
+Usage:
+  python3 ~/cad-apprentice/3dprinting/build_3mf.py OUT.3mf --approved "<their words>" [--settings-from REF.3mf] [--down PART=-y ...] a.stl b.stl ...
 
 --approved       the person's OK on the design as it is now, in their words ("Looks good"), or their
                  words saying to skip that ("no need to show me"). Required: they see the design

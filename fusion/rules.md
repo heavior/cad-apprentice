@@ -279,8 +279,8 @@ in well under a second, with no Fusion:
 - an STL exported straight through Fusion. Export with `helpers.write_stl`, which always uses High
   mesh refinement, so no part is printed from a coarse mesh.
 
-Run it with `python3 projects/hobby/cad-apprentice/fusion/lib/cad_apprentice/precheck.py <file or folder>`, and the tests with
-`python3 projects/hobby/cad-apprentice/fusion/lib/cad_apprentice/test_precheck.py`. `Builder.step()` also runs it on the first step
+Run it with `python3 ~/cad-apprentice/fusion/lib/cad_apprentice/precheck.py <file or folder>`, and the tests with
+`python3 ~/cad-apprentice/fusion/lib/cad_apprentice/test_precheck.py`. `Builder.step()` also runs it on the first step
 from each script file, so a mistake stops the run before any step from that file has run.
 
 - Keys built at run time (`key + '_cut'`, `'hole_%d' % i`, a key passed in a variable) can't be read
@@ -452,20 +452,20 @@ These rules come from fixing that.
 ## Running a script
 
 **The runner is the default.** After step 1, run
-`python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a background shell. It does steps
+`python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a background shell. It does steps
 2 to 5 with no click on ▶: it preps, has the UpsertTestRunner add-in run the script, prints the log as
 it grows, and exits 0 only when the log ends in DONE. The add-in starts with Fusion, so this also works
 behind a locked screen. Steps 3 and 4 below are the fallback, for when the add-in doesn't answer. Then
 go on with step 6. More on keeping iterations fast: [lib/README.md § Faster iterations](lib/README.md#faster-iterations).
 
 1. For a new design, run
-   `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
+   `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
    It writes the entry file, its `.manifest` and a starter `build.py` from [template/](template/), and
    copies the entry file and manifest to a folder of the same name in
    `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`. The entry file reads the
    real code from the repo, so edits need no new copy.
 2. Clear last run's log, pictures and STLs, so you can't read an old result by mistake:
-   `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode saved` (`saved` updates the one saved design, rule 4; `new` only for a first build: run again, it saves a second file under the same name, so `--mode` has no default). It also writes `mode.txt` and
+   `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode saved` (`saved` updates the one saved design, rule 4; `new` only for a first build: run again, it saves a second file under the same name, so `--mode` has no default). It also writes `mode.txt` and
    brings Fusion forward. It's on the allow list, so it runs without asking; don't hand-write `rm`
    lines for this.
 3. In the main window, check the tab reads Utilities, since a reopened design starts on Solid, and
@@ -482,8 +482,8 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
 5. Show the hidden apps again, only if you hid any. Wait in a background shell loop for the log's
    last line (` DONE`, a traceback, `STOPPED`), without polling. The log grows line by line while it
    runs, so `tail` it to say where a long run is. Read the log and the pictures after.
-6. Copy the outputs into the project with `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME
-   projects/<p>`. It lists files this run didn't make (a dropped part's STL and pictures); add
+6. Copy the outputs into the project with `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME
+   <project>`. It lists files this run didn't make (a dropped part's STL and pictures); add
    `--prune` to delete them.
 
 ## Gallery pictures

@@ -8,8 +8,9 @@ import hashlib, json, math, os, shutil, struct, subprocess, sys, unittest, zipfi
 HERE = os.path.dirname(os.path.abspath(__file__))
 KIT = os.path.abspath(os.path.join(HERE, '..', '..'))
 PRINT = os.path.join(KIT, '3dprinting')
-# The repo the kit sits in: every .3mf under its projects/ is checked before and after the tests.
-ROOT = os.path.abspath(os.path.join(KIT, '..', '..', '..'))
+# Your design projects: every .3mf under this folder is checked before and after the tests, so a
+# test that writes outside run/ is caught. Set CAD_PROJECTS to the folder; unset, the kit itself.
+ROOT = os.path.abspath(os.path.expanduser(os.environ.get('CAD_PROJECTS', KIT)))
 BUILD = os.path.join(PRINT, 'build_3mf.py')
 UPDATE = os.path.join(PRINT, 'update_3mf.py')
 TEMPLATE = os.path.join(PRINT, 'template_3mf')  # The template, unpacked.
@@ -58,9 +59,9 @@ def sha1(path):
 
 
 def project_3mfs():
-    """sha1 of every .3mf under projects/ (read only), but not the tests' own run/ folder."""
+    """sha1 of every .3mf under ROOT (read only), but not the tests' own run/ folder."""
     out = {}
-    for base, dirs, files in os.walk(os.path.join(ROOT, 'projects')):
+    for base, dirs, files in os.walk(ROOT):
         if os.path.abspath(base) == RUN:
             dirs[:] = []
             continue

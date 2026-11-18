@@ -1,7 +1,7 @@
 """Draw the confirmation sketches for the suspension bridge.
 
-Run from the repo root:
-    uvx --with matplotlib python projects/hobby/cad-apprentice/demos/suspension-bridge/scripts/sketch.py
+Run:
+    uvx --with matplotlib python ~/cad-apprentice/demos/suspension-bridge/scripts/sketch.py
 
 Real sizes are in feet and elevations in feet above water, as in the project README. They are
 scaled so the tower (pier top to saddle top) is TOWER_HEIGHT mm. Writes PNGs to sketches/.

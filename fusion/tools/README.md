@@ -1,8 +1,8 @@
 # Tools
 
 The command-line tools around a design: start it, check it, run it, collect what it made, and turn
-it into pictures and a print project. Run them from the repo root. `K` below stands for
-`projects/hobby/cad-apprentice`.
+it into pictures and a print project. `K` below stands for the kit
+folder, `~/cad-apprentice`.
 
 ## fusion_outputs.py: start, run and collect a design
 

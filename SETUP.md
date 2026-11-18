@@ -10,7 +10,7 @@ if your copy lives somewhere else.
 2. **A design's entry file** lives in Fusion's Scripts folder
    (`~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/<Name>/<Name>.py`). It
    is a few lines: it reads `mode.txt` next to it, and runs the real script from the repo.
-   `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`
+   `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`
    makes one from [fusion/template/](fusion/template/), with a starter `build.py` in the project,
    and copies it into the Scripts folder.
 3. **The runner add-in** (optional, recommended). On its own, Fusion runs a script only when
@@ -20,9 +20,9 @@ if your copy lives somewhere else.
    your mouse and screen, and runs still work while the computer is locked. Link
    [fusion/runner/entry/](fusion/runner/entry/) into Fusion's AddIns folder (a link, not a copy, so
    it finds the skill):
-   `ln -s "$PWD/projects/hobby/cad-apprentice/fusion/runner/entry" ~/Library/Application\ Support/Autodesk/Autodesk\ Fusion\ 360/API/AddIns/UpsertTestRunner`
-   from the repo root, then restart Fusion. It starts with Fusion, loads [runner.py](fusion/runner/runner.py) from the skill's folder
+   `ln -s ~/cad-apprentice/fusion/runner/entry ~/Library/Application\ Support/Autodesk/Autodesk\ Fusion\ 360/API/AddIns/UpsertTestRunner`
+   Then restart Fusion. It starts with Fusion, loads [runner.py](fusion/runner/runner.py) from the skill's folder
    and watches `fusion/tests/run/requests/`.
-4. **Run a design:** `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` (or `clean`,
+4. **Run a design:** `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` (or `clean`,
    `new`, `check`). It checks the script, drops a request for the add-in, and prints the log as it
    grows. Without the add-in, run the entry file with ▶ in Fusion's Scripts dialog.

@@ -82,10 +82,10 @@ The update, step by step:
 6. Open the result in Bambu Studio and say what changed: which parts got a new mesh, any new
    plate, any part that's gone.
 
-The script: `projects/hobby/cad-apprentice/3dprinting/update_3mf.py`. It does steps 2–5; you do 1 and 6.
+The script: `~/cad-apprentice/3dprinting/update_3mf.py`. It does steps 2–5; you do 1 and 6.
 
 ```
-python3 projects/hobby/cad-apprentice/3dprinting/update_3mf.py projects/hobby/<p>/<p>.3mf --approved "<their words>" [--down new_part=-y] projects/hobby/<p>/stl/a.stl projects/hobby/<p>/stl/b.stl ...
+python3 ~/cad-apprentice/3dprinting/update_3mf.py <project>/<p>.3mf --approved "<their words>" [--down new_part=-y] <project>/stl/a.stl <project>/stl/b.stl ...
 ```
 
 - `--down PART=FACE` turns a **new** part onto that face, like `build_3mf.py`. A part already in the
@@ -124,7 +124,7 @@ Plates are grouped by judgement, as in step 5 of § The job.
 
 ## The settings template
 
-`projects/hobby/cad-apprentice/3dprinting/template_3mf/` holds the printer, print and filament settings, with no parts: every
+`~/cad-apprentice/3dprinting/template_3mf/` holds the printer, print and filament settings, with no parts: every
 new project starts from it. It is a `.3mf` unpacked, its files without the zip around them, so the
 kit holds no binary file (a binary would hold every directory release for a reviewer). Made from a tuned project: 0.2 mm layers, 2 walls, 5 top and
 3 bottom layers, auto brim; filament 1 Bambu PLA Basic, filament 2 Bambu PETG HF. That project
@@ -134,12 +134,12 @@ project.
 
 - **When the person tunes settings they want kept,** remake it from that project once they have
   saved and quit Bambu Studio:
-  `python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/<p>/<p>.3mf`
+  `python3 ~/cad-apprentice/3dprinting/make_template.py <project>/<p>.3mf`
   If that project's slot 1 isn't PLA Basic, add
   `--filament "1=OTHER.3mf:1"`, where filament 1 of `OTHER.3mf` is PLA Basic.
   It prints how many settings changed and any it couldn't copy.
 - **To look at it in Bambu Studio,** pack it into one file:
-  `python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/cad-apprentice/3dprinting/template_3mf template.3mf`.
+  `python3 ~/cad-apprentice/3dprinting/make_template.py ~/cad-apprentice/3dprinting/template_3mf template.3mf`.
   Bambu Studio's command line refuses a project with no parts ("file is empty"); it is a settings
   source for `build_3mf.py`.
 
@@ -162,10 +162,10 @@ different process"). System Events lists no windows or buttons for Bambu Studio 
 quit doesn't always mean a prompt: that day it was on its home page with no project open, and a
 second quit worked.
 
-The script: `projects/hobby/cad-apprentice/3dprinting/build_3mf.py`.
+The script: `~/cad-apprentice/3dprinting/build_3mf.py`.
 
 ```
-python3 projects/hobby/cad-apprentice/3dprinting/build_3mf.py projects/hobby/<p>/<p>.3mf --approved "<their words>" --down arch_frame=-y projects/hobby/<p>/stl/a.stl projects/hobby/<p>/stl/b.stl ...
+python3 ~/cad-apprentice/3dprinting/build_3mf.py <project>/<p>.3mf --approved "<their words>" --down arch_frame=-y <project>/stl/a.stl <project>/stl/b.stl ...
 ```
 
 Settings come from the template folder (above). `--settings-from OTHER.3mf` takes them from another

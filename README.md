@@ -356,8 +356,8 @@ history), or export STLs and the 3MF project before you approve the design.
 
 The agent is told to improve the library as it works on your design: a new step type or a helper
 that other designs could use goes into the library, not into your design's script. If your agent
-added something useful, please consider contributing it back to this repository. Give your agent
-this prompt:
+added something useful, please consider contributing it back to this repository; how is in
+[CONTRIBUTING.md](CONTRIBUTING.md). Give your agent this prompt:
 
 ```
 Open a pull request to the cad-apprentice repository with the library changes you made for my design:

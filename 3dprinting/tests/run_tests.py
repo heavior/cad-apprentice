@@ -1,6 +1,6 @@
 """Run every 3MF test in the plan's order and write the results (3dprinting/3mf-test-scenarios.md § 4).
 
-Order: B, then the U group alone. Every .3mf under projects/ (but not the tests'
+Order: B, then the U group alone. Every .3mf under CAD_PROJECTS (but not the tests'
 own run/ folder) is read at the start and at the end of the run; one that changed in between is
 listed and fails the run.
 
@@ -103,7 +103,7 @@ class Recorder(unittest.TextTestResult):
 
 
 def snapshot(label):
-    """sha1 of every .3mf under projects/, written to run/results/sha1-<label>.txt."""
+    """sha1 of every .3mf under CAD_PROJECTS, written to run/results/sha1-<label>.txt."""
     now = project_3mfs()
     with open(os.path.join(RESULTS, 'sha1-%s.txt' % label), 'w') as f:
         f.write(''.join('%s  %s\n' % (h, p) for p, h in sorted(now.items())))
@@ -162,7 +162,7 @@ def main():
     counts = {s: sum(1 for r in out['rows'] if r['status'] == s) for s in ('pass', 'fail', 'error', 'skip')}
     lines = ['3MF tests, %s to %s' % (start, out['end']),
              'pass %(pass)d, fail %(fail)d, error %(error)d, skip %(skip)d' % counts,
-             '.3mf under projects/ changed during the run: %s' % (', '.join(out['projects_changed']) or 'none'), '']
+             '.3mf under CAD_PROJECTS changed during the run: %s' % (', '.join(out['projects_changed']) or 'none'), '']
     lines += ['class error: ' + e for e in out['class_errors']]
     for r in out['rows']:
         lines.append('%-4s %-5s %s' % (r['id'], r['status'], r['why'] or r['note']))

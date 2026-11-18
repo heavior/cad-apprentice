@@ -275,7 +275,7 @@ nozzle line on a small model. That can be fine, so [thin.py](cad_apprentice/thin
 `THIN (under 0.4 mm) label: name 0.21 mm, ...` when any is under 0.4 mm. Call it after the build
 and inside `more=` for each trial, and return only the real problems from `more=` so a thin part
 never fails a trial. `watch.summary()` logs how many checks had thin parts and the thinnest one.
-Tests: `python3 projects/hobby/cad-apprentice/fusion/lib/cad_apprentice/test_thin.py`.
+Tests: `python3 ~/cad-apprentice/fusion/lib/cad_apprentice/test_thin.py`.
 
 ## When a run fails
 
@@ -354,7 +354,7 @@ done was saved.
 Most of an iteration's time goes to waiting for a click, for a rerun after a typo, or for a step that
 redraws more than it needs to. When a design costs time in a new way, add the fix here.
 
-1. **Run through the runner.** `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a
+1. **Run through the runner.** `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a
    background shell. The UpsertTestRunner add-in starts with Fusion and runs the script with no click
    on ▶, also behind a locked screen. It prints the log as it grows and exits 0 only on DONE. Once,
    a run sat 62 minutes behind a locked screen, waiting for the ▶ click. The click in

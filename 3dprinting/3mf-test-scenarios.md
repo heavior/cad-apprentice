@@ -27,16 +27,16 @@ The scripts:
   - a part with a hole and an overhang
   - two STLs with the same file name in different folders
   - a broken STL (open mesh, or an empty file)
-- **Reference settings.** The default, the folder `projects/hobby/cad-apprentice/3dprinting/template_3mf/`,
+- **Reference settings.** The default, the folder `~/cad-apprentice/3dprinting/template_3mf/`,
   as the docs say. Tests that need it as one file use `tests/run/template.3mf`, which
   `make_template.py` packs from the folder. B11 also uses a copy of your own `.3mf` with other
   printer settings, named by the `B11_REF_3MF` environment variable; if it is unset or missing,
   that part of B11 is skipped and listed, not failed.
-- **Where it writes.** Only in `projects/hobby/cad-apprentice/3dprinting/tests/run/`. Never in a project
+- **Where it writes.** Only in `~/cad-apprentice/3dprinting/tests/run/`. Never in a project
   folder. `build_3mf.py` makes a temp work folder, so every test runs the scripts with `TMPDIR` set to
   `run/tmp/`. `update_3mf.py` backs up into `.backups/` next to the project, which in a test is
   inside `run/`. A check at the
-  start and the end of the run: every `.3mf` under `projects/` is byte for byte the same as at the
+  start and the end of the run: every `.3mf` under the `CAD_PROJECTS` folder (your design projects) is byte for byte the same as at the
   start. The tests' own
   `run/` folder is left out of it. A file the person saved during the run shows up here too.
 - **How a result is read.** Every check opens the output `.3mf` as a zip and reads the XML and mesh
@@ -192,7 +192,7 @@ a filament change, and a modifier inside one object. Then the STLs change and th
 3. The rest of B.
 4. The U group, alone (§ 1). With Bambu Studio open they can't run, and each is listed as a
    skip, "Bambu Studio is open". A failure is fixed in `update_3mf.py`, one commit per ID.
-5. Results in `projects/hobby/cad-apprentice/3dprinting/tests/run/results/`, and a short section in the night's morning
+5. Results in `~/cad-apprentice/3dprinting/tests/run/results/`, and a short section in the night's morning
    report.
 
 These need no Fusion, so in the overnight session they run while Fusion is busy, or first, if
@@ -212,7 +212,7 @@ must-ask ones.
 | `python3` on the tests, `build_3mf.py` and `update_3mf.py` | Running them |
 | Edit `build_3mf.py` and `update_3mf.py`; create the tests in `scripts/print/` | Fixes and tests |
 | Read the `.3mf` that `B11_REF_3MF` names and copy it into the test folder | B11 |
-| `mkdir`, `cp`, `rm` in `projects/hobby/cad-apprentice/3dprinting/tests/run/` only, and a stand-in `sleep` there (U11) | Test output |
+| `mkdir`, `cp`, `rm` in `~/cad-apprentice/3dprinting/tests/run/` only, and a stand-in `sleep` there (U11) | Test output |
 
 **Questions:**
 

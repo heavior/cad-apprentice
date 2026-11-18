@@ -4,11 +4,11 @@ Each run used to take a hand-written shell line with `rm`, which asked for permi
 This script is on the allow list in .claude/settings.json, so it runs without asking. It only touches the
 script's own folder in Fusion's Scripts folder and the project's output folders.
 
-Usage (from the repo root):
-  python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode new|saved|clean|check|night|check:<names>|probe:<file>
-  python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode ... [--wait MINUTES]
-  python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR [--prune]
-  python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"
+Usage:
+  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode new|saved|clean|check|night|check:<names>|probe:<file>
+  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode ... [--wait MINUTES]
+  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR [--prune]
+  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"
 
 prep     reads the script's code first (precheck.py, on the folder the entry file's
          CODE line names, and on the library) and stops on a problem, so a run never starts on a

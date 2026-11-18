@@ -30,8 +30,8 @@ In the kit folder, read in this order:
    sketches, parameters, the timeline, build scripts and running them.
 4. Once a design is approved for printing, use the print skill.
 
-The docs write commands from the repo the kit came from, as `projects/hobby/cad-apprentice/...`. Run
-them with the kit folder instead, as below. Give a project folder as a full path. Keep the person's
+The docs write commands for a kit in `~/cad-apprentice/...`. If the kit is in another folder, use
+that folder instead. Give a project folder as a full path. Keep the person's
 design projects outside the kit folder.
 
 The `demos/` are full design projects made with the kit. You don't need to read them to work.
@@ -79,4 +79,4 @@ library, not to the design script.
   done (`fusion/tests/README.md`). Never test library changes on a person's saved design.
 - **A run that cost time in a new way:** add the fix to Faster iterations in `fusion/lib/README.md`.
 
-To change the kit's own README, follow `CONTRIBUTING.md`.
+To send a library change back to the kit, follow `CONTRIBUTING.md`.
