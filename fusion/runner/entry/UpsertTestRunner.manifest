@@ -1,0 +1,11 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "addin",
+    "id": "7BFC8385-86CA-4F04-99B8-1B947D5162EC",
+    "author": "",
+    "description": { "": "Runs cad_apprentice test requests from the repo with nobody at the screen." },
+    "version": "1.0",
+    "runOnStartup": true,
+    "supportedOS": "mac",
+    "editEnabled": true
+}

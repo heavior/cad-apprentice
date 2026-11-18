@@ -1,0 +1,8 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "script",
+    "author": "",
+    "description": { "": "Builds the suspension bridge: towers, piers, deck sections, anchor blocks, look-only cables." },
+    "supportedOS": "mac",
+    "editEnabled": true
+}

@@ -1,0 +1,8 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "script",
+    "author": "",
+    "description": { "": "Tests cad_apprentice in a new unsaved design, then closes it." },
+    "supportedOS": "mac",
+    "editEnabled": true
+}

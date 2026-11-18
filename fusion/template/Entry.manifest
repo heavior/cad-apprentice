@@ -1,0 +1,8 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "script",
+    "author": "",
+    "description": { "": "Builds __DOC__ with the cad_apprentice library." },
+    "supportedOS": "mac",
+    "editEnabled": true
+}
