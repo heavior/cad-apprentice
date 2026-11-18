@@ -64,7 +64,9 @@ another.
 The skill was tested on a Mac only. The logic should work anywhere, so you can ask your agent to
 tune it for Windows. If you do, please consider contributing back ([Contributing](#contributing)).
 
-Give your agent these prompts in order.
+Give your agent these prompts in order. Each one works in plain words with any agent. In Claude
+Code, with the plugin installed, you can call a skill by name instead: `/cad-apprentice:` and
+the skill's name.
 
 1. **Set up the skill, once.**
 
@@ -82,6 +84,12 @@ Give your agent these prompts in order.
    Set up cad-apprentice for my Fusion 360 and check that it works.
    ```
 
+   Or call the skill:
+
+   ```
+   /cad-apprentice:setup
+   ```
+
    **Codex and other agents:**
 
    ```
@@ -95,6 +103,13 @@ Give your agent these prompts in order.
    ```
    Using the attached images, design me a <what it is, what it holds or fits, its main sizes>.
    Follow the design workflow and show me your understanding first.
+   ```
+
+   Or, in Claude Code, call the skill:
+
+   ```
+   /cad-apprentice:cad-apprentice Using the attached images, design me a <what it is, what it
+   holds or fits, its main sizes>. Show me your understanding first.
    ```
 
 3. **Confirm the agent understood.** It sends a picture of its idea and its questions, before any
@@ -115,10 +130,28 @@ Give your agent these prompts in order.
    the picture, or edit the design in Fusion yourself. Each iteration is saved as a new version. The
    agent exports and prints nothing until you say the design is right.
 
+   If a run fails and the agent doesn't fix it on its own:
+
+   ```
+   Find out why the run failed and fix it.
+   ```
+
+   Or, in Claude Code, call the skill:
+
+   ```
+   /cad-apprentice:fix
+   ```
+
 5. **Optional: make the design robust.**
 
    ```
    Follow the parameter testing guidelines, run the test, and debug the design as needed.
+   ```
+
+   Or, in Claude Code, call the skill:
+
+   ```
+   /cad-apprentice:test
    ```
 
    The agent fixes what breaks, or narrows a range no one will use, and shows you what it chose
@@ -128,6 +161,12 @@ Give your agent these prompts in order.
 
    ```
    Make the 3D print project. Follow the 3D printing guidelines.
+   ```
+
+   Or, in Claude Code, call the skill:
+
+   ```
+   /cad-apprentice:print
    ```
 
    The agent builds a 3MF project for your slicer and keeps it up to date after later changes
