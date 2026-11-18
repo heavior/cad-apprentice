@@ -10,7 +10,7 @@ agent's rules are in [fusion/rules.md](fusion/rules.md).
 **Contents:** [Key features](#key-features) · [How to start](#how-to-start) · [Demos](#demo-golden-gate-bridge) · [What's in it](#whats-in-it) ·
 [3D printing](#3d-printing) · [Supported steps](#supported-steps) · [Known limits](#known-limits) ·
 [Testing your design](#testing-your-design) ·
-[Prerequisites, permissions and data](#prerequisites-permissions-and-data) ·
+[Prerequisites, permissions and data](#prerequisites-permissions-and-data) · [Uninstall](#uninstall) ·
 [Contributing](#contributing) · [License and notices](#license-and-notices)
 
 ## Key features
@@ -197,8 +197,8 @@ the [project README](demos/suspension-bridge/README.md).
 | | |
 | --- | --- |
 | Agent | Claude Code, Opus 5.5, high reasoning effort |
-| Agent's working time | about 3.4 h |
-| Iterations | 4 |
+| Agent's working time | about 3.4 h for the first 4 iterations |
+| Iterations | 5 |
 | Design | 35 sketches, 80 features, 76 user parameters, 6 unique components, 8 in all |
 
 ## Demo: LEGO® train bridge
@@ -317,7 +317,8 @@ The kit has no server and sends nothing anywhere itself ([PRIVACY.md](PRIVACY.md
 everything below on your Mac, and only for the design you asked for.
 
 **Prerequisites:** a Mac, Autodesk Fusion, `git`, `python3`, and an AI coding agent that can run
-commands: Claude Code, Codex or another. Bambu Studio, only for the 3D print project. What the agent
+commands: Claude Code, Codex or another. Pillow for `python3`, only to crop pictures
+(`python3 -m pip install Pillow`). Bambu Studio, only for the 3D print project. What the agent
 sets up: [SETUP.md](SETUP.md).
 
 **Authentication:** the kit has no account and no sign-in. Fusion uses your Autodesk account, and
@@ -367,6 +368,19 @@ history), or export STLs and the 3MF project before you approve the design.
   itself, with the screen permission above.
 - When Fusion hangs inside a run, the agent force-quits Fusion, starts it again and tells you.
 
+## Uninstall
+
+1. **The plugin,** if you installed it in Claude Code:
+   `claude plugin uninstall cad-apprentice@cad-apprentice`, then
+   `claude plugin marketplace remove cad-apprentice`. In another agent, remove it the way you added it.
+2. **The runner add-in:** in Fusion, open Utilities > Add-Ins, stop UpsertTestRunner, then delete the
+   link `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/UpsertTestRunner`.
+3. **The design folders:** delete each `<Name>` folder the kit made in
+   `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`.
+4. **The kit folder,** `~/cad-apprentice`.
+
+Your project folders and your designs in Fusion are yours. The kit leaves them; keep or delete them.
+
 ## Contributing
 
 The agent is told to improve the library as it works on your design: a new step type or a helper
@@ -391,7 +405,12 @@ and/or other countries.
 
 Bambu Studio, OrcaSlicer, PrusaSlicer and UltiMaker Cura are named only to say which slicers can
 open the 3D print project. cad-apprentice is independent of their makers, who don't sponsor or
-endorse it. Their names belong to their owners.
+endorse it. Their names belong to their owners. The 3D print template
+(`3dprinting/template_3mf/`) holds printer, print and filament settings saved by Bambu Studio,
+with Bambu Lab's profile names.
+
+The suspension bridge demo is a model after the Golden Gate Bridge. It is not connected with or
+endorsed by the Golden Gate Bridge, Highway and Transportation District.
 
 LEGO® is a trademark of the LEGO Group of companies, which does not sponsor, authorize or endorse
 this project. Other names are the trademarks of their owners.

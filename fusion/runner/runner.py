@@ -35,7 +35,7 @@ def note(line):
 class Handler(adsk.core.CustomEventHandler):
     def notify(self, args):
         # Startup can bring up a sign-in or recovery screen; nothing runs until Fusion says it's up. It's
-        # read here, on the main thread, not in the watcher (F27), which fires again a minute later.
+        # read here, on the main thread, not in the watcher, which fires again a minute later.
         if not app.isStartupComplete:
             return
         state['fired'] = 0

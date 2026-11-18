@@ -351,7 +351,7 @@ def plain(name):
 
 
 def design_unlogged(before, after, r):
-    # The log against the design itself, not against the library's own records (F46): an item without a
+    # The log against the design itself, not against the library's own records: an item without a
     # key that came or went, or bodies that changed while the log says nothing changed. A run that
     # started with the marker rolled back sees less of the design, so it isn't compared.
     if before['marker'] != before['count']:
@@ -405,7 +405,7 @@ def timeline_health(des):
 
 class Verdict:
     # The pass or fail of a test file that builds a design a few times (test_features, test_edit_in_place,
-    # test_joints). Before, those files only printed what happened and a person read it (F40).
+    # test_joints). Before, those files only printed what happened and a person read it.
     def __init__(self):
         self.fails = []
 

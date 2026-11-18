@@ -61,11 +61,11 @@ PARAMS = [
     ('road_width', '19.2 mm', 'mm', 'road deck width; the two tower legs and the two main cables are this far apart, centre to centre', FAV),
     # 897.4 mm on the real bridge's proportions (4200 ft at a 150 mm tower); 897 keeps it on the slider's grid.
     ('main_span_length', '897 mm', 'mm', 'distance between the two towers, centre to centre; the side spans and the road arc follow from it', FAV),
-    # 27.3 mm on the real bridge's proportions at a 150 mm tower. Evgeny wants room for a toy train
+    # 27.3 mm on the real bridge's proportions at a 150 mm tower. The designer wants room for a toy train
     # here, on a shorter bridge too (2026-11-16).
     ('road_clearance', '27.3 mm', 'mm', 'free height above the road inside each tower, up to the first strut: room for a train. The struts above it squeeze or stretch to fit', FAV),
     # 0.0449 on the real bridge (9 cells of 3.5 ft on 702 ft). A higher share on a lower tower makes a
-    # lower but bulkier bridge (Evgeny, 2026-11-16).
+    # lower but bulkier bridge.
     ('leg_thickness_share', '0.045', '', 'tower leg width at its base, as a share of the tower height: higher for a bulkier tower. Capped so the legs leave the road free', FAV),
     # Scale. Heights below are real elevations less the pier top (el. 44 ft), README tables.
     (F, 'tower_height / 702', 'mm', 'one foot of the real bridge at model size: 702 ft of real tower'),
@@ -113,8 +113,8 @@ PARAMS = [
     ('tower_leg_cross_two_bars_widest_bar_length_share', '0.5', '', 'stepped-cross leg, 2 bars: widest bar length along the bridge, as a share of the tier length, rounded to half a cell; my choice'),
     # Portal strut faces: plain ledges top and bottom, sawtooth flutes in the upper band, a recessed
     # panel below (HAER photo 12). Flute spacing from the 1:400 model; the other sizes are design choices.
-    # Each detail is a share of the strut height, so it keeps its look at any tower size (Evgeny,
-    # 2026-11-16). The shares give the sizes the design had in mm at a 150 mm tower.
+    # Each detail is a share of the strut height, so it keeps its look at any tower size.
+    # The shares give the sizes the design had in mm at a 150 mm tower.
     ('tower_portal_strut_flute_spacing_share', '0.19', '', 'portal strut flutes: spacing along the strut, as a share of the strut height (1:400 model)'),
     # At least three flutes fit between the legs under the lowest strut, so the row's start dimension
     # never shrinks to 0 when the road clamps the legs. A distance through 0 can come back on the other
@@ -159,7 +159,7 @@ PARAMS = [
     ('deck_truss_depth', '25 * %s' % F, 'mm', 'deck depth: stiffening truss, 25 ft'),
     # Deck details, sketch 5. A truss vertical at every floor beam, 25 ft apart (STR); sidewalks 10 ft (GGB).
     # The other sizes are design choices, each a share of a deck size, so they keep their look at any
-    # tower size (Evgeny, 2026-11-16). The shares give the sizes the design had in mm at a 150 mm tower.
+    # tower size. The shares give the sizes the design had in mm at a 150 mm tower.
     # Slab, floor rib and bottom bar add up to at most 0.8 of the truss depth, which leaves the truss holes room.
     ('deck_truss_vertical_spacing', '25 * %s' % F, 'mm', 'deck truss: a vertical every 25 ft (STR: floor beams every 25 ft)'),
     ('deck_truss_bottom_bar_height_share', '0.15', '', 'deck truss: bottom bar (bottom chord) height, as a share of the truss depth'),
@@ -210,8 +210,7 @@ PARAMS = [
 # ends work alone and with every other range at the same end. tower_height's ends come from test runs;
 # the other limits are worked out from the design's sizes, and the parameter test checks them.
 # - tower_height starts at 133 mm, the lowest value tested to work, and goes up to 781 mm: a 100 mm
-#   road at the default road-to-tower ratio, 19.2 to 150. road_width goes from 16 mm to 100 mm
-#   (Evgeny, 2026-11-16).
+#   road at the default road-to-tower ratio, 19.2 to 150. road_width goes from 16 mm to 100 mm.
 # - Three clamps in the formulas, not in the ranges: the legs are never wider than road_width / 1.4,
 #   which leaves room between them; road_clearance never takes more than 0.6 of the height from
 #   the road to the leg top, which leaves room for the struts above it; and the railing lip never takes

@@ -1,7 +1,7 @@
 # 3D print prep
 
 How to go from a finished design to a Bambu Studio project that is ready to print. This is separate
-from [fusion.md](../fusion/rules.md), which covers designing. Grow it as we learn.
+from [fusion/rules.md](../fusion/rules.md), which covers designing.
 
 ## The printer
 
@@ -30,13 +30,13 @@ look.
    - A two-color part is two bodies, each with its own filament.
    - Fit-test pieces print in the same filament as the real parts, or the test tells nothing.
    - Before the full print, suggest test prints for what's risky: fits, tolerances, thin or tricky
-     features. The person decides whether to design them ([fusion.md § Test prints](../fusion/rules.md#test-prints)).
+     features. The person decides whether to design them ([fusion/rules.md § Test prints](../fusion/rules.md#test-prints)).
      When a value isn't known yet, offer a calibration piece: one print that tries several values of
      that parameter side by side.
 
    Write the choice down in the project README as a small table: part, count, filament, why.
 4. **Orient each part for the build plate.** The face that was designed to lie on the plate goes down.
-   For a Fusion part that is the face with the 45° build-plate chamfer ([fusion.md](../fusion/rules.md) rule 11).
+   For a Fusion part that is the face with the 45° build-plate chamfer ([fusion/rules.md](../fusion/rules.md) rule 11).
    This step is optional: sometimes the person says how to turn a part, sometimes they
    turn it in Bambu Studio themselves. Either way, **a turn must be kept between runs**: the update
    below never changes a part's orientation.
@@ -49,7 +49,7 @@ look.
      together, or everything on one plate, whatever suits the parts and the print. `build_3mf.py`
      puts one part on each plate; regroup after it when another layout fits better.
    - Name each plate after what's on it.
-   - Save it in the project folder, next to `stl/`, named after the project (`<project>.3mf`), with no trademarks in the name ([fusion.md](../fusion/rules.md) rule 9).
+   - Save it in the project folder, next to `stl/`, named after the project (`<project>.3mf`), with no trademarks in the name ([fusion/rules.md](../fusion/rules.md) rule 9).
 
 ## Updating the 3MF after the design changes
 
@@ -126,7 +126,8 @@ Plates are grouped by judgement, as in step 5 of § The job.
 
 `~/cad-apprentice/3dprinting/template_3mf/` holds the printer, print and filament settings, with no parts: every
 new project starts from it. It is a `.3mf` unpacked, its files without the zip around them, so the
-kit holds no binary file (a binary would hold every directory release for a reviewer). Made from a tuned project: 0.2 mm layers, 2 walls, 5 top and
+kit holds no binary file (a plugin directory sends any release with a binary file, other than
+images and fonts, to a person for review). Made from a tuned project: 0.2 mm layers, 2 walls, 5 top and
 3 bottom layers, auto brim; filament 1 Bambu PLA Basic, filament 2 Bambu PETG HF. That project
 had PETG HF in both, so slot 1 was copied from another project's PLA Basic slot. Never change a
 project's own filaments to make the template. Per-part settings (a brim on one part, no supports on another) stay in their own

@@ -412,7 +412,7 @@ def _name_of(ent):
 
 # An edge, face, axis, plane or point in a fingerprint: its name, or for one with no name (an edge, a
 # face, a sketch line) its body or sketch and where it sits. The kind alone missed a pattern moved from
-# one edge to another (F5).
+# one edge to another.
 def _axis_name(axis):
     name = getattr(axis, 'name', None)
     if name:
@@ -432,7 +432,7 @@ def _at(p):
     return ','.join('%.4f' % (round(v, 4) + 0.0) for v in (p.x, p.y, p.z))
 
 
-# The settings Fusion can't edit in place, one fingerprint each, so a change names what changed (F1).
+# The settings Fusion can't edit in place, one fingerprint each, so a change names what changed.
 def _fixed_record(key, fixed):
     return ';'.join('%s=%s' % (label, fingerprint(key, v)) for label, v in fixed)
 
@@ -613,7 +613,7 @@ class Builder:
             self.go_back_to = int(stuck)
             self.log.append('the last run here could not go back, so this tab may be half-built: a failed run goes back to version %d, the last good one, and no restore point is saved' % self.go_back_to)
         elif go_back_to is None and self.unsaved_at_start and doc.dataFile:
-            # Before any change, so a run that stops at its first step still has the hand changes to go back to (F2).
+            # Before any change, so a run that stops at its first step still has the hand changes to go back to.
             before = doc.dataFile.latestVersionNumber
             with self._slow('save a restore point'):
                 saved = doc.save('Restore point before a script rerun')
@@ -635,9 +635,9 @@ class Builder:
             elif key:
                 self.known[key] = it.entity
         self.foreign_at_start = self.foreign()
-        # Hand-made steps that warn already. One that starts to warn during the run lost something the run took (F4).
+        # Hand-made steps that warn already. One that starts to warn during the run lost something the run took.
         self.foreign_warned_at_start = [it.name for it in timeline_items(self.tl) if not _attr(it.entity, 'key') and it.healthState == WarningState]
-        # Steps already in error. The run didn't break them, so they don't send it back (F2).
+        # Steps already in error. The run didn't break them, so they don't send it back.
         self.errors_at_start = [it.name for it in timeline_items(self.tl) if it.healthState == ErrorState]
         self.visited = []
         self.read_files = {}  # script file -> its step keys, read ahead by precheck (A5)
@@ -1005,7 +1005,7 @@ class Builder:
             self._mark(ent, key, fp, uses, read=read)  # Taken over: it's as the script says, from now on it's tracked.
             self.counts['same'] += 1
         elif _attr(ent, 'fp') != fp or misplaced or uses_moved or elsewhere or any(u in self.changed for u in uses):
-            # A setting Fusion can't edit in place, or ignores, changed: the feature is made again (F1).
+            # A setting Fusion can't edit in place, or ignores, changed: the feature is made again.
             stuck = _fixed_changed(_attr(ent, 'fixed'), fixed_now) if fixed else []
             why = 'out of order' if misplaced else "%s changed, which can't be edited in place" % ', '.join(stuck) if stuck else \
                 'its spec changed' if _attr(ent, 'fp') != fp else \
@@ -1214,7 +1214,7 @@ class Builder:
             raise Exception('%s can only be replaced by deleting it, which could take this with it: %s' % (name, ', '.join(after)))
 
     # A sketch past the marker can't give its plane, which read as "its plane is gone" and redrew it
-    # after any replace before it (F40). So the marker goes to it and it's read again; None if still not.
+    # after any replace before it. So the marker goes to it and it's read again; None if still not.
     def _plane_of(self, s):
         try:
             return s.referencePlane
@@ -1276,7 +1276,7 @@ class Builder:
 
         def extent(target):
             if symmetric:
-                # The taper too, as an edit sets it: before, a fresh build left it out (F1).
+                # The taper too, as an edit sets it: before, a fresh build left it out.
                 target.setSymmetricExtent(vi(symmetric), True, vi(taper or '0 deg'))
             elif taper:
                 target.setOneSideExtent(adsk.fusion.DistanceExtentDefinition.create(vi(distance)), adsk.fusion.ExtentDirections.PositiveExtentDirection, vi(taper))
@@ -1364,7 +1364,7 @@ class Builder:
                 return ','.join([d.distance.expression, f.thinExtrudeWallThicknessOne.expression] + side)
             return d.distance.expression
 
-        # A step that stops naming its bodies would keep cutting the old ones (F1).
+        # A step that stops naming its bodies would keep cutting the old ones.
         return self.step(key, name, make, update, spec=said, uses=tuple(uses) + (skey,), read=read,
                          fixed=(('participants', bool(participants)),))
 
@@ -2089,7 +2089,7 @@ class Builder:
             want = faces()
             have = f.inputEntities
             if not _same_entities(want, [have.item(i) for i in range(have.count)]):
-                # inputEntities can't be set, so the faces went unchanged and the shell was replaced (F49).
+                # inputEntities can't be set, so the faces went unchanged and the shell was replaced.
                 if not f.setInputEntities(_collection(want), False):
                     raise Exception('Fusion refused the new faces')
             f.insideThickness.expression = thickness
@@ -2614,8 +2614,8 @@ class Builder:
         raise Exception('version %d is not in the file\'s history' % n)
 
     # Never raises: the run's own error is the one to report. A tab that can't be closed stays
-    # half-built, so it is marked with the last good version, and the next run there goes back to it
-    # (Decision 1). Closing without saving drops the mark with everything else.
+    # half-built, so it is marked with the last good version, and the next run there goes back to it.
+    # Closing without saving drops the mark with everything else.
     def _go_back(self):
         if not (self.doc and self.doc.dataFile):
             self.log.append('NOT GOING BACK: the design was never saved, so there is no version to go back to. The tab is as the run left it.')

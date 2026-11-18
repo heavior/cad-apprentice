@@ -377,8 +377,8 @@ These rules come from fixing that.
       for the replacement arc: a free radius lets points drift. Source: Autodesk bug FUS-125743, with
       the reason and the fix from a forum expert ([forum](https://forums.autodesk.com/t5/fusion-design-validate-document/constraints-to-projected-lines-change-when-changing-base-sketch/td-p/11851921)).
 27. **When many steps are renamed, rebuild.** Editing in place with lots of renamed or swapped steps
-    can fail with "multiple target" errors. Run the script in clean mode, which wipes the timeline
-    and builds it again.
+    can fail with "multiple target" errors. Suggest a run in clean mode, which wipes the timeline
+    and builds it again; ask first, as rule 4 says.
 28. **A rename changes names, never values.** After renaming parameters, diff every value against the
     old script. Once, a rename doubled a thickness and the person spotted it, not the agent.
 29. **Repeat a feature in 3D, not in the sketch.** For many copies of one shape (lattice bars, holes,
@@ -466,8 +466,8 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
    real code from the repo, so edits need no new copy.
 2. Clear last run's log, pictures and STLs, so you can't read an old result by mistake:
    `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode saved` (`saved` updates the one saved design, rule 4; `new` only for a first build: run again, it saves a second file under the same name, so `--mode` has no default). It also writes `mode.txt` and
-   brings Fusion forward. It's on the allow list, so it runs without asking; don't hand-write `rm`
-   lines for this.
+   brings Fusion forward. Use it, not hand-written `rm` lines: one allowed command instead of a
+   permission prompt each run.
 3. In the main window, check the tab reads Utilities, since a reopened design starts on Solid, and
    close the Data panel if it is open (its X is at the panel's top right). Click Add-Ins. The icon in
    the same spot on Solid is Revolve, and a wrong click opens Revolve or Move: press their Cancel. If Fusion isn't in front, bring it forward

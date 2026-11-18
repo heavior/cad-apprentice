@@ -374,7 +374,8 @@ redraws more than it needs to. When a design costs time in a new way, add the fi
    build. Before a run, ask how many steps the change touches. A slow step swapped for one under a new
    key counts too: `saved` deletes the old step only at the end, so the marker first computes it once
    more, on top of the new one. On the suspension bridge, two old one-way truss rows left in behind one new
-   symmetric row held Fusion at full CPU for over half an hour. Run `clean` for that.
+   symmetric row held Fusion at full CPU for over half an hour. Suggest `clean` for that; a clean run
+   deletes hand edits, so ask first ([rules.md](../rules.md) rule 4).
 4. **Library methods, not custom steps.** A step written inside a design script has no test, and the
    next design copies it. Put it in the library instead ([Adding a step type](#adding-a-step-type)).
 5. **One copy of each helper.** Before copying a function from another design script, move it into

@@ -1,7 +1,7 @@
 {
   "name": "cad-apprentice",
   "displayName": "CAD Apprentice",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Human-friendly CAD, fast: an AI agent designs a part with you in Autodesk Fusion, with pictures each iteration, a saved version per iteration and your own edits kept.",
   "author": {
     "name": "Evgeny Balashov",

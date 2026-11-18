@@ -67,7 +67,7 @@ def run(V, describe, body_name, key, step_name, versions):
             r = H.build(doc, des, describe, v, os.path.join(OUT_DIR, '%s-%s.log' % (key, label)))
             ent = r['builder'].known.get(key) if r.get('builder') else None
             same = token is None or (ent is not None and ent.isValid and ent.entityToken == token)
-            # Decision 3 (audit F48): Autodesk says two tokens for one feature can differ, and that
+            # Autodesk says two tokens for one feature can differ, and that
             # findEntityByToken is the way to compare. Check both ways and record where they disagree.
             found = token is None or (ent is not None and ent.isValid and any(x == ent for x in des.findEntityByToken(token)))
             if found != same:

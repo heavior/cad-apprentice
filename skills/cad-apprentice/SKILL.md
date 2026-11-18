@@ -42,6 +42,7 @@ The `demos/` are full design projects made with the kit. You don't need to read 
 - **test:** run the parameter test and fix what fails.
 - **print:** get an approved design ready to 3D print.
 - **fix:** find and fix why a run failed or never started.
+- **pictures:** take gallery pictures and close-ups of a finished design.
 
 ## Start and run a design
 
@@ -73,7 +74,7 @@ library, not to the design script.
   project-specific details. Everything project-specific (shapes, sizes, names) stays in the design's
   own script.
 - **A new step type:** follow Adding a step type in `fusion/lib/README.md`. In short: put every value
-  it sets in `spec`, wrap slow Fusion calls in `slow()`, raise on any refusal, add it to precheck's
+  it sets in `spec`, raise on any refusal, add it to precheck's
   `STEPS`, add a test and run it through the runner, and list it in both READMEs.
 - **A change to existing library code:** run the library tests through the runner before you call it
   done (`fusion/tests/README.md`). Never test library changes on a person's saved design.

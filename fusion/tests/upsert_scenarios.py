@@ -45,7 +45,7 @@ def keyed(des, key):
 
 
 def unchanged_by_refusal(S, r, tag):
-    # A refused run must leave the design as it was: timeline, fingerprints, bodies and parameters (F47).
+    # A refused run must leave the design as it was: timeline, fingerprints, bodies and parameters.
     if r['ok'] or not r.get('after'):
         return
     for line in H.compare(r['before'], r['after'], fp=True):
@@ -138,7 +138,7 @@ def a5(S):
 
 @scenario
 def a7(S):
-    # Measure only (F45): a tab that was never saved, with a hand edit, then a run that changes a value
+    # Measure only: a tab that was never saved, with a hand edit, then a run that changes a value
     # and a run that fails. What the library did is recorded as a flag, so a change in it shows up.
     doc, des, r = first(S)
     hand_param(des, 'base_d', '35 mm')
@@ -681,7 +681,7 @@ C1_CASES = [
     ('combine target', dict(alt={'rib_join': 'target'}), 'Rib combine'),
     ('combine tools', dict(alt={'rib_join': 'tools'}), 'Rib combine'),
     # Fusion can't switch a combine's operation or a pattern's adjust in place, so those two are made
-    # again (F1). Fusion deletes the steps built on a replaced one, and the log must say so.
+    # again. Fusion deletes the steps built on a replaced one, and the log must say so.
     ('combine operation', dict(combine_op=M.CUT), 'Rib combine', 'replaced'),
     ('fillet radius', dict(round_r=('round_r / 2', 'round_r')), 'Rounds'),
     ('fillet edges', dict(alt={'round': 'edges'}), 'Rounds'),
@@ -709,7 +709,7 @@ def c1(S):
     # step the run touches must be edited in place, never replaced, except in the cases marked
     # 'replaced'. Those go back to version 1 in a run of their own, so the next case starts clean. After
     # each case the model must be
-    # healthy and match a fresh build of the same version, shape and values alike (F41): a step logged
+    # healthy and match a fresh build of the same version, shape and values alike: a step logged
     # "updated" that changed nothing differs from the fresh build.
     doc, des, r = first(S)
     cases = {}
@@ -1411,7 +1411,7 @@ def j5(S):
 
 @scenario
 def j6(S):
-    # take_over (F49): a feature the library didn't make is tagged by the script, and the run accepts it
+    # take_over: a feature the library didn't make is tagged by the script, and the run accepts it
     # as it is. Here the base extrude loses its marks and name, so it looks made by hand.
     v = variant()
     doc, des, r = first(S, v)
@@ -1936,7 +1936,7 @@ def k7(S):
 
 @scenario
 def k8(S):
-    # Decision 1: the go-back itself fails. Fusion's close is made to refuse, so the tab stays half-built.
+    # The go-back itself fails. Fusion's close is made to refuse, so the tab stays half-built.
     # The run says COULD NOT GO BACK and keeps its own error. The next run in that tab saves no restore
     # point of the half-built design: if it fails, it goes back to the last good version, and if it
     # works, the mark is cleared.

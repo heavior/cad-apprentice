@@ -3,7 +3,7 @@
 # {"id": "features", "file": "tests/test_features.py", "args": {}}
 # v1 builds everything, v2 changes each step's own values (each should be edited in place, or say why it
 # was replaced), v3 is v2 again and should change nothing. Every feature must end healthy, every value
-# read back must match the script, and the model checks must hold. Returns "pass" or "fail" (F40).
+# read back must match the script, and the model checks must hold. Returns "pass" or "fail".
 import math, os, traceback
 import adsk.core, adsk.fusion
 import upsert_harness as H
@@ -67,7 +67,7 @@ def describe(b, v):
     s = b.sketch('block_sk', 'Block sketch', lambda: xy, rect((0, 0, 0), (4, 3, 0)))
     b.extrude('block', 'Block', s, New, distance='block_h', body_name='Block')
 
-    # The edge is passed as it is, so only which edge it is tells v1 from v2 (F5). It comes first: an
+    # The edge is passed as it is, so only which edge it is tells v1 from v2. It comes first: an
     # edge is read when the script runs, so no step before it may roll the timeline back on a rerun.
     b.extrude('rp2_src', 'Pattern block 2', b.sketch('rp2_src_sk', 'Pattern block 2 sketch', lambda: xy, rect((30, 5, 0), (30.5, 5.5, 0))),
               New, distance='0.5 cm', body_name='Pattern block 2')
@@ -183,7 +183,7 @@ def describe(b, v):
     tube = b.sketch('tube_sk', 'Tube sketch', lambda: xy, rect((18, -10, 0), (20, -8, 0)))
     b.extrude('tube', 'Thin tube', tube, New, distance='1 cm', thin=thin, body_name='Thin tube')
 
-    # One row per value an edit used to log as "updated" and leave as it was (F1). Each one changes from
+    # One row per value an edit used to log as "updated" and leave as it was. Each one changes from
     # v1 to v2, and model_checks() reads the model to see that it really did.
     block = lambda k, name, a, c, h: b.extrude(k, name, b.sketch(k + '_sk', name + ' sketch', lambda: xy, rect(a, c)), New,
                                                distance=h, body_name=name)
@@ -390,7 +390,7 @@ def model_checks(bl, des, v, label, t):
     f = k['pegs2']
     lo = min(x.boundingBox.minPoint.x for x in list(f.bodies) + [bl.body('peg2')])
     check(lo < -5 if v['pg2_axis'] == 'z_axis' else lo > 1, 'Pegs 2 reaches x %.2f, wrong for the %s' % (lo, v['pg2_axis']))
-    # Without adjust, Fusion's own default is Adjust too (audit F1), so only adjust=True is checked.
+    # Without adjust, Fusion's own default is Adjust too, so only adjust=True is checked.
     check(f.patternComputeOption == Adjust or not v['pg2_adjust'], 'Pegs 2 compute option is %s' % f.patternComputeOption)
     f = k['rp']
     check(f.patternComputeOption == Adjust or not v['rp_adjust'], 'Rect pattern adjust: compute option is %s' % f.patternComputeOption)

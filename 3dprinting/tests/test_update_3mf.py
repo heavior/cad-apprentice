@@ -494,7 +494,7 @@ class U(Case):
 
     def test_U18_new_part_after_modifier_file(self):
         # A new part is built from the lowest-numbered object file. When that file also holds a
-        # modifier mesh, the modifier must not be copied into the new part with its id (audit F31).
+        # modifier mesh, the modifier must not be copied into the new part with its id.
         d = workdir('u18')
         src = os.path.join(d, 'modifier-first.3mf')
         with zipfile.ZipFile(self.tuned) as z:
