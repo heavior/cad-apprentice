@@ -46,7 +46,7 @@ def zip_problems(path):
     return out
 
 
-def check_build(case, out, stls, down=None, ref=TEMPLATE, stdout='', do_slice=True, name='out'):
+def check_build(case, out, stls, down=None, ref=TEMPLATE_3MF, stdout='', do_slice=True, name='out'):
     """Every check of § 2 (9, the project files, runs once around the whole night). Returns notes."""
     down = down or {}
     case.assertTrue(os.path.exists(out), 'no output file %s' % out)
@@ -421,7 +421,7 @@ class B(Case):
         d = workdir('b7')
         stls = stl_set(d, [('cube', box(20, 20, 20))])
         out = os.path.join(d, 'tuned.3mf')
-        shutil.copy(TEMPLATE, out)
+        shutil.copy(TEMPLATE_3MF, out)
         before = sha1(out)
         r = build(out, stls)
         self.assertNotEqual(r.returncode, 0)
@@ -481,7 +481,7 @@ class B(Case):
             # A reference with a smaller bed, made from the template: only printable_area changes.
             d = workdir('b11/bed180')
             ref = os.path.join(d, 'bed180.3mf')
-            with zipfile.ZipFile(TEMPLATE) as zi, zipfile.ZipFile(ref, 'w', zipfile.ZIP_DEFLATED) as zo:
+            with zipfile.ZipFile(TEMPLATE_3MF) as zi, zipfile.ZipFile(ref, 'w', zipfile.ZIP_DEFLATED) as zo:
                 for i in zi.infolist():
                     data = zi.read(i.filename)
                     if i.filename == 'Metadata/project_settings.config':

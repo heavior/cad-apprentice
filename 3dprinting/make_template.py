@@ -5,15 +5,20 @@ of every new one. The template keeps only the global settings, one empty plate a
 no parts, so per-part settings (a brim on one part, no supports on another) don't carry over.
 build_3mf.py takes its settings from the template unless --settings-from names another project.
 
+The template is kept unpacked, as the folder 3dprinting/template_3mf/: the files of a .3mf without
+the zip around them, so the kit holds no binary file. FROM and OTHER can be a .3mf or such a folder.
+
 Usage (from the repo root):
-  python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/<p>/<p>.3mf [OUT.3mf] [--filament N=OTHER.3mf:M ...]
-OUT defaults to 3dprinting/template.3mf. --filament puts filament M of OTHER.3mf into slot N
+  python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/<p>/<p>.3mf [OUT] [--filament N=OTHER.3mf:M ...]
+OUT defaults to 3dprinting/template_3mf/. An OUT ending in .3mf gets a zipped project instead, so
+  python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/cad-apprentice/3dprinting/template_3mf template.3mf
+packs the template back into one file. --filament puts filament M of OTHER.3mf into slot N
 (both counted from 1), for when FROM has the wrong filament there. Filament 1 is Bambu PLA Basic.
 """
-import json, os, re, subprocess, sys, zipfile
+import json, os, re, shutil, subprocess, sys, zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE = os.path.join(HERE, 'template.3mf')
+TEMPLATE = os.path.join(HERE, 'template_3mf')
 # The model file Bambu Studio writes, with no objects in it.
 EMPTY = '<resources>\n </resources>\n <build/>'
 PLATE = ('<config>\n  <plate>\n    <metadata key="plater_id" value="1"/>\n    <metadata key="plater_name" value=""/>\n'
@@ -69,25 +74,52 @@ def main():
     # Settings the person changed but hasn't saved are not in the file yet.
     if subprocess.run(['pgrep', '-f', 'BambuStudio.app/Contents/MacOS/BambuStudio'], capture_output=True).returncode == 0:
         print('note: Bambu Studio is running; unsaved changes are not in %s' % src)
-    z = zipfile.ZipFile(src)
-    model = z.read('3D/3dmodel.model').decode()
+    z = read_3mf(src)  # All read before writing: OUT may be FROM.
+    model = z['3D/3dmodel.model'].decode()
     model = re.sub(r'<resources>.*</build>', EMPTY, model, flags=re.S)
     model = re.sub(r'\s*<metadata name="Thumbnail_\w+">[^<]*</metadata>', '', model)
-    rels = re.sub(r'\s*<Relationship [^>]*Target="/Metadata/[^"]*"[^>]*/>', '', z.read('_rels/.rels').decode())
+    rels = re.sub(r'\s*<Relationship [^>]*Target="/Metadata/[^"]*"[^>]*/>', '', z['_rels/.rels'].decode())
     files = {
-        '[Content_Types].xml': z.read('[Content_Types].xml'),
+        '[Content_Types].xml': z['[Content_Types].xml'],
         '_rels/.rels': rels.encode(),
         '3D/3dmodel.model': model.encode(),
-        'Metadata/project_settings.config': settings(z.read('Metadata/project_settings.config'), swaps),
+        'Metadata/project_settings.config': settings(z['Metadata/project_settings.config'], swaps),
         'Metadata/model_settings.config': ('<?xml version="1.0" encoding="UTF-8"?>\n' + PLATE).encode(),
     }
-    if 'Metadata/slice_info.config' in z.namelist():
-        files['Metadata/slice_info.config'] = z.read('Metadata/slice_info.config')
-    z.close()  # OUT may be FROM: all read before writing.
-    with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as w:
-        for n, data in files.items():
-            w.writestr(n, data)
+    if 'Metadata/slice_info.config' in z:
+        files['Metadata/slice_info.config'] = z['Metadata/slice_info.config']
+    write_3mf(files, out)
     print('saved %s: settings from %s, one empty plate, no parts' % (out, src))
+
+
+def read_3mf(path):
+    """Every file of a .3mf, or of a folder holding one unpacked, by its name inside the zip."""
+    if not os.path.isdir(path):
+        with zipfile.ZipFile(path) as z:
+            return {n: z.read(n) for n in z.namelist() if not n.endswith('/')}
+    files = {}
+    for root, _, names in os.walk(path):
+        for n in names:
+            if n == '.DS_Store':  # Finder's, once the folder has been opened.
+                continue
+            p = os.path.join(root, n)
+            files[os.path.relpath(p, path).replace(os.sep, '/')] = open(p, 'rb').read()
+    return files
+
+
+def write_3mf(files, out):
+    """A .3mf for an OUT ending in .3mf, else the folder OUT with the same files unpacked.
+    [Content_Types].xml goes first in the zip, as 3MF readers expect."""
+    if out.lower().endswith('.3mf'):
+        with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as w:
+            for n in sorted(files, key=lambda n: n != '[Content_Types].xml'):
+                w.writestr(n, files[n])
+        return
+    shutil.rmtree(out, ignore_errors=True)  # No file left over from an older template.
+    for n, data in files.items():
+        p = os.path.join(out, *n.split('/'))
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        open(p, 'wb').write(data)
 
 
 def settings(raw, swaps):
@@ -95,7 +127,7 @@ def settings(raw, swaps):
         return raw
     cfg = json.loads(raw)
     for n, other_path, m in swaps:
-        other = json.loads(zipfile.ZipFile(other_path).read('Metadata/project_settings.config'))
+        other = json.loads(read_3mf(other_path)['Metadata/project_settings.config'])
         changed, skipped = swap_filament(cfg, n, other, m)
         print('filament %d is now %s from %s (filament %d): %d settings changed'
               % (n, cfg['filament_settings_id'][n - 1], other_path, m, len(changed)))

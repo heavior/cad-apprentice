@@ -12,7 +12,7 @@ PRINT = os.path.join(KIT, '3dprinting')
 ROOT = os.path.abspath(os.path.join(KIT, '..', '..', '..'))
 BUILD = os.path.join(PRINT, 'build_3mf.py')
 UPDATE = os.path.join(PRINT, 'update_3mf.py')
-TEMPLATE = os.path.join(PRINT, 'template.3mf')
+TEMPLATE = os.path.join(PRINT, 'template_3mf')  # The template, unpacked.
 BAMBU = '/Applications/BambuStudio.app/Contents/MacOS/BambuStudio'
 RUN = os.path.join(HERE, 'run')
 TMP = os.path.join(RUN, 'tmp')
@@ -23,6 +23,11 @@ FACES = ['-z', '+z', '-x', '+x', '-y', '+y']
 
 for d in (RUN, TMP, RESULTS):
     os.makedirs(d, exist_ok=True)
+
+# The template packed into one .3mf by make_template.py, for the tests that need a real project file.
+TEMPLATE_3MF = os.path.join(RUN, 'template.3mf')
+subprocess.run([sys.executable, os.path.join(PRINT, 'make_template.py'), TEMPLATE, TEMPLATE_3MF],
+               check=True, capture_output=True)
 
 # One-line notes per test, written into the results by run_tests.py.
 NOTES = {}

@@ -10,8 +10,9 @@ Usage (from the repo root):
                  words saying to skip that ("no need to show me"). Required: they see the design
                  before any .3mf (3dprinting/rules.md).
 
---settings-from  a .3mf whose printer, print and filament settings get copied. Default: the
-                 template, 3dprinting/template.3mf (make_template.py). Every part uses filament 1.
+--settings-from  a .3mf whose printer, print and filament settings get copied, or a folder holding
+                 one unpacked. Default: the template, the folder 3dprinting/template_3mf/
+                 (make_template.py). Every part uses filament 1.
 --down PART=FACE the face of PART that goes on the plate: -z (the default, as drawn), +z, -x, +x, -y or +y.
 Parts are named after their STL files, and each plate after its part.
 """
@@ -55,8 +56,14 @@ def bed_size(settings):
 def read_settings(ref):
     """The global settings of a Bambu Studio project, checked before anything runs."""
     try:
-        with zipfile.ZipFile(ref) as z:
-            settings = z.read('Metadata/project_settings.config').decode()
+        if os.path.isdir(ref):
+            path = os.path.join(ref, 'Metadata', 'project_settings.config')
+            if not os.path.isfile(path):
+                raise KeyError(path)
+            settings = open(path, 'rb').read().decode()
+        else:
+            with zipfile.ZipFile(ref) as z:
+                settings = z.read('Metadata/project_settings.config').decode()
     except OSError as e:
         sys.exit('--settings-from %s: %s' % (ref, e.strerror or e))
     except zipfile.BadZipFile:
@@ -93,7 +100,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('out')
     ap.add_argument('stls', nargs='+')
-    ap.add_argument('--settings-from', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template.3mf'))
+    ap.add_argument('--settings-from', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template_3mf'))
     ap.add_argument('--down', action='append', default=[])
     ap.add_argument('--approved', default='')
     a = ap.parse_args()

@@ -91,12 +91,14 @@ round: [../../3dprinting/rules.md](../../3dprinting/rules.md).
 - **[build_3mf.py](../../3dprinting/build_3mf.py)** makes a new `.3mf` from STLs, one plate per part,
   with the settings of a template project. It won't overwrite a `.3mf` that exists.
   `python3 K/3dprinting/build_3mf.py OUT.3mf --approved "<the person's OK>" [--settings-from REF.3mf] [--down PART=-y] a.stl b.stl ...`
-  `--settings-from` takes the settings from another project instead of the template.
+  `--settings-from` takes the settings from another project instead of the template folder,
+  `3dprinting/template_3mf/`.
 - **[update_3mf.py](../../3dprinting/update_3mf.py)** swaps new STLs into an existing `.3mf` and
   keeps everything the person set up in it: settings, turns, copies, plates.
   `python3 K/3dprinting/update_3mf.py PROJECT.3mf --approved "<the person's OK>" [--down PART=-y] a.stl b.stl ...`
   `--down` turns only a new part; a part already in the project keeps its turn.
 - **[make_template.py](../../3dprinting/make_template.py)** makes the empty template project from a
-  tuned one: global settings only, one empty plate, no parts.
-  `python3 K/3dprinting/make_template.py FROM.3mf [OUT.3mf] [--filament N=OTHER.3mf:M]`
+  tuned one: global settings only, one empty plate, no parts. It writes the template unpacked, as
+  the folder `3dprinting/template_3mf/`; an `OUT` ending in `.3mf` gets one zipped file instead.
+  `python3 K/3dprinting/make_template.py FROM.3mf [OUT] [--filament N=OTHER.3mf:M]`
   `--filament` puts filament M of `OTHER.3mf` into slot N, when `FROM` has the wrong filament there.

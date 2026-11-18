@@ -27,9 +27,11 @@ The scripts:
   - a part with a hole and an overhang
   - two STLs with the same file name in different folders
   - a broken STL (open mesh, or an empty file)
-- **Reference settings.** The default, `projects/hobby/cad-apprentice/3dprinting/template.3mf`, as the docs say. B11 also uses a
-  copy of your own `.3mf` with other printer settings, named by the `B11_REF_3MF` environment
-  variable; if it is unset or missing, that part of B11 is skipped and listed, not failed.
+- **Reference settings.** The default, the folder `projects/hobby/cad-apprentice/3dprinting/template_3mf/`,
+  as the docs say. Tests that need it as one file use `tests/run/template.3mf`, which
+  `make_template.py` packs from the folder. B11 also uses a copy of your own `.3mf` with other
+  printer settings, named by the `B11_REF_3MF` environment variable; if it is unset or missing,
+  that part of B11 is skipped and listed, not failed.
 - **Where it writes.** Only in `projects/hobby/cad-apprentice/3dprinting/tests/run/` (git-ignored). Never in a project
   folder. `build_3mf.py` makes a temp work folder, so every test runs the scripts with `TMPDIR` set to
   `run/tmp/`. `update_3mf.py` backs up into `.backups/` next to the project, which in a test is
@@ -217,5 +219,5 @@ must-ask ones.
 | Question | Default |
 |---|---|
 | B18: add a filament per part (`--filament PART=N`)? | No, skipped |
-| Which project is the reference for settings? | `template.3mf`, as in 3dprinting/rules.md; the `B11_REF_3MF` file for B11 |
+| Which project is the reference for settings? | `template_3mf/`, as in 3dprinting/rules.md; the `B11_REF_3MF` file for B11 |
 | Quit Bambu Studio before bed? | Must be quit (§ 1); the person does it |

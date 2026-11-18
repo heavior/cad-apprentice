@@ -124,8 +124,9 @@ Plates are grouped by judgement, as in step 5 of § The job.
 
 ## The settings template
 
-`projects/hobby/cad-apprentice/3dprinting/template.3mf` holds the printer, print and filament settings, with no parts: every
-new project starts from it. Made from a tuned project: 0.2 mm layers, 2 walls, 5 top and
+`projects/hobby/cad-apprentice/3dprinting/template_3mf/` holds the printer, print and filament settings, with no parts: every
+new project starts from it. It is a `.3mf` unpacked, its files without the zip around them, so the
+kit holds no binary file (a binary would hold every directory release for a reviewer). Made from a tuned project: 0.2 mm layers, 2 walls, 5 top and
 3 bottom layers, auto brim; filament 1 Bambu PLA Basic, filament 2 Bambu PETG HF. That project
 had PETG HF in both, so slot 1 was copied from another project's PLA Basic slot. Never change a
 project's own filaments to make the template. Per-part settings (a brim on one part, no supports on another) stay in their own
@@ -137,8 +138,10 @@ project.
   If that project's slot 1 isn't PLA Basic, add
   `--filament "1=OTHER.3mf:1"`, where filament 1 of `OTHER.3mf` is PLA Basic.
   It prints how many settings changed and any it couldn't copy.
-- **Not for opening by hand.** Bambu Studio's command line refuses a project with no parts ("file
-  is empty"). It is a settings source for `build_3mf.py`.
+- **To look at it in Bambu Studio,** pack it into one file:
+  `python3 projects/hobby/cad-apprentice/3dprinting/make_template.py projects/hobby/cad-apprentice/3dprinting/template_3mf template.3mf`.
+  Bambu Studio's command line refuses a project with no parts ("file is empty"); it is a settings
+  source for `build_3mf.py`.
 
 ## Building the 3MF from the command line
 
@@ -165,7 +168,7 @@ The script: `projects/hobby/cad-apprentice/3dprinting/build_3mf.py`.
 python3 projects/hobby/cad-apprentice/3dprinting/build_3mf.py projects/hobby/<p>/<p>.3mf --approved "<their words>" --down arch_frame=-y projects/hobby/<p>/stl/a.stl projects/hobby/<p>/stl/b.stl ...
 ```
 
-Settings come from the template (above). `--settings-from OTHER.3mf` takes them from another
+Settings come from the template folder (above). `--settings-from OTHER.3mf` takes them from another
 project instead.
 
 What it does, and why:
