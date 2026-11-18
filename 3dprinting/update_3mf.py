@@ -432,7 +432,7 @@ def main():
         sys.exit('not saved, %s is left as is: the updated project does not read back right:\n  %s'
                  % (path, '\n  '.join(problems)))
     # The backup is taken just before the file changes, and only when it does. It goes in a
-    # git-ignored .backups/ folder next to the project, so it lasts until the person deletes it.
+    # .backups/ folder next to the project, so it lasts until the person deletes it.
     backups = os.path.join(os.path.dirname(os.path.abspath(path)), '.backups')
     os.makedirs(backups, exist_ok=True)
     stem = os.path.join(backups, '%s-%s' % (os.path.splitext(os.path.basename(path))[0], time.strftime('%Y%m%d-%H%M%S')))

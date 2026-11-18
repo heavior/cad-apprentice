@@ -32,7 +32,7 @@ The scripts:
   `make_template.py` packs from the folder. B11 also uses a copy of your own `.3mf` with other
   printer settings, named by the `B11_REF_3MF` environment variable; if it is unset or missing,
   that part of B11 is skipped and listed, not failed.
-- **Where it writes.** Only in `projects/hobby/cad-apprentice/3dprinting/tests/run/` (git-ignored). Never in a project
+- **Where it writes.** Only in `projects/hobby/cad-apprentice/3dprinting/tests/run/`. Never in a project
   folder. `build_3mf.py` makes a temp work folder, so every test runs the scripts with `TMPDIR` set to
   `run/tmp/`. `update_3mf.py` backs up into `.backups/` next to the project, which in a test is
   inside `run/`. A check at the
@@ -212,7 +212,7 @@ must-ask ones.
 | `python3` on the tests, `build_3mf.py` and `update_3mf.py` | Running them |
 | Edit `build_3mf.py` and `update_3mf.py`; create the tests in `scripts/print/` | Fixes and tests |
 | Read the `.3mf` that `B11_REF_3MF` names and copy it into the test folder | B11 |
-| `mkdir`, `cp`, `rm` in `projects/hobby/cad-apprentice/3dprinting/tests/run/` only (git-ignored), and a stand-in `sleep` there (U11) | Test output |
+| `mkdir`, `cp`, `rm` in `projects/hobby/cad-apprentice/3dprinting/tests/run/` only, and a stand-in `sleep` there (U11) | Test output |
 
 **Questions:**
 

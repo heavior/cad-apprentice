@@ -271,8 +271,8 @@ your agent uses its own.
 
 **Commands the agent runs**
 
-- `git clone` of the kit into `~/cad-apprentice` the first time, and `git pull --ff-only` once per
-  session (the Claude Code plugin does this).
+- `git clone` of the kit into `~/cad-apprentice` the first time. Once per session the skill checks
+  for a newer kit and offers to update; on your yes, `git pull --ff-only`.
 - `ln -s`, once at setup, to link the runner add-in into Fusion's AddIns folder.
 - `python3` on the kit's tools: `fusion_outputs.py` to start, check, run and collect a design, the
   3MF tools, and the tests.

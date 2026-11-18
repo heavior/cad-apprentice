@@ -14,7 +14,7 @@ run overnight. So the first job is a runner that needs no clicks.
 **The runner add-in, `UpsertTestRunner`.**
 - A Fusion add-in in the repo, `projects/hobby/cad-apprentice/fusion/runner/`. The person adds that folder once with
   "+" in the Add-Ins dialog and ticks "Run on Startup". Nothing is written into `~/Library`.
-- It watches a folder in the repo, `projects/hobby/cad-apprentice/fusion/tests/run/requests/` (git-ignored).
+- It watches a folder in the repo, `projects/hobby/cad-apprentice/fusion/tests/run/requests/`.
   Claude drops a request file there from the shell: which scenarios to run (all, one group, or a list
   of IDs).
 - A background thread sees the file and fires a Fusion custom event. Fusion API calls are only safe on
@@ -331,9 +331,7 @@ already seen. Those run first.
 6. For each failure:
    - fix the library, or the design for a design failure
    - rerun A to M, so a fix doesn't break something else; a real design's tests rerun once, at the end
-   - `git pull --rebase --autostash` first (`pull.rebase` isn't set, so a plain pull can merge or
-     fail), then commit, naming the scenario ID, on `main`, staging only the files the fix changed
-     by name (`git add <paths>`, never `-A`)
+   - commit each fix on its own, naming the scenario ID, with only the files the fix changed
    - never change what a scenario expects just to make it pass; if an expectation was wrong, write
      down why in this file
    - fingerprint changes and a move in-place update are approved (§ 6); any other change to
@@ -351,7 +349,7 @@ isn't ready. Their permissions and questions are asked with § 6.
 fixes 3 h, a real design 3 h, report and push 0.5 h. The report says where it stopped.
 
 Each scenario's result goes in `run/results/` next to this file, with a summary table at the top of
-the morning report. The whole `run/` folder is git-ignored.
+the morning report. Nothing in `run/` is committed.
 
 **Files left alone.** The working tree may have other uncommitted changes, such as a tuned
 `.3mf`. The session never
@@ -384,11 +382,11 @@ The person does these before bed. The session checks each one it can and says wh
 Asked together, before the person goes to bed, so nothing waits on them at 3 am.
 
 **Permissions.** Covered at once by bypass permissions mode (§ 5); without it, each needs an allow
-rule. Only git pull, add, commit and push are allowed today.
+rule.
 
 | What | Why |
 |---|---|
-| Edit and create files in `projects/hobby/cad-apprentice/**` and this plan | The runner, scenarios and library fixes (`.gitignore` already has `run/`) |
+| Edit and create files in `projects/hobby/cad-apprentice/**` and this plan | The runner, scenarios and library fixes |
 | `python3` without the `cd` prefix | Checks, the 3MF tests |
 | `mkdir`, `cp`, `rm` and request files under `projects/hobby/cad-apprentice/fusion/tests/run/` only | Talking to the runner |
 | `ps`, `pgrep`, `stat`, `tail` | Is Fusion alive, how old is the last log line |
@@ -397,7 +395,7 @@ rule. Only git pull, add, commit and push are allowed today.
 | Quitting Fusion (`osascript -e 'quit app "Autodesk Fusion"'`, then `killall` if it hangs) | Getting out of a hang. Kills unsaved work, hence § 5 |
 | The app's keep-awake, or `caffeinate` | Stop the Mac sleeping |
 | Reading `~/Library/Logs/DiagnosticReports` | Finding why Fusion crashed |
-| `git pull --rebase --autostash`, `git add <paths>`, `git commit`, `git push` on `main` | Commits (already allowed) |
+| Committing each fix and pushing at the end | Saving the fixes |
 | Subagents | Reviews, such as an outsider's read of new names |
 | Creating the `fusion_upsert tests` folder in Admin Project and one design in it, saved again and again; opening and closing its tab | A6, D3, F4 and K. Uses one editable-document slot. Nothing is deleted |
 | The 3MF plan's permissions ([3mf-test-scenarios.md](../../3dprinting/3mf-test-scenarios.md) § 5) | The 3MF tests |

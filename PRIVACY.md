@@ -22,8 +22,8 @@ None of it is sent by the kit's own code. It comes from the tools the kit works 
   pictures of your design to its own model provider. That provider's privacy policy applies.
 - **Autodesk Fusion** saves each version of your design to your Autodesk cloud, as it does for any
   design you save. Autodesk's privacy policy applies.
-- **git** downloads the kit from its repository the first time and pulls updates once per session.
-  It sends nothing of yours.
+- **GitHub** serves the kit's files when you get the kit, and when your agent checks for a newer
+  kit, once per session. Nothing of yours is sent.
 
 ## What stays on your computer
 

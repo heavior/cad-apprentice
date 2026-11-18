@@ -24,7 +24,7 @@ run      does prep, then has the UpsertTestRunner add-in run the script: no clic
          back; the runner also refuses a request older than --wait.
 collect  copies the STLs to PROJECT_DIR/stl, view_*.png to pictures/ and sketch_*.png to
          pictures/sketches/, then lists the files there that this run didn't make. --prune
-         deletes those from disk; it stages nothing, and a file git tracks comes back with checkout.
+         deletes those from disk.
 new      starts a design from fusion/template/: writes the entry file NAME.py, its NAME.manifest and a
          starter build.py to PROJECT_DIR/scripts/fusion/NAME/, and copies the entry file and manifest to
          Fusion's Scripts folder. --doc is the name the design is saved under in Fusion. Then
@@ -201,10 +201,9 @@ def collect(a):
     rel = [os.path.relpath(p, proj) for p in sorted(stale)]
     print('not made by this run:\n  ' + '\n  '.join(rel))
     if a.prune:
-        # Deleted from disk only. Staging is left to whoever commits, since the git index is shared.
         for p in rel:
             os.remove(os.path.join(proj, p))
-        print('pruned %d; a file git tracks comes back with git checkout' % len(rel))
+        print('pruned %d' % len(rel))
 
 
 def new(a):
@@ -215,8 +214,7 @@ def new(a):
     for d in (code, fusion):
         if os.path.exists(d):
             sys.exit('%s is already there; pick another name or remove it first' % d)
-    top = subprocess.run(['git', 'rev-parse', '--show-toplevel'], cwd=os.path.abspath(a.project),
-                         capture_output=True, text=True).stdout.strip() or os.path.abspath(a.project)
+    top = os.path.abspath(a.project)
     home = lambda p: '~' + p[len(os.path.expanduser('~')):] if p.startswith(os.path.expanduser('~') + os.sep) else p
     if re.search(r"['\"\\]", a.doc):
         sys.exit("%s: a design name without ' \" or \\ (it goes into Python and JSON as is)" % a.doc)

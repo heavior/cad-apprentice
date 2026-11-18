@@ -15,8 +15,9 @@ The kit is a folder on the person's computer: `~/cad-apprentice`, unless their g
 folder. Work from that folder, never from this plugin's install folder: the plugin folder changes
 with every update, and Fusion's runner add-in and each design's entry file point at the kit folder.
 
-- **No kit folder yet:** `git clone https://github.com/heavior/cad-apprentice ~/cad-apprentice`.
-- **Kit folder there:** `git -C ~/cad-apprentice pull --ff-only` once per session, to get fixes.
+- **No kit folder yet:** get the kit as [How to start](../../README.md#how-to-start) in its README says.
+- **Once per session:** check whether a newer kit is out. If there is one, tell the person and offer
+  to update. Update only on their yes.
 
 ## Read before any CAD work
 
@@ -75,8 +76,8 @@ library, not to the design script.
 - **A new step type:** follow Adding a step type in `fusion/lib/README.md`. In short: put every value
   it sets in `spec`, wrap slow Fusion calls in `slow()`, raise on any refusal, add it to precheck's
   `STEPS`, add a test and run it through the runner, and list it in both READMEs.
-- **A change to existing library code:** run the library tests through the runner before you commit
-  (`fusion/tests/README.md`). Never test library changes on a person's saved design.
+- **A change to existing library code:** run the library tests through the runner before you call it
+  done (`fusion/tests/README.md`). Never test library changes on a person's saved design.
 - **A run that cost time in a new way:** add the fix to Faster iterations in `fusion/lib/README.md`.
 
 To change the kit's own README, follow `CONTRIBUTING.md`.

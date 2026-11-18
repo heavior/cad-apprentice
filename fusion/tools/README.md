@@ -14,7 +14,7 @@ it into pictures and a print project. Run them from the repo root. `K` below sta
 | `python3 K/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"` | starts a design from [../template/](../template/): writes the entry file, its manifest and a starter `build.py` to `PROJECT_DIR/scripts/fusion/NAME/`, and copies the entry file and manifest to Fusion's Scripts folder. `--doc` is the name the design is saved under in Fusion. It refuses a name that is already there. |
 | `python3 K/fusion/tools/fusion_outputs.py prep NAME --mode MODE` | checks the code, clears last run's log, pictures, STLs and stop file, writes `mode.txt`, and brings Fusion to the front. For a run by hand with ▶. |
 | `python3 K/fusion/tools/fusion_outputs.py run NAME --mode MODE` | does `prep`, then has the runner add-in run the script with no click. Prints the log as it grows. Exits 0 only when the log ends in `DONE` and no check after it failed. Run it in a background shell. |
-| `python3 K/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR` | copies the STLs to `PROJECT_DIR/stl/`, `view_*.png` to `pictures/` and `sketch_*.png` to `pictures/sketches/`, then lists the files there that this run didn't make. `--prune` deletes those from disk. It stages nothing; a file git tracks comes back with `git checkout`. |
+| `python3 K/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR` | copies the STLs to `PROJECT_DIR/stl/`, `view_*.png` to `pictures/` and `sketch_*.png` to `pictures/sketches/`, then lists the files there that this run didn't make. `--prune` deletes those from disk. |
 
 Options:
 

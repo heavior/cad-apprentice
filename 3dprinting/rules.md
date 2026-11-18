@@ -72,8 +72,8 @@ The update, step by step:
 1. **Quit Bambu Studio** first, as in § Building the 3MF below (it saves on its own). Writing under an open,
    unsaved project loses the person's newest changes.
 2. **Back up the old file** before writing: the script copies it to a `.backups/` folder next to
-   the project, named with the date and time. Git ignores that folder; the backups stay until
-   the person deletes them.
+   the project, named with the date and time. The backups stay until the person
+   deletes them.
 3. **Match each new STL to its parts by `source_file`.** Every copy of that part matches too.
 4. **Swap only the mesh** in its `object_N.model`. Keep every transform, setting, filament and plate.
    Use `source_offset` so the new mesh sits where the old one did and doesn't jump on the plate.

@@ -4,6 +4,12 @@ What an agent needs to design with the kit is in the skill,
 [skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md). Adding to the library is in its
 [Evolving the library](skills/cad-apprentice/SKILL.md#evolving-the-library).
 
+## No git outside README.md
+
+The kit doesn't assume git. Only README.md may show git commands. The skill, the other docs and the
+code don't run git or depend on it. The skill only checks for a newer kit once per session and
+offers the person to update.
+
 ## The kit's own README
 
 The library and fusion/rules.md ship together, for AI agents: the rules count as features. Measure a

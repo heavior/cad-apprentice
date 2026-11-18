@@ -1,6 +1,6 @@
 """Shared parts of the 3MF tests: paths, test STLs, running the scripts and Bambu Studio's slicer.
 
-Plan: 3dprinting/3mf-test-scenarios.md. Everything is written under run/ (git-ignored), and the
+Plan: 3dprinting/3mf-test-scenarios.md. Everything is written under run/, and the
 scripts run with TMPDIR set to run/tmp/.
 """
 import hashlib, json, math, os, shutil, struct, subprocess, sys, unittest, zipfile

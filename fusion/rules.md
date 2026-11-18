@@ -489,7 +489,7 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
    runs, so `tail` it to say where a long run is. Read the log and the pictures after.
 6. Copy the outputs into the project with `python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME
    projects/<p>`. It lists files this run didn't make (a dropped part's STL and pictures); add
-   `--prune` to `git rm` them.
+   `--prune` to delete them.
 
 ## Gallery pictures
 
