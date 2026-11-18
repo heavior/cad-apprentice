@@ -1,6 +1,6 @@
 ---
 name: pictures
-description: Take gallery pictures of a finished cad-apprentice design in Autodesk Fusion (Fusion 360): views of the whole model plus close-ups of its details, cropped tight, for a README, a model listing or a post. The saved design is never changed. Use when the person asks for good pictures, renders, a gallery, close-ups or a picture of the design's settings. The quick pictures that come with every run need no skill.
+description: Take gallery pictures of a finished cad-apprentice design in Autodesk Fusion (Fusion 360). It takes views of the whole model plus close-ups of its details, cropped tight, for a README, a model listing or a post. The saved design is never changed. Use when the person asks for good pictures, renders, a gallery, close-ups or a picture of the design's settings. The quick pictures that come with every run need no skill.
 ---
 
 # Take gallery pictures
