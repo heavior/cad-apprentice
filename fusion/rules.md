@@ -5,7 +5,7 @@ add facts, but it can't drop a rule here.
 
 **Before you write or change a build script, read [lib/README.md](lib/README.md):** the library's
 steps, how a run works and how to read a failed one. To add a step or a helper to the library, follow
-[CLAUDE.md § Evolving the library](../CLAUDE.md#evolving-the-library).
+[the skill's Evolving the library](../skills/cad-apprentice/SKILL.md#evolving-the-library).
 
 ## Working with the person
 
@@ -219,7 +219,7 @@ steps, how a run works and how to read a failed one. To add a step or a helper t
     this logic is written once. How it works is in [lib/README.md](lib/README.md).
     **Improve the library as you go, on every design.** When a design needs a feature
     type, a helper or a check the library doesn't have, add it to the library, not the design script
-    ([CLAUDE.md § Evolving the library](../CLAUDE.md#evolving-the-library)). A design script holds
+    ([the skill's Evolving the library](../skills/cad-apprentice/SKILL.md#evolving-the-library)). A design script holds
     only that design's shapes and sizes. How to keep runs fast is in [lib/README.md § Faster iterations](lib/README.md#faster-iterations).
 18. **Scripts can be rerun safely, and they keep the person's work.** Running a script again on the
     same design gives the same result and leaves anything the person added in place. Why: deleting a feature from the middle
