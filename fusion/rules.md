@@ -488,18 +488,8 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
 
 ## Gallery pictures
 
-When the person asks for good pictures of a finished model (large views plus close-ups of the details), use
-[gallery_shots.py](tools/gallery_shots.py) through the UpsertTestRunner add-in: a request
-file with `doc` (the saved design's tab), `out`, and a list of shots, each an eye and target point in mm.
-It never changes the design: it inserts it as a linked part into a new tab, takes the pictures there and
-closes that tab unsaved. Then [trim_picture.py](tools/trim_picture.py) cuts the white space
-off every picture: ratio `0` keeps each picture's own shape, so every picture is cropped tight. Save them in the project's `pictures/gallery/`, without the `view_` prefix, so
-`collect` doesn't count them as stale. The suspension bridge demo is the example.
-
-- Use an orthographic camera with `fit` for the whole model. A perspective fit cuts off the near end.
-- Use perspective with an eye about 50–150 mm away for close-ups. Edges on for close-ups, off for wide views.
-- For one part top to bottom (a tower), shoot a tall picture (`size` [1600, 2400]) and crop it.
-- Hiding the origin in the design's own tab marks the tab as changed. That's why the tool works in a new tab.
+When the person asks for good pictures of a finished model, follow the
+[pictures skill](../skills/pictures/SKILL.md): which shots, the camera, and a picture of the settings.
 
 ## Fusion facts that cost time
 

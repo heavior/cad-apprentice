@@ -71,7 +71,7 @@ it, so the add-in never reads half a file.
   it: it inserts the design as a linked part into a new tab, takes the pictures there, and closes that
   tab unsaved. `args`: `doc` (the saved design's tab name), `out` (folder), `size` `[w, h]`, and
   `shots`, each `{name, eye, target}` in mm, with `fov` or `extent`, `edges`, `fit` and `size` as
-  options. More in [../rules.md § Gallery pictures](../rules.md#gallery-pictures).
+  options. How to use it is in the [pictures skill](../../skills/pictures/SKILL.md).
 
 ## Picture tool
 
