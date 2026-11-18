@@ -44,7 +44,8 @@ agent's rules are in [fusion/rules.md](fusion/rules.md).
   the end are fully autonomous.
 - **Autonomous Fusion control.** A runner add-in starts each run in Fusion in the background, even
   behind a locked screen. With it, the agent takes over the screen less often, only to click in
-  Fusion, and gives it back right away. The agent asks for permission once per session.
+  Fusion, and gives it back right away. An agent that can control the screen asks for permission
+  once per session.
 - **Fast execution modes.** The agent chooses between an incremental update and a clean rebuild.
   An incremental update redoes only the steps that changed. For large changes, building from scratch
   is faster.
@@ -75,8 +76,8 @@ Give your agent these prompts in order.
    claude plugin install cad-apprentice@cad-apprentice
    ```
 
-   In Codex: `codex plugin marketplace add heavior/cad-apprentice`, then install cad-apprentice from the Plugins
-   Directory. Then:
+   In Codex: `codex plugin marketplace add heavior/cad-apprentice`, then type `/plugins` and install
+   cad-apprentice. The Codex install hasn't been tested yet. Then:
 
    ```
    Set up cad-apprentice for my Fusion 360 and check that it works.
@@ -85,9 +86,9 @@ Give your agent these prompts in order.
    **Other agents:**
 
    ```
-   Clone https://github.com/heavior/cad-apprentice and read all the .md files in it. Add to your main guidelines that every
-   CAD and Fusion 360 task uses this skill's workflow, rules and library. Then set up the library and
-   the runner add-in for my Fusion 360, and check that they work.
+   Clone https://github.com/heavior/cad-apprentice and read all the .md files in it. Add to your
+   main guidelines that every CAD and Fusion 360 task uses this skill's workflow, rules and library.
+   Then set up the library and the runner add-in for my Fusion 360, and check that they work.
    ```
 
 2. **Describe the design.** Attach photos of a hand-drawn sketch, notes or reference pictures.
@@ -104,11 +105,12 @@ Give your agent these prompts in order.
    Now create the Fusion 360 design for me.
    ```
 
-   Before the first run, the agent asks once to control the screen and to keep the laptop awake.
-   Click Allow. The runner add-in starts runs without the screen. The agent needs the screen only
-   when the add-in doesn't answer, to start the run from Fusion's Scripts dialog itself. The laptop
-   has to stay awake for runs to go on. The agent writes a build script, runs it in Fusion in the
-   background and sends you pictures of the saved design.
+   Before the first run, an agent that can control the screen asks once for that and to keep the
+   laptop awake. Click Allow. The runner add-in starts runs without the screen. The agent needs the
+   screen only when the add-in doesn't answer, to start the run from Fusion's Scripts dialog itself.
+   The laptop has to stay awake for runs to go on; if your agent can't keep it awake, do it yourself.
+   The agent writes a build script, runs it in Fusion in the background and sends you pictures of
+   the saved design.
 
 4. **Iterate.** Each run comes with pictures. Reply with what to change, draw your notes right on
    the picture, or edit the design in Fusion yourself. Each iteration is saved as a new version. The
