@@ -172,6 +172,21 @@ the skill's name.
    The agent builds a 3MF project for your slicer and keeps it up to date after later changes
    ([3D printing](#3d-printing)).
 
+7. **Optional: take gallery pictures** for a README, a model listing or a post.
+
+   ```
+   Take gallery pictures of my finished design: the whole model, plus close-ups of the details.
+   ```
+
+   Or, in Claude Code, call the skill:
+
+   ```
+   /cad-apprentice:pictures
+   ```
+
+   The agent takes them in a new tab that links to your design, so your saved design isn't touched, and crops
+   them tight.
+
 ## Demo: Golden Gate bridge
 
 ![The suspension bridge: the whole bridge, one tower, the road, the hangers and cable bands, and the deck from below](demos/suspension-bridge/pictures/gallery/suspension_bridge.png)
@@ -208,7 +223,7 @@ the [project README](demos/suspension-bridge/README.md).
 | Checks | `precheck.py` reads a script before Fusion does | [precheck.py](fusion/lib/cad_apprentice/precheck.py) |
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
-| Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [fix](skills/fix/SKILL.md) |
+| Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep, gallery pictures and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [pictures](skills/pictures/SKILL.md), [fix](skills/fix/SKILL.md) |
 
 Every tool, its commands and options: [fusion/tools/README.md](fusion/tools/README.md).
 

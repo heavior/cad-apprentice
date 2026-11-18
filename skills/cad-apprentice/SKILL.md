@@ -1,6 +1,6 @@
 ---
 name: cad-apprentice
-description: Design parts in Autodesk Fusion (Fusion 360) with the person, from a Python build script, with cad-apprentice's workflow, rules and library. Use for any CAD, Fusion 360, 3D model or 3D-print design task. Its sibling skills cover setup, the parameter test, print prep and fixing a failed run.
+description: Design parts in Autodesk Fusion (Fusion 360) with the person, from a Python build script, with cad-apprentice's workflow, rules and library. Use for any CAD, Fusion 360, 3D model or 3D-print design task. Its sibling skills cover setup, the parameter test, print prep, gallery pictures and fixing a failed run.
 ---
 
 # cad-apprentice: CAD in Autodesk Fusion
