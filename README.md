@@ -68,22 +68,21 @@ Give your agent these prompts in order.
 
 1. **Set up the skill, once.**
 
-   **Claude Code or Codex:** install the skill as a plugin. The agent then uses it for every CAD and
-   Fusion 360 task, so you don't need to change your guidelines.
+   **Claude Code:** install the skill as a plugin, straight from this GitHub repository. Claude
+   Code then uses it for every CAD and Fusion 360 task, so you don't need to change your guidelines.
 
    ```bash
    claude plugin marketplace add heavior/cad-apprentice
    claude plugin install cad-apprentice@cad-apprentice
    ```
 
-   In Codex: `codex plugin marketplace add heavior/cad-apprentice`, then type `/plugins` and install
-   cad-apprentice. The Codex install hasn't been tested yet. Then:
+   Then:
 
    ```
    Set up cad-apprentice for my Fusion 360 and check that it works.
    ```
 
-   **Other agents:**
+   **Codex and other agents:**
 
    ```
    Clone https://github.com/heavior/cad-apprentice and read all the .md files in it. Add to your
@@ -170,7 +169,7 @@ the [project README](demos/suspension-bridge/README.md).
 | Checks | `precheck.py` reads a script before Fusion does; `check_slow.py` finds slow Fusion calls with no timer, and runs after every edit the agent makes | [precheck.py](fusion/lib/cad_apprentice/precheck.py), [check_slow.py](fusion/lib/cad_apprentice/check_slow.py) |
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
-| Skill file | tells the agent to use the skill for every CAD and Fusion 360 task; the plugin installs it in Claude Code and Codex | [skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md) |
+| Skill file | tells the agent to use the skill for every CAD and Fusion 360 task; the plugin installs it in Claude Code | [skills/cad-apprentice/SKILL.md](skills/cad-apprentice/SKILL.md) |
 
 Every tool, its commands and options: [fusion/tools/README.md](fusion/tools/README.md).
 
@@ -273,7 +272,7 @@ your agent uses its own.
 **Commands the agent runs**
 
 - `git clone` of the kit into `~/cad-apprentice` the first time, and `git pull --ff-only` once per
-  session (the Claude Code and Codex plugin does this).
+  session (the Claude Code plugin does this).
 - `ln -s`, once at setup, to link the runner add-in into Fusion's AddIns folder.
 - `python3` on the kit's tools: `fusion_outputs.py` to start, check, run and collect a design, the
   3MF tools, and the tests.
