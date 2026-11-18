@@ -19,7 +19,7 @@
     "com.openai": {
       "interface": {
         "displayName": "CAD Apprentice",
-        "shortDescription": "Design parts in Autodesk Fusion with an AI agent, with pictures each iteration.",
+        "shortDescription": "Design 3D parts in Fusion 360",
         "longDescription": "An AI agent designs a part with you in Autodesk Fusion and gets it ready for 3D printing. You ask, it builds and shows you pictures, you say what to change, until you approve. Each iteration is a saved version in Fusion, and your own edits in Fusion are kept. Needs Autodesk Fusion on your Mac.",
         "developerName": "Evgeny Balashov",
         "category": "Productivity",
@@ -28,6 +28,9 @@
           "Write"
         ],
         "websiteURL": "https://github.com/heavior/cad-apprentice",
+        "supportURL": "https://github.com/heavior/cad-apprentice/issues",
+        "privacyPolicyURL": "https://github.com/heavior/cad-apprentice/blob/main/PRIVACY.md",
+        "termsOfServiceURL": "https://github.com/heavior/cad-apprentice/blob/main/LICENSE",
         "defaultPrompt": [
           "Set up cad-apprentice for my Fusion 360 and check that it works."
         ],
