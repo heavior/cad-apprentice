@@ -140,8 +140,7 @@ More on some of these:
 - **What counts as a change:** each feature stores a fingerprint of the script's inputs, including
   the code of any drawing or edge-picking function, and the `uses` list. A step whose fingerprint
   is the same is skipped. An edge, face or sketch line passed as it is counts by its body or sketch
-  and where it sits, not only by its kind, so a pattern moved to another edge is noticed. Steps that
-  take one edit in place once, on the first run after this changed (2026-11-16).
+  and where it sits, not only by its kind, so a pattern moved to another edge is noticed.
 - **Values that can't be edited in place:** a step passes them to `step()` as `fixed=(('operation',
   operation), ...)`. Each feature stores them, and a change to one replaces the feature instead of
   editing it. A feature made before this record was kept is edited in place one more time, then
@@ -275,7 +274,7 @@ nozzle line on a small model. That can be fine, so [thin.py](cad_apprentice/thin
 `THIN (under 0.4 mm) label: name 0.21 mm, ...` when any is under 0.4 mm. Call it after the build
 and inside `more=` for each trial, and return only the real problems from `more=` so a thin part
 never fails a trial. `watch.summary()` logs how many checks had thin parts and the thinnest one.
-Tests: `python3 ~/cad-apprentice/fusion/lib/cad_apprentice/test_thin.py`.
+Tests: `python3 <kit>/fusion/lib/cad_apprentice/test_thin.py`.
 
 ## When a run fails
 
@@ -354,8 +353,8 @@ done was saved.
 Most of an iteration's time goes to waiting for a click, for a rerun after a typo, or for a step that
 redraws more than it needs to. When a design costs time in a new way, add the fix here.
 
-1. **Run through the runner.** `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a
-   background shell. The UpsertTestRunner add-in starts with Fusion and runs the script with no click
+1. **Run through the runner.** `python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode saved` in a
+   background shell. The CadApprenticeRunner add-in starts with Fusion and runs the script with no click
    on ▶, also behind a locked screen. It prints the log as it grows and exits 0 only on DONE. Once,
    a run sat 62 minutes behind a locked screen, waiting for the ▶ click. The click in
    fusion/rules.md § Running a script is the fallback for when the add-in doesn't answer.
@@ -385,12 +384,12 @@ redraws more than it needs to. When a design costs time in a new way, add the fi
    every run, and change the design where it can be built more simply (fusion/rules.md rule 33).
    Those timings are for the script's calls. For how long Fusion takes to recompute each feature,
    `adsk.core.Application.get().executeTextCommand('fusion.DumpFeaturesByComputeTime')` returns one line
-   per feature: design, feature, seconds, health (tried 2026-11-18).
+   per feature: design, feature, seconds, health.
 7. **Keep the reruns small.** Small sketches (fusion/rules.md rule 14) and exact `uses` lists, so a change
    reruns only the steps that depend on it.
    A sketch with many lines and dimensions draws faster inside `with deferred(s):`, which holds
    Fusion's solve and profiles until the block ends. 60 dimensioned rectangles drew 2.7 times faster,
-   with the same profiles (2026-11-18). Read nothing inside the block that needs the solve, like
+   with the same profiles. Read nothing inside the block that needs the solve, like
    profiles or where a point moved to.
 8. **Ask for the screen once.** Full control and keep-awake at the start of the session, held to the end
    (fusion/rules.md rule 5). The runner needs neither to run a script; they are for clicks and checks in

@@ -1,4 +1,4 @@
-# Runs a design's build script through the UpsertTestRunner add-in, so nobody has to click ▶ in the
+# Runs a design's build script through the CadApprenticeRunner add-in, so nobody has to click ▶ in the
 # Scripts dialog (once, a run sat 62 minutes behind a locked screen waiting for that click).
 # `fusion_outputs.py run NAME` drops the request; the add-in calls main() on Fusion's main thread.
 # It runs the design's own entry file from Fusion's Scripts folder, the same file ▶ runs, so the

@@ -19,7 +19,7 @@ In the kit folder:
 ## Run it
 
 - Run it in a background shell. A full test can take a while:
-  `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode check`.
+  `python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode check`.
 - For some parameters only: `--mode check:width,height`.
 - Random sets only after the first three stages pass, and only when the person asks:
   `--mode check:random=50`.

@@ -4,18 +4,24 @@ Each run used to take a hand-written shell line with `rm`, which asked for permi
 One script is one command to allow. It only touches the
 script's own folder in Fusion's Scripts folder and the project's output folders.
 
-Usage:
-  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode new|saved|clean|check|night|check:<names>|probe:<file>
-  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode ... [--wait MINUTES]
-  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR [--prune]
-  python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"
+Usage (<kit> is the kit's folder):
+  python3 <kit>/fusion/tools/fusion_outputs.py setup [--check]
+  python3 <kit>/fusion/tools/fusion_outputs.py prep NAME --mode new|saved|clean|check|night|check:<names>|probe:<file>
+  python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode ... [--wait MINUTES]
+  python3 <kit>/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR [--prune]
+  python3 <kit>/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"
 
+setup    points Fusion at this kit: writes this kit's folder to kit.txt in
+         ~/Library/Application Support/cad-apprentice/, where Fusion's add-in and the designs' entry
+         files read it, and copies the runner add-in to Fusion's AddIns folder as CadApprenticeRunner.
+         Run it once, and again after the kit moves (a plugin update puts it in a new folder). Restart
+         Fusion after it. --check only says whether Fusion uses this kit, and changes nothing.
 prep     reads the script's code first (precheck.py, on the folder the entry file's
          CODE line names, and on the library) and stops on a problem, so a run never starts on a
          mistake these cheap checks can find. --no-check skips that. Then it deletes
          last run's log, pictures, STLs, probe scripts and stop file, writes mode.txt, leaves an empty
          log, and brings Fusion to the front.
-run      does prep, then has the UpsertTestRunner add-in run the script: no click on ▶, and it works
+run      does prep, then has the CadApprenticeRunner add-in run the script: no click on ▶, and it works
          behind a locked screen. It prints the log as it grows and stops when the
          add-in writes its result, or after --wait minutes (default 30) with no new log line; then it
          names the Fusion call the run is stuck in, from the log's .now file. Exit 0
@@ -39,9 +45,16 @@ LIB = os.path.join(KIT, 'lib', 'cad_apprentice')
 sys.path.insert(0, LIB)
 import precheck
 
-RUN = os.path.join(KIT, 'tests', 'run')
 TEMPLATE = os.path.join(KIT, 'template')
-SCRIPTS = os.path.expanduser('~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts')
+# Fusion can't tell where an agent keeps the kit, and a plugin's folder moves with each update. So
+# setup writes the kit's folder to kit.txt here, and the add-in and the entry files read it. Run
+# requests, results and the runner's log live here too, outside the kit.
+DATA = os.path.expanduser('~/Library/Application Support/cad-apprentice')
+KIT_FILE = os.path.join(DATA, 'kit.txt')
+RUN = os.path.join(DATA, 'run')
+API = os.path.expanduser('~/Library/Application Support/Autodesk/Autodesk Fusion 360/API')
+SCRIPTS = os.path.join(API, 'Scripts')
+ADDIN = os.path.join(API, 'AddIns', 'CadApprenticeRunner')
 # What a run leaves in its folder. Anything else there (the entry file, the manifest) stays.
 OLD = ('*.log', '*.now', '*.png', '*.stl', 'probe_*.py', 'stop')
 # Log lines that mean a check failed, though the build itself got to DONE.
@@ -162,7 +175,7 @@ def run(a):
                 now = open(log + '.now', encoding='utf-8').read().strip() if os.path.exists(log + '.now') else ''
                 if now:
                     sys.exit('no new log line for %d minutes. The last Fusion call started: %s' % (a.wait, now))
-                sys.exit('no new log line for %d minutes. Is Fusion up, with the UpsertTestRunner add-in running? '
+                sys.exit('no new log line for %d minutes. Is Fusion up, with the CadApprenticeRunner add-in running? '
                          'Its log: %s' % (a.wait, os.path.join(RUN, 'runner.log')))
         text = open(log, encoding='utf-8').read() if os.path.exists(log) else ''
         lines = text.splitlines()
@@ -229,7 +242,7 @@ def new(a):
     if re.search(r"['\"\\]", a.doc):
         sys.exit("%s: a design name without ' \" or \\ (it goes into Python and JSON as is)" % a.doc)
     fill = {'__NAME__': a.name, '__DOC__': a.doc, '__REPO__': home(top),
-            '__CODE__': os.path.relpath(code, top), '__LIB__': home(os.path.join(KIT, 'lib'))}
+            '__CODE__': os.path.relpath(code, top)}
     os.makedirs(code)
     for src, dest in (('Entry.py', a.name + '.py'), ('Entry.manifest', a.name + '.manifest'), ('build.py', 'build.py')):
         text = open(os.path.join(TEMPLATE, src), encoding='utf-8').read()
@@ -242,6 +255,40 @@ def new(a):
     print('wrote %s/: %s.py, %s.manifest, build.py' % (os.path.relpath(code), a.name, a.name))
     print('copied the entry file and manifest to %s' % fusion)
     print('next: edit build.py, then run %s --mode new once; after that --mode saved' % a.name)
+
+
+def setup(a):
+    kit = os.path.dirname(KIT)
+    used = open(KIT_FILE, encoding='utf-8').read().strip() if os.path.isfile(KIT_FILE) else None
+    entry = os.path.join(KIT, 'runner', 'entry')
+    files = ('CadApprenticeRunner.py', 'CadApprenticeRunner.manifest')
+    same = os.path.isdir(ADDIN) and all(os.path.isfile(os.path.join(ADDIN, f)) and
+                                        open(os.path.join(ADDIN, f), 'rb').read() == open(os.path.join(entry, f), 'rb').read()
+                                        for f in files)
+    if a.check:
+        print('kit.txt: %s' % (used or 'not there'))
+        print('this kit: %s' % kit)
+        print('add-in: %s' % ('in place' if same else 'missing or out of date'))
+        if used != kit or not same:
+            sys.exit('Fusion is not set up for this kit; run setup, then restart Fusion')
+        print('Fusion uses this kit')
+        return
+    os.makedirs(os.path.join(RUN, 'requests'), exist_ok=True)
+    with open(KIT_FILE + '.tmp', 'w', encoding='utf-8') as f:
+        f.write(kit + '\n')
+    os.replace(KIT_FILE + '.tmp', KIT_FILE)
+    print('kit.txt: %s (was %s)' % (kit, used or 'not there'))
+    if os.path.islink(ADDIN) or (os.path.exists(ADDIN) and not os.path.isdir(ADDIN)):
+        sys.exit('%s is there but is not a folder; remove it, then run setup again' % ADDIN)
+    os.makedirs(ADDIN, exist_ok=True)
+    for f in files:
+        shutil.copy2(os.path.join(entry, f), ADDIN)
+    print('add-in copied to %s' % ADDIN)
+    old = os.path.join(API, 'AddIns', 'UpsertTestRunner')
+    if os.path.lexists(old):
+        print('an older add-in from before 0.3.0 is still there: %s. It watches the old request folder; '
+              'stop it in Fusion (Utilities > Add-Ins) and delete it' % old)
+    print('restart Fusion, so the add-in loads this kit')
 
 
 MODES = ('new', 'saved', 'clean', 'check', 'night')
@@ -265,6 +312,8 @@ def mode(text):
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
+    s = sub.add_parser('setup')
+    s.add_argument('--check', action='store_true')
     p = sub.add_parser('prep')
     p.add_argument('name')
     # No default mode: 'new' saves another copy under the same name when the design is already saved
@@ -285,7 +334,7 @@ def main():
     n.add_argument('project')
     n.add_argument('--doc', required=True)
     a = ap.parse_args()
-    {'prep': prep, 'run': run, 'collect': collect, 'new': new}[a.cmd](a)
+    {'setup': setup, 'prep': prep, 'run': run, 'collect': collect, 'new': new}[a.cmd](a)
 
 
 if __name__ == '__main__':

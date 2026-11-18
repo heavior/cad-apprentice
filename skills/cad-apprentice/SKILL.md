@@ -11,13 +11,17 @@ Mac, so you need a shell and Python there.
 
 ## Find the kit
 
-The kit is a folder on the person's computer: `~/cad-apprentice`, unless their guidelines name another
-folder. Work from that folder, never from this plugin's install folder: the plugin folder changes
-with every update, and Fusion's runner add-in and each design's entry file point at the kit folder.
+The kit is the folder this skill came in: `${CLAUDE_PLUGIN_ROOT}`. If that shows as a name, not a
+folder, the kit is two folders up from this file (`skills/cad-apprentice/SKILL.md`). If the person's
+guidelines name their own copy of the kit, use that copy instead. The docs write the kit's folder as
+`<kit>`; put the real folder in its place.
 
-- **No kit folder yet:** get the kit as [How to start](../../README.md#how-to-start) in its README says.
-- **Once per session:** check whether a newer kit is out. If there is one, tell the person and offer
-  to update. Update only on their yes.
+- **Once per session,** check that Fusion uses this kit:
+  `python3 <kit>/fusion/tools/fusion_outputs.py setup --check`. It changes nothing. If it says
+  Fusion isn't set up for this kit (the first time, or after the plugin was updated and moved),
+  use the setup skill.
+- **Never update the kit yourself.** The kit changes only when the person updates it the way they
+  installed it. If they ask how, point them to [How to start](../../README.md#how-to-start).
 
 ## Read before any CAD work
 
@@ -30,9 +34,7 @@ In the kit folder, read in this order:
    sketches, parameters, the timeline, build scripts and running them.
 4. Once a design is approved for printing, use the print skill.
 
-The docs write commands for a kit in `~/cad-apprentice/...`. If the kit is in another folder, use
-that folder instead. Give a project folder as a full path. Keep the person's
-design projects outside the kit folder.
+Give a project folder as a full path. Keep the person's design projects outside the kit folder.
 
 The `demos/` are full design projects made with the kit. You don't need to read them to work.
 
@@ -47,12 +49,12 @@ The `demos/` are full design projects made with the kit. You don't need to read 
 ## Start and run a design
 
 - **Start a new design with `new`:**
-  `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
+  `python3 <kit>/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
   It writes the entry file, its manifest and a starter `build.py` (a rounded block with every mode)
   into `PROJECT_DIR/scripts/fusion/NAME/`, and copies the entry file into Fusion's Scripts folder.
   Then replace the block with the real design.
 - **Run designs with the runner,** in a background shell:
-  `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved`. It checks the
+  `python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode saved`. It checks the
   script first and stops on a problem. `collect` copies the pictures and STLs into the project.
   Every tool and its options: `fusion/tools/README.md`.
 
@@ -67,8 +69,13 @@ Follow the workflow in the kit's README.md and fusion/rules.md:
 
 ## Evolving the library
 
-The library grows with each design. When a design needs something the library lacks, add it to the
-library, not to the design script.
+The library grows with each design. When a design needs something the library lacks, it belongs in
+the library, not in the design script.
+
+- **An installed plugin is read-only.** An update replaces its folder, so a change there would be
+  lost. Write the new step or helper in the design's own script for now, tell the person, and offer
+  to send it to the kit as `CONTRIBUTING.md` says. Change the library itself only in a copy of the
+  kit the person works on, named in their guidelines.
 
 - **What goes in:** a new step type, a helper or a check that other designs can use as is, with no
   project-specific details. Everything project-specific (shapes, sizes, names) stays in the design's
@@ -80,4 +87,4 @@ library, not to the design script.
   done (`fusion/tests/README.md`). Never test library changes on a person's saved design.
 - **A run that cost time in a new way:** add the fix to Faster iterations in `fusion/lib/README.md`.
 
-To send a library change back to the kit, follow `CONTRIBUTING.md`.
+To send a library change to the kit, follow `CONTRIBUTING.md`.

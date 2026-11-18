@@ -1,5 +1,4 @@
 # Run requests, logs and results the runner and tests write
-fusion/tests/run/
 3dprinting/tests/run/
 demos/*/stl/
 __pycache__/

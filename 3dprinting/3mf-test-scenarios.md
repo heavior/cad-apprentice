@@ -27,12 +27,12 @@ The scripts:
   - a part with a hole and an overhang
   - two STLs with the same file name in different folders
   - a broken STL (open mesh, or an empty file)
-- **Reference settings.** The default, the folder `~/cad-apprentice/3dprinting/template_3mf/`,
+- **Reference settings.** The default, the folder `<kit>/3dprinting/template_3mf/`,
   as the docs say. Tests that need it as one file use `tests/run/template.3mf`, which
   `make_template.py` packs from the folder. B11 also uses a copy of your own `.3mf` with other
   printer settings, named by the `B11_REF_3MF` environment variable; if it is unset or missing,
   that part of B11 is skipped and listed, not failed.
-- **Where it writes.** Only in `~/cad-apprentice/3dprinting/tests/run/`. Never in a project
+- **Where it writes.** Only in `<kit>/3dprinting/tests/run/`. Never in a project
   folder. `build_3mf.py` makes a temp work folder, so every test runs the scripts with `TMPDIR` set to
   `run/tmp/`. `update_3mf.py` backs up into `.backups/` next to the project, which in a test is
   inside `run/`. A check at the
@@ -164,9 +164,7 @@ a filament change, and a modifier inside one object. Then the STLs change and th
   b) alpha 40 mm, more than 68 mm away: no warning.
   c) alpha 70 mm, but plate 1 set to print by layer (Bambu Studio's per-plate order, the way the
   bridge's plate 1 is): no warning, since a plate's own order wins.
-  *Last run:* passes, with U1–U12 (13 of 13 U pass, 8.8 s).
-- **U14** No `--approved`: a clear error naming the flag, and the file is byte for byte the same
-  *Last run:* 14 of 14 U pass.
+- **U14** No `--approved`: a clear error naming the flag, and the file is byte for byte the same.
 - **U15** `--down`: a new part `epsilon=+x` lies on its +x face, and `beta=-y`, a part already in
   the project, keeps its turn with a note saying so. `ghost=-y`, a name with no STL, stops it with
   the list of parts, and the file is byte for byte the same.
@@ -192,7 +190,7 @@ a filament change, and a modifier inside one object. Then the STLs change and th
 3. The rest of B.
 4. The U group, alone (§ 1). With Bambu Studio open they can't run, and each is listed as a
    skip, "Bambu Studio is open". A failure is fixed in `update_3mf.py`, one commit per ID.
-5. Results in `~/cad-apprentice/3dprinting/tests/run/results/`, and a short section in the night's morning
+5. Results in `<kit>/3dprinting/tests/run/results/`, and a short section in the night's morning
    report.
 
 These need no Fusion, so in the overnight session they run while Fusion is busy, or first, if
@@ -212,7 +210,7 @@ must-ask ones.
 | `python3` on the tests, `build_3mf.py` and `update_3mf.py` | Running them |
 | Edit `build_3mf.py` and `update_3mf.py`; create the tests in `scripts/print/` | Fixes and tests |
 | Read the `.3mf` that `B11_REF_3MF` names and copy it into the test folder | B11 |
-| `mkdir`, `cp`, `rm` in `~/cad-apprentice/3dprinting/tests/run/` only, and a stand-in `sleep` there (U11) | Test output |
+| `mkdir`, `cp`, `rm` in `<kit>/3dprinting/tests/run/` only, and a stand-in `sleep` there (U11) | Test output |
 
 **Questions:**
 

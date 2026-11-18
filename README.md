@@ -265,9 +265,9 @@ The full list with every option is in [lib/README.md](fusion/lib/README.md).
   stops and goes back, so nothing in the design changes (scenario A5 tests this).
 - **No-change runs and groups:** opening and closing groups can leave the tab marked as changed, so
   the next run that changes something saves one extra restore point.
-- **Split bodies:** a Combine whose tools are pieces of a split body breaks for good when a
-  parameter changes the pieces, and putting the value back doesn't heal it. Keep bodies whole: cut,
-  then Join a fill, instead of splitting.
+- **Split tool bodies:** when a cut splits a Combine's tool body into pieces, the Combine breaks for
+  good once a parameter changes the pieces. Putting the value back doesn't heal it.
+  [Rules 22 and 23](fusion/rules.md) say how to keep tools whole.
 - **Big updates are slow.** Editing most steps of a big design in place takes longer than a
   rebuild. Use `clean` mode for those iterations.
 - **Tested on a Mac only.** Nothing here was run on Windows yet.
@@ -326,11 +326,10 @@ your agent uses its own.
 
 **Commands the agent runs**
 
-- `git clone` of the kit into `~/cad-apprentice` the first time. Once per session the skill checks
-  for a newer kit and offers to update; on your yes, `git pull --ff-only`.
-- `ln -s`, once at setup, to link the runner add-in into Fusion's AddIns folder.
-- `python3` on the kit's tools: `fusion_outputs.py` to start, check, run and collect a design, the
-  3MF tools, and the tests.
+- None to get or update the kit. You install it, and you update it the same way; the agent never
+  updates it on its own.
+- `python3` on the kit's tools: `fusion_outputs.py setup`, on your yes, to point Fusion at the kit;
+  `fusion_outputs.py` to start, check, run and collect a design; the 3MF tools; and the tests.
 - `osascript`, to bring Fusion to the front when a run needs it there.
 - Your design's build script, inside Fusion, through the runner add-in or the Scripts dialog.
 
@@ -341,15 +340,16 @@ when the runner add-in doesn't answer, and keeping the laptop awake during runs.
 
 | Place | What |
 | --- | --- |
-| `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/UpsertTestRunner` | a link to the runner add-in, made once at setup |
+| `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/CadApprenticeRunner` | a copy of the runner add-in's two small files, made at setup |
+| `~/Library/Application Support/cad-apprentice/` | `kit.txt`, the kit's folder for Fusion, written at setup; `run/`, run requests, results and the runner's log |
 | `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/<Name>/` | the design's entry file, its manifest and `mode.txt`; each run's log, pictures and STLs. A new run first deletes the last run's `*.log`, `*.png`, `*.stl` and `probe_*.py` there |
-| `fusion/tests/run/` in the kit folder | run requests, results and the runner's log |
 | your project folder | the build script, pictures, STLs and the 3MF project |
 | your Autodesk cloud | the saved versions of the design the agent works on, saved by Fusion |
 
-**What the runner add-in does.** It runs inside Fusion and watches `fusion/tests/run/requests/`.
-Each request file names a Python file, and the add-in runs it in Fusion. Anything that can write to
-that folder can run code in Fusion, so keep the kit folder yours.
+**What the runner add-in does.** It runs inside Fusion and watches
+`~/Library/Application Support/cad-apprentice/run/requests/`. Each request file names a Python file,
+and the add-in runs it in Fusion. Anything that can write to that folder, or to the kit folder, can
+run code in Fusion, so keep both yours.
 
 **What it doesn't do without asking:** edit or save any Fusion design other than the one it is
 building, run a `clean` rebuild (it deletes hand edits in the timeline; old versions stay in the
@@ -366,18 +366,19 @@ history), or export STLs and the 3MF project before you approve the design.
   and the Fusion call it got stuck in.
 - When the runner add-in doesn't answer, the agent starts the run from Fusion's Scripts dialog
   itself, with the screen permission above.
-- When Fusion hangs inside a run, the agent force-quits Fusion, starts it again and tells you.
+- When Fusion hangs inside a run, the agent tells you and asks before it quits Fusion.
 
 ## Uninstall
 
 1. **The plugin,** if you installed it in Claude Code:
    `claude plugin uninstall cad-apprentice@cad-apprentice`, then
    `claude plugin marketplace remove cad-apprentice`. In another agent, remove it the way you added it.
-2. **The runner add-in:** in Fusion, open Utilities > Add-Ins, stop UpsertTestRunner, then delete the
-   link `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/UpsertTestRunner`.
-3. **The design folders:** delete each `<Name>` folder the kit made in
+2. **The runner add-in:** in Fusion, open Utilities > Add-Ins, stop CadApprenticeRunner, then delete
+   the folder `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/CadApprenticeRunner`.
+3. **The kit's data folder,** `~/Library/Application Support/cad-apprentice/`.
+4. **The design folders:** delete each `<Name>` folder the kit made in
    `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`.
-4. **The kit folder,** `~/cad-apprentice`.
+5. **Your own copy of the kit,** if you made one.
 
 Your project folders and your designs in Fusion are yours. The kit leaves them; keep or delete them.
 

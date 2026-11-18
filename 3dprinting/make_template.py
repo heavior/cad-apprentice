@@ -9,9 +9,9 @@ The template is kept unpacked, as the folder 3dprinting/template_3mf/: the files
 the zip around them, so the kit holds no binary file. FROM and OTHER can be a .3mf or such a folder.
 
 Usage:
-  python3 ~/cad-apprentice/3dprinting/make_template.py <project>/<p>.3mf [OUT] [--filament N=OTHER.3mf:M ...]
+  python3 <kit>/3dprinting/make_template.py <project>/<p>.3mf [OUT] [--filament N=OTHER.3mf:M ...]
 OUT defaults to 3dprinting/template_3mf/. An OUT ending in .3mf gets a zipped project instead, so
-  python3 ~/cad-apprentice/3dprinting/make_template.py ~/cad-apprentice/3dprinting/template_3mf template.3mf
+  python3 <kit>/3dprinting/make_template.py <kit>/3dprinting/template_3mf template.3mf
 packs the template back into one file. --filament puts filament M of OTHER.3mf into slot N
 (both counted from 1), for when FROM has the wrong filament there. Filament 1 is Bambu PLA Basic.
 """

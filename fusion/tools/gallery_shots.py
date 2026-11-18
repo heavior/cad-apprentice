@@ -1,4 +1,4 @@
-# Gallery pictures of a saved design: large views and close-ups. Run it through the UpsertTestRunner add-in
+# Gallery pictures of a saved design: large views and close-ups. Run it through the CadApprenticeRunner add-in
 # (fusion/rules.md § Gallery pictures). The saved design is never changed: it is
 # inserted as a linked part into a new tab with its origin hidden (hiding the origin in the design's own tab
 # marks it changed), the pictures are taken there, and the new tab is closed unsaved. args: doc (tab name of

@@ -1,4 +1,4 @@
-# Runs one request from run/requests/. Read from the repo on every request, so a fix here needs no
+# Runs one request from run/requests/. Read from the kit on every request, so a fix here needs no
 # Fusion restart. A request is JSON: {"id": ..., "file": <a .py, relative to the kit's fusion/ folder, or a full path>, "func": "main",
 # "args": {...}}. The file is run fresh, with cad_apprentice and the test modules (upsert_*) reloaded,
 # and func(args) gives the result. The result goes to run/results/<id>.json, with the time and the

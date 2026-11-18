@@ -1,13 +1,14 @@
-# Fusion runs this copy from its Scripts folder. The real code is read from the repo, so
-# there's nothing else to copy. Logs and renders go next to this file. A mode.txt beside it
+# Fusion runs this copy from its Scripts folder. The real code and the library are read from the kit
+# folder named in kit.txt, which `fusion_outputs.py setup` writes, so there's nothing else to copy. Logs and renders go next to this file. A mode.txt beside it
 # picks the run (build_bridge.py lists the modes); fusion_outputs.py writes it.
 import os, sys, traceback
 HERE = os.path.dirname(os.path.realpath(__file__))
-REPO = os.path.expanduser('~/cad-apprentice')
-CODE = os.path.join(REPO, 'demos/suspension-bridge/scripts/fusion/BuildSuspensionBridge')
-LIB = os.path.join(REPO, 'fusion/lib')
+KIT_FILE = os.path.expanduser('~/Library/Application Support/cad-apprentice/kit.txt')
 def run(context):
     try:
+        REPO = open(KIT_FILE, encoding='utf-8').read().strip()
+        CODE = os.path.join(REPO, 'demos/suspension-bridge/scripts/fusion/BuildSuspensionBridge')
+        LIB = os.path.join(REPO, 'fusion/lib')
         mode_file = os.path.join(HERE, 'mode.txt')
         # No mode.txt means saved: on a first build that stops with "no saved design", where new would
         # save a second copy of a design that exists.

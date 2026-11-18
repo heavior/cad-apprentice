@@ -27,8 +27,8 @@ MODE, ONLY, TEST = cad_apprentice.split_mode(MODE)
 
 LOG = os.path.join(OUT_DIR, 'BuildSuspensionBridge.log')
 SAVED_DOC = 'Suspension bridge'
-# The original file, with all the rounds' versions. A second file of the same name was made by mistake.
-SAVED_ID = 'urn:adsk.wipprod:dm.lineage:fd_BWNLYRB6MEn2GgdLr6Q'
+# The saved design is found by its name in the active project.
+SAVED_ID = None
 SAVE_NOTE = 'Script update.'
 TOWER = 'Tower'
 LEG = 'Leg'
@@ -62,7 +62,7 @@ PARAMS = [
     # 897.4 mm on the real bridge's proportions (4200 ft at a 150 mm tower); 897 keeps it on the slider's grid.
     ('main_span_length', '897 mm', 'mm', 'distance between the two towers, centre to centre; the side spans and the road arc follow from it', FAV),
     # 27.3 mm on the real bridge's proportions at a 150 mm tower. The designer wants room for a toy train
-    # here, on a shorter bridge too (2026-11-16).
+    # here, on a shorter bridge too.
     ('road_clearance', '27.3 mm', 'mm', 'free height above the road inside each tower, up to the first strut: room for a train. The struts above it squeeze or stretch to fit', FAV),
     # 0.0449 on the real bridge (9 cells of 3.5 ft on 702 ft). A higher share on a lower tower makes a
     # lower but bulkier bridge.

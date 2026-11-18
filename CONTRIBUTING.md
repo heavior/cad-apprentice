@@ -10,7 +10,9 @@ private about your design.
 
 ## Send a change
 
-1. Fork the repository and make your change on a branch.
+1. Fork the repository, clone it and make your change on a branch. Run
+   `python3 fusion/tools/fusion_outputs.py setup` from your clone and restart Fusion, so Fusion runs
+   your copy of the kit.
 2. Keep the change general. Shapes, sizes and names from your own design stay in your design's
    script; only steps, helpers and checks that other designs can use go into the library.
 3. Run the tests that cover what you changed (below).

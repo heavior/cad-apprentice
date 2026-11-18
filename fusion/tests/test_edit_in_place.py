@@ -1,7 +1,7 @@
 # Two edits the library could only make by replacing the feature, tried in place. Each
 # design gets a hand-made block after the step under test, so a replace would be refused: the step
 # must keep its identity, end healthy, and leave the hand-made block working. Run through the
-# UpsertTestRunner add-in:
+# CadApprenticeRunner add-in:
 # {"id": "in-place", "file": "tests/test_edit_in_place.py", "args": {}}
 #   - fillet: a fillet with two edge sets, after its body is redrawn wider (G4).
 #   - loft: a section's sketch redrawn as another shape, then the section moved to another sketch.

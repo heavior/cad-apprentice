@@ -360,7 +360,7 @@ def tagged(sketch, name):
 # A block inside a draw function that holds the sketch's solve and profiles until it ends:
 #     with deferred(s):
 #         ...lines, constraints, dimensions...
-# 60 dimensioned rectangles drew 2.7 times faster, with the same profiles, all constrained (2026-11-18).
+# 60 dimensioned rectangles drew 2.7 times faster, with the same profiles, all constrained.
 # A sketch step's draw always gets a new sketch, which is where the docs allow it (isComputeDeferred).
 # Read nothing inside the block that needs the solve: a point's place after a dimension, profiles,
 # isFullyConstrained. A report of loose points goes after it.

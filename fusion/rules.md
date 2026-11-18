@@ -14,15 +14,14 @@ steps, how a run works and how to read a failed one. To add a step or a helper t
    fillets, add them too.
    - **Don't stop for a go-ahead on your own plan.** When the person asks for a change and you've
      worked out how, build it, test it and show the results. Pictures and a proposal come with the
-     work, not instead of it (user, 2026-11-16: "more autonomy, please").
+     work, not instead of it.
    - **Sort out the runner with other sessions yourself.** When another session needs Fusion, agree on
      who goes first. When Fusion hangs inside a run (high CPU, the log stopped for many minutes),
-     force-quit it, start it again and tell the other sessions, without asking the person
-     (user, 2026-11-16).
+     tell the person and ask before you quit it. Quitting loses every unsaved tab.
 2. **Sketch before CAD.** Before building anything, show a picture of how you understand the task and
    ask only the most important questions.
-3. **Do it all yourself in Fusion.** You have standing permission to control Fusion, including its
-   Scripts dialog. Don't ask the person to click.
+3. **Do the work in Fusion yourself.** Run designs through the runner add-in. When something needs a
+   click in Fusion, ask the person once to let you control it, then don't ask them to click.
 4. **Never edit or save another design without being asked.** Open tabs can hold the person's unsaved work.
    A new design you built yourself is different: save it when the work is checked, without asking.
    **Build a new design once, then iterate in it.** After the first save, every run updates that same
@@ -37,7 +36,7 @@ steps, how a run works and how to read a failed one. To add a step or a helper t
    `clean` run. First check that the person didn't change the timeline by hand: a feature, sketch or
    body the script didn't make, or a hand edit to one it did. A clean run deletes those. If you see no
    such risk, suggest it to the person. Don't run it without asking, and don't suggest it for small
-   changes or on every round (user, 2026-11-16).
+   changes or on every round.
    **Editable documents are scarce.** A personal Fusion plan has only a few slots for editable documents, so
    every new saved design uses one up. A test run saves at most one new design and reuses it. A
    `night` run saves none: it leaves its tab open for the person to save by hand.
@@ -86,12 +85,12 @@ steps, how a run works and how to read a failed one. To add a step or a helper t
    - **A detail scales with its parent; tune its share, not its size.** A curb is a share of the slab
      it sits on, a flute a share of the strut it's cut in. Then a bigger tower doesn't keep tiny
      fixed-mm details. Only the overall sizes the person picks (height, width, length, clearance) are
-     in mm (user, 2026-11-16, suspension bridge).
+     in mm.
    - **Watch for parts that get too thin, don't block them.** Shares times small parents can end up
      thinner than about one printed line (about 0.45 mm on a 0.4 mm nozzle,
      [Prusa](https://help.prusa3d.com/en/article/modeling-with-3d-printing-in-mind_164135/); the log
      warns below 0.4 mm). That can be fine, so log it as a warning after each
-     build and test trial, with the thinnest size per trial, and don't fail the run (user, 2026-11-16).
+     build and test trial, with the thinnest size per trial, and don't fail the run.
    - **Keep a derived value off 0 with `max(1; …)`,** with the unit for a length (`max(1 mm; …)`). A
      `min` cap does the same job at the top. Never clamp a value the person typed in.
    - **A switch is a 0/1 parameter with no unit, used through `if()` inside Fusion expressions only**
@@ -279,8 +278,8 @@ in well under a second, with no Fusion:
 - an STL exported straight through Fusion. Export with `helpers.write_stl`, which always uses High
   mesh refinement, so no part is printed from a coarse mesh.
 
-Run it with `python3 ~/cad-apprentice/fusion/lib/cad_apprentice/precheck.py <file or folder>`, and the tests with
-`python3 ~/cad-apprentice/fusion/lib/cad_apprentice/test_precheck.py`. `Builder.step()` also runs it on the first step
+Run it with `python3 <kit>/fusion/lib/cad_apprentice/precheck.py <file or folder>`, and the tests with
+`python3 <kit>/fusion/lib/cad_apprentice/test_precheck.py`. `Builder.step()` also runs it on the first step
 from each script file, so a mistake stops the run before any step from that file has run.
 
 - Keys built at run time (`key + '_cut'`, `'hole_%d' % i`, a key passed in a variable) can't be read
@@ -337,9 +336,10 @@ These rules come from fixing that.
     If that copy misses every body, the feature warns "No target body", even when the other copies
     cut fine. Cut the pattern out of a plain sheet body that is big enough to hold every copy, then
     intersect or subtract the sheet from the part.
-22. **Don't join a piece back in.** A New body plus a Join, to put back something a cut took away, can
-    lose its profile or leave the piece loose after a size change. Instead, cut that piece out of the
-    tool body before the tool cuts the part.
+22. **Don't put back what a cut took away.** To keep a spot solid, cut it out of the tool body before
+    the tool cuts the part. A New body plus a Join that fills it in afterwards can lose its profile,
+    or come out loose, after a size change. If cutting the spot out would split the tool, follow
+    rule 23. Joining new material, like studs, is fine.
 23. **A tool body must stay one body.** If a later cut splits a tool body in two, any combine that
     uses it loses it on the next recompute ("All tool bodies are lost"). Make the tool bigger than
     the part, for example twice as deep, so a strip in front of and behind the part holds it together.
@@ -424,7 +424,7 @@ These rules come from fixing that.
       `rect_pattern`, `circular_pattern`, `path_pattern` or `mirror`; a changed option makes the
       feature again.
 
-      On the suspension bridge (2026-11-16) Identical matched Adjust's volume and face count on all
+      On the suspension bridge demo, Identical matched Adjust's volume and face count on all
       11 feature patterns, joins included, and cut the slowest from 11.7 s to 0.7 s.
 
     Read the timings: a pattern that takes more than a few seconds is the first place to look. Try
@@ -437,7 +437,7 @@ These rules come from fixing that.
     3D pattern instead of sketch copies (rule 29), one symmetric row set to Identical (rule 32), one
     fixed body instead of a list (rule 24), a cut into a plain block instead of into a part already
     full of holes. Change the design when the shape stays the same, and say what got faster. If the
-    fix would change the shape, propose it with the timings instead (user, 2026-11-16).
+    fix would change the shape, propose it with the timings instead.
     - **A feature in error is slow too.** Fusion retries it on every compute
       ([forum, Autodesk](https://forums.autodesk.com/t5/fusion-support-forum/ridiculously-slow/td-p/9892755)).
     - **Use the fewest features for the shape.** In that thread, 84 features did what 2 would. This
@@ -452,20 +452,20 @@ These rules come from fixing that.
 ## Running a script
 
 **The runner is the default.** After step 1, run
-`python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py run NAME --mode saved` in a background shell. It does steps
-2 to 5 with no click on ▶: it preps, has the UpsertTestRunner add-in run the script, prints the log as
+`python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode saved` in a background shell. It does steps
+2 to 5 with no click on ▶: it preps, has the CadApprenticeRunner add-in run the script, prints the log as
 it grows, and exits 0 only when the log ends in DONE. The add-in starts with Fusion, so this also works
 behind a locked screen. Steps 3 and 4 below are the fallback, for when the add-in doesn't answer. Then
 go on with step 6. More on keeping iterations fast: [lib/README.md § Faster iterations](lib/README.md#faster-iterations).
 
 1. For a new design, run
-   `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
+   `python3 <kit>/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"`.
    It writes the entry file, its `.manifest` and a starter `build.py` from [template/](template/), and
    copies the entry file and manifest to a folder of the same name in
    `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`. The entry file reads the
    real code from the repo, so edits need no new copy.
 2. Clear last run's log, pictures and STLs, so you can't read an old result by mistake:
-   `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py prep NAME --mode saved` (`saved` updates the one saved design, rule 4; `new` only for a first build: run again, it saves a second file under the same name, so `--mode` has no default). It also writes `mode.txt` and
+   `python3 <kit>/fusion/tools/fusion_outputs.py prep NAME --mode saved` (`saved` updates the one saved design, rule 4; `new` only for a first build: run again, it saves a second file under the same name, so `--mode` has no default). It also writes `mode.txt` and
    brings Fusion forward. Use it, not hand-written `rm` lines: one allowed command instead of a
    permission prompt each run.
 3. In the main window, check the tab reads Utilities, since a reopened design starts on Solid, and
@@ -482,7 +482,7 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
 5. Show the hidden apps again, only if you hid any. Wait in a background shell loop for the log's
    last line (` DONE`, a traceback, `STOPPED`), without polling. The log grows line by line while it
    runs, so `tail` it to say where a long run is. Read the log and the pictures after.
-6. Copy the outputs into the project with `python3 ~/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME
+6. Copy the outputs into the project with `python3 <kit>/fusion/tools/fusion_outputs.py collect NAME
    <project>`. It lists files this run didn't make (a dropped part's STL and pictures); add
    `--prune` to delete them.
 
@@ -509,7 +509,7 @@ When the person asks for good pictures of a finished model, follow the
 - A step inside a collapsed timeline group can't be rolled to. Open the groups first.
 - `timeline.item(i)` lists a closed group as one item and skips the steps inside it. A probe that
   walks the timeline must call `cad_apprentice.open_groups(tl)` first, or it sees only the
-  24 top-level items of a grouped design and finds nothing (suspension bridge, 2026-11-16).
+  24 top-level items of a grouped design and finds nothing.
 - A symmetric extrude that is given its bodies (a Cut or Join with `participantBodies`) loses "full
   length": Fusion stores it as half on each side, so the feature comes out twice as thick. The library
   sets it back and stops if it won't stick.

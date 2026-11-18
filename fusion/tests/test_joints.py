@@ -1,7 +1,7 @@
 # Joints between parts, built by the library. Five boxes, each in its own component, held
 # by three joints and an as-built joint. Run 1 builds them. Then a hand-made part and joint go in after
 # them, so a replace of any joint would be refused. Run 2 changes every joint's values, sides or motion,
-# which must edit each one in place. Run 3 changes nothing. Run through the UpsertTestRunner add-in:
+# which must edit each one in place. Run 3 changes nothing. Run through the CadApprenticeRunner add-in:
 # {"id": "joints", "file": "tests/test_joints.py", "args": {}}
 import os
 import adsk.core, adsk.fusion

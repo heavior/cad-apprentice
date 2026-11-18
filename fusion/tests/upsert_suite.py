@@ -1,4 +1,4 @@
-# Runs scenarios from upsert-test-scenarios.md through the UpsertTestRunner add-in. A request names them:
+# Runs scenarios from upsert-test-scenarios.md through the CadApprenticeRunner add-in. A request names them:
 # {"id": "bugs", "file": "tests/upsert_suite.py", "args": {"ids": ["E3", "E4"]}}
 # Each scenario's result goes to run/results/<request id>/<scenario>.json, with its run logs in a folder
 # of the same name. A request cut off by a crash runs again with resume set: finished scenarios are

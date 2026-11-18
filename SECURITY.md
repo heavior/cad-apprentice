@@ -12,8 +12,8 @@ until it is fixed.
 - **The kit runs only on your computer.** It has no server and no account
   ([PRIVACY.md](PRIVACY.md)).
 - **The runner add-in runs code.** It runs inside Fusion and runs every Python file named in a
-  request in `fusion/tests/run/requests/`. Anything that can write to that folder can run code in
-  Fusion with your Autodesk account. Keep the kit folder yours, and don't add requests you didn't
-  write or read first.
+  request in `~/Library/Application Support/cad-apprentice/run/requests/`. Anything that can write to that folder, or to
+  the kit folder, can run code in Fusion with your Autodesk account. Keep both yours, and don't add
+  requests you didn't write or read first.
 - **Your design's build script is code too.** Read a script from someone else before you run it.
-- **Only the latest version gets fixes.** Update the kit when the skill offers to.
+- **Only the latest version gets fixes.** Update the kit the way you installed it.

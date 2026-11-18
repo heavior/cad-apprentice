@@ -1,7 +1,7 @@
 """Draw the detail sketches (round 2): tower details and the deck truss, enlarged.
 
 Run:
-    uvx --with matplotlib python ~/cad-apprentice/demos/suspension-bridge/scripts/sketch_details.py
+    uvx --with matplotlib python <kit>/demos/suspension-bridge/scripts/sketch_details.py
 
 Uses the sizes in sketch.py. Writes PNGs 4 and 5 to sketches/. Where a size is a design choice and not
 from a source, the label says so.

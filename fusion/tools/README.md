@@ -1,8 +1,7 @@
 # Tools
 
 The command-line tools around a design: start it, check it, run it, collect what it made, and turn
-it into pictures and a print project. `K` below stands for the kit
-folder, `~/cad-apprentice`.
+it into pictures and a print project. `<kit>` below stands for the kit's folder.
 
 ## fusion_outputs.py: start, run and collect a design
 
@@ -11,10 +10,10 @@ folder, `~/cad-apprentice`.
 
 | Command | What it does |
 | --- | --- |
-| `python3 K/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"` | starts a design from [../template/](../template/): writes the entry file, its manifest and a starter `build.py` to `PROJECT_DIR/scripts/fusion/NAME/`, and copies the entry file and manifest to Fusion's Scripts folder. `--doc` is the name the design is saved under in Fusion. It refuses a name that is already there. |
-| `python3 K/fusion/tools/fusion_outputs.py prep NAME --mode MODE` | checks the code, clears last run's log, pictures, STLs and stop file, writes `mode.txt`, and brings Fusion to the front. For a run by hand with ▶. |
-| `python3 K/fusion/tools/fusion_outputs.py run NAME --mode MODE` | does `prep`, then has the runner add-in run the script with no click. Prints the log as it grows. Exits 0 only when the log ends in `DONE` and no check after it failed. Run it in a background shell. |
-| `python3 K/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR` | copies the STLs to `PROJECT_DIR/stl/`, `view_*.png` to `pictures/` and `sketch_*.png` to `pictures/sketches/`, then lists the files there that this run didn't make. `--prune` deletes those from disk. |
+| `python3 <kit>/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"` | starts a design from [../template/](../template/): writes the entry file, its manifest and a starter `build.py` to `PROJECT_DIR/scripts/fusion/NAME/`, and copies the entry file and manifest to Fusion's Scripts folder. `--doc` is the name the design is saved under in Fusion. It refuses a name that is already there. |
+| `python3 <kit>/fusion/tools/fusion_outputs.py prep NAME --mode MODE` | checks the code, clears last run's log, pictures, STLs and stop file, writes `mode.txt`, and brings Fusion to the front. For a run by hand with ▶. |
+| `python3 <kit>/fusion/tools/fusion_outputs.py run NAME --mode MODE` | does `prep`, then has the runner add-in run the script with no click. Prints the log as it grows. Exits 0 only when the log ends in `DONE` and no check after it failed. Run it in a background shell. |
+| `python3 <kit>/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR` | copies the STLs to `PROJECT_DIR/stl/`, `view_*.png` to `pictures/` and `sketch_*.png` to `pictures/sketches/`, then lists the files there that this run didn't make. `--prune` deletes those from disk. |
 
 Options:
 
@@ -45,7 +44,7 @@ How `run` behaves:
 - **Exit 1 with `CHECK FAILED`** when the build reached `DONE` but a check after it logged `TRIAL
   FAILED`, `RANGE TOO WIDE`, `RERUN CHANGED SOMETHING` or `LOOSE PIECES`. The lines are printed.
 - **A crash during a run:** `run` requests aren't run again after a crash. Other requests are,
-  at most twice. A request file that isn't JSON goes to `K/fusion/tests/run/bad/`.
+  at most twice. A request file that isn't JSON goes to `~/Library/Application Support/cad-apprentice/run/bad/`.
 
 ## Checks
 
@@ -55,14 +54,14 @@ library.
 - **[precheck.py](../lib/cad_apprentice/precheck.py)** reads a build script and finds step-key
   mistakes that would stop a run halfway: a key written twice, a fixed key inside a loop, a key in `uses=` that no step has, a
   chamfer after a round. It also stops an STL export that skips the library's `write_stl`, so every
-  STL is made at High mesh refinement. `python3 K/fusion/lib/cad_apprentice/precheck.py <file or folder>`
+  STL is made at High mesh refinement. `python3 <kit>/fusion/lib/cad_apprentice/precheck.py <file or folder>`
 
 ## Runner scripts
 
 These run inside Fusion, through the runner add-in ([../runner/](../runner/)). Each run is a request
-file the agent drops into `K/fusion/tests/run/requests/<id>.json`: `{"id": ..., "file": ...,
-"args": {...}}`. `file` is relative to `K/fusion/`. The add-in calls the file's `main(args)` and writes
-the result to `K/fusion/tests/run/results/<id>.json`. Write the request as `.tmp` first, then rename
+file the agent drops into `~/Library/Application Support/cad-apprentice/run/requests/<id>.json`: `{"id": ..., "file": ...,
+"args": {...}}`. `file` is relative to `<kit>/fusion/`. The add-in calls the file's `main(args)` and writes
+the result to `~/Library/Application Support/cad-apprentice/run/results/<id>.json`. Write the request as `.tmp` first, then rename
 it, so the add-in never reads half a file.
 
 - **[run_design.py](run_design.py)** runs a design's entry file, the same file ▶ runs. `args`:
@@ -76,7 +75,7 @@ it, so the add-in never reads half a file.
 ## Picture tool
 
 - **[trim_picture.py](trim_picture.py)** cuts the white space around a picture down to the model
-  plus a margin. `python3 K/fusion/tools/trim_picture.py in.png out.png [ratio] [pad]`. Ratio `0`
+  plus a margin. `python3 <kit>/fusion/tools/trim_picture.py in.png out.png [ratio] [pad]`. Ratio `0`
   keeps the model's own shape; a width:height ratio pads with white to that shape.
 
 ## 3MF tools
@@ -86,15 +85,15 @@ round: [../../3dprinting/rules.md](../../3dprinting/rules.md).
 
 - **[build_3mf.py](../../3dprinting/build_3mf.py)** makes a new `.3mf` from STLs, one plate per part,
   with the settings of a template project. It won't overwrite a `.3mf` that exists.
-  `python3 K/3dprinting/build_3mf.py OUT.3mf --approved "<the person's OK>" [--settings-from REF.3mf] [--down PART=-y] a.stl b.stl ...`
+  `python3 <kit>/3dprinting/build_3mf.py OUT.3mf --approved "<the person's OK>" [--settings-from REF.3mf] [--down PART=-y] a.stl b.stl ...`
   `--settings-from` takes the settings from another project instead of the template folder,
   `3dprinting/template_3mf/`.
 - **[update_3mf.py](../../3dprinting/update_3mf.py)** swaps new STLs into an existing `.3mf` and
   keeps everything the person set up in it: settings, turns, copies, plates.
-  `python3 K/3dprinting/update_3mf.py PROJECT.3mf --approved "<the person's OK>" [--down PART=-y] a.stl b.stl ...`
+  `python3 <kit>/3dprinting/update_3mf.py PROJECT.3mf --approved "<the person's OK>" [--down PART=-y] a.stl b.stl ...`
   `--down` turns only a new part; a part already in the project keeps its turn.
 - **[make_template.py](../../3dprinting/make_template.py)** makes the empty template project from a
   tuned one: global settings only, one empty plate, no parts. It writes the template unpacked, as
   the folder `3dprinting/template_3mf/`; an `OUT` ending in `.3mf` gets one zipped file instead.
-  `python3 K/3dprinting/make_template.py FROM.3mf [OUT] [--filament N=OTHER.3mf:M]`
+  `python3 <kit>/3dprinting/make_template.py FROM.3mf [OUT] [--filament N=OTHER.3mf:M]`
   `--filament` puts filament M of `OTHER.3mf` into slot N, when `FROM` has the wrong filament there.

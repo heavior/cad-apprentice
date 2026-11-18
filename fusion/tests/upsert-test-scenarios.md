@@ -11,10 +11,10 @@ scenario opens or changes a real design.
 Today a run needs clicks in Fusion's Scripts dialog (fusion/rules.md § Running a script). That can't
 run overnight. So the first job is a runner that needs no clicks.
 
-**The runner add-in, `UpsertTestRunner`.**
-- A Fusion add-in in the kit, `~/cad-apprentice/fusion/runner/`. The person adds that folder once with
-  "+" in the Add-Ins dialog and ticks "Run on Startup". Nothing is written into `~/Library`.
-- It watches a folder in the kit, `~/cad-apprentice/fusion/tests/run/requests/`.
+**The runner add-in, `CadApprenticeRunner`.**
+- A Fusion add-in in the kit, `<kit>/fusion/runner/`. `fusion_outputs.py setup` copies its entry
+  into Fusion's AddIns folder, and it starts with Fusion ([SETUP.md](../../SETUP.md)).
+- It watches a folder, `~/Library/Application Support/cad-apprentice/run/requests/`.
   Claude drops a request file there from the shell: which scenarios to run (all, one group, or a list
   of IDs).
 - A background thread sees the file and fires a Fusion custom event. Fusion API calls are only safe on
@@ -384,9 +384,9 @@ rule.
 
 | What | Why |
 |---|---|
-| Edit and create files in `~/cad-apprentice/**` and this plan | The runner, scenarios and library fixes |
+| Edit and create files in `<kit>/**` and this plan | The runner, scenarios and library fixes |
 | `python3` without the `cd` prefix | Checks, the 3MF tests |
-| `mkdir`, `cp`, `rm` and request files under `~/cad-apprentice/fusion/tests/run/` only | Talking to the runner |
+| `mkdir`, `cp`, `rm` and request files under `~/Library/Application Support/cad-apprentice/run/` only | Talking to the runner |
 | `ps`, `pgrep`, `stat`, `tail` | Is Fusion alive, how old is the last log line |
 | Background wait loops (`while … sleep`) or the Monitor tool | Waiting for `result.json` |
 | `open -a "Autodesk Fusion"` | Restarting after a crash |

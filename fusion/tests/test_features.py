@@ -1,5 +1,5 @@
 # Tries every feature type in cad_apprentice, in a throwaway tab that is closed
-# without saving. Run through the UpsertTestRunner add-in:
+# without saving. Run through the CadApprenticeRunner add-in:
 # {"id": "features", "file": "tests/test_features.py", "args": {}}
 # v1 builds everything, v2 changes each step's own values (each should be edited in place, or say why it
 # was replaced), v3 is v2 again and should change nothing. Every feature must end healthy, every value

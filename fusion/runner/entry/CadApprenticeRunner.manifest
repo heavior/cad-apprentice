@@ -1,9 +1,9 @@
 {
     "autodeskProduct": "Fusion360",
     "type": "addin",
-    "id": "7BFC8385-86CA-4F04-99B8-1B947D5162EC",
+    "id": "EDEFEB10-158C-482B-85B5-20C32EC54C91",
     "author": "",
-    "description": { "": "Runs cad_apprentice test requests from the repo with nobody at the screen." },
+    "description": { "": "Runs cad-apprentice requests in Fusion with nobody at the screen." },
     "version": "1.0",
     "runOnStartup": true,
     "supportedOS": "mac",

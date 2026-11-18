@@ -1,14 +1,14 @@
-# Runs test requests in Fusion with nobody at the screen. The add-in entry in Fusion's AddIns folder
-# reads this file from the repo and calls start(). A background thread watches the requests folder and
+# Runs requests in Fusion with nobody at the screen. The add-in entry in Fusion's AddIns folder
+# reads this file from the kit and calls start(). A background thread watches the requests folder and
 # fires a custom event; Fusion runs the handler on its main thread, where API calls are safe. The
-# handler reads handle.py from the repo on every request, so a fix there needs no restart. A change
+# handler reads handle.py from the kit on every request, so a fix there needs no restart. A change
 # to this file does. Plan: ../tests/upsert-test-scenarios.md § 1.
 import json, os, threading, time, traceback
 import adsk.core
 
-# The kit's folder is found from this file, so the kit can live anywhere.
-KIT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-RUN = os.path.join(KIT, 'tests', 'run')
+# Requests, results and the log live outside the kit, so they stay when an update replaces the kit's
+# folder.
+RUN = os.path.join(os.path.expanduser('~/Library/Application Support/cad-apprentice'), 'run')
 REQUESTS = os.path.join(RUN, 'requests')
 EVENT = 'FusionKitRunnerRequest'
 
@@ -46,7 +46,7 @@ class Handler(adsk.core.CustomEventHandler):
         state['busy'] = True
         try:
             path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'handle.py')
-            scope = {'__name__': 'upsert_test_handle', '__file__': path, 'RUN': RUN, 'note': note}
+            scope = {'__name__': 'cad_apprentice_handle', '__file__': path, 'RUN': RUN, 'note': note}
             exec(compile(open(path, encoding='utf-8').read(), path, 'exec'), scope)
             scope['handle'](app)
         except:

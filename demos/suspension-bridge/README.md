@@ -43,7 +43,7 @@ Five favorites, in this order in Fusion's Change Parameters:
 - `road_clearance` never takes more than 0.6 of the height from the road to the leg top.
 - The railing lip never takes more than 0.6 of the room between the road and the cable bands at
   mid-span. A taller lip met the cable there, and the right half of the main span lost its hangers
-  (found 2026-11-17, with every value at its top end).
+  (found with every value at its top end).
 - The anchor block is never longer than a quarter of the side span.
 
 **Everything else is a share of its parent part,** not a size in mm. Each detail has a
@@ -87,6 +87,20 @@ about ±10 ft. Printable models others made, looked at for which details print w
 [Golden Gate Bridge Tower 1:400](https://makerworld.com/en/models/392123),
 [HUGE! Golden Gate Bridge](https://www.thingiverse.com/thing:5229824),
 [Golden Gate Bridge on GrabCAD](https://grabcad.com/library/golden-gate-bridge-2).
+
+## Build it yourself
+
+After [setup](../../SETUP.md), copy `BuildSuspensionBridge.py` and `BuildSuspensionBridge.manifest`
+from [scripts/fusion/BuildSuspensionBridge/](scripts/fusion/BuildSuspensionBridge/) into a new
+folder, `BuildSuspensionBridge`, in Fusion's Scripts folder
+(`~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`). Then build it once,
+saved as "Suspension bridge" in the open project:
+
+```
+python3 <kit>/fusion/tools/fusion_outputs.py run BuildSuspensionBridge --mode new
+```
+
+Later runs use `--mode saved`. Or ask your agent to build the demo.
 
 ## Files
 

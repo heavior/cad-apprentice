@@ -1,13 +1,15 @@
-# Fusion runs this copy from its Scripts folder. The real code is read from the repo, so
-# there's nothing else to copy. The log and pictures go next to this file. A mode.txt beside it
-# picks the run; fusion_outputs.py writes it. Made by `fusion_outputs.py new`.
+# Fusion runs this copy from its Scripts folder. The real code is read from the project, and the
+# library from the kit folder named in kit.txt, which `fusion_outputs.py setup` writes, so there's
+# nothing else to copy. The log and pictures go next to this file. A mode.txt beside it picks the
+# run; fusion_outputs.py writes it. Made by `fusion_outputs.py new`.
 import os, sys, traceback
 HERE = os.path.dirname(os.path.realpath(__file__))
 REPO = os.path.expanduser('__REPO__')
 CODE = os.path.join(REPO, '__CODE__')
-LIB = os.path.expanduser('__LIB__')
+KIT_FILE = os.path.expanduser('~/Library/Application Support/cad-apprentice/kit.txt')
 def run(context):
     try:
+        LIB = os.path.join(open(KIT_FILE, encoding='utf-8').read().strip(), 'fusion', 'lib')
         mode_file = os.path.join(HERE, 'mode.txt')
         # No mode.txt means saved: on a first build that stops with "no saved design", where new would
         # save a second copy of a design that exists.
