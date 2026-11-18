@@ -271,15 +271,8 @@ def saved_design(app, out, name, file_id=None):
     # The newest design named name, the one each 'saved' round updates. Opened if it isn't.
     # file_id (a lineage urn) picks one file exactly, for when two files share the name: the newest is
     # then not always the right one (seen with two "Suspension bridge" files).
-    every = list(app.data.activeProject.rootFolder.dataFiles)
-    files = [f for f in every if f.name == name]
-    if not files:
-        # A name that only starts with name is taken when it is the only such name: "Bridge" must not
-        # update "Bridge holder" because both are there.
-        files = [f for f in every if f.name.startswith(name)]
-        names = sorted(set(f.name for f in files))
-        if len(names) > 1 and not file_id:
-            raise Exception('no design named exactly %s; several start with it: %s' % (name, ', '.join(names)))
+    # Only the exact name: a run for "Bracket" must never update, or clean, "Bracket holder".
+    files = [f for f in app.data.activeProject.rootFolder.dataFiles if f.name == name]
     if file_id:
         files = [f for f in files if f.id == file_id]
     if not files:
@@ -302,7 +295,7 @@ def wipe(doc, des, out, fav_order=(), old_names=None):
     # every step in place. The saved
     # versions keep the old one. The user parameters stay; the build sets them again. The favorites are
     # put in fav_order on the way. Returns the version a failed build goes back to: Builder(go_back_to=),
-    # or the go-back would open the wiped design (F3). None for a design never saved.
+    # or the go-back would open the wiped design. None for a design never saved.
     back = doc.dataFile.latestVersionNumber if doc.dataFile else None
     if doc.isModified:
         # Unsaved changes, maybe the person's: kept in a version of their own before anything goes.

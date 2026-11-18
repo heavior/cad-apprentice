@@ -78,6 +78,8 @@ def main():
     model = z['3D/3dmodel.model'].decode()
     model = re.sub(r'<resources>.*</build>', EMPTY, model, flags=re.S)
     model = re.sub(r'\s*<metadata name="Thumbnail_\w+">[^<]*</metadata>', '', model)
+    # The Bambu account that saved the project, so it never goes into the template.
+    model = re.sub(r'(<metadata name="(?:Designer|DesignerUserId)">)[^<]*(</metadata>)', r'\1\2', model)
     rels = re.sub(r'\s*<Relationship [^>]*Target="/Metadata/[^"]*"[^>]*/>', '', z['_rels/.rels'].decode())
     files = {
         '[Content_Types].xml': z['[Content_Types].xml'],
@@ -115,7 +117,11 @@ def write_3mf(files, out):
             for n in sorted(files, key=lambda n: n != '[Content_Types].xml'):
                 w.writestr(n, files[n])
         return
-    shutil.rmtree(out, ignore_errors=True)  # No file left over from an older template.
+    if os.path.exists(out):
+        # Only an older template is replaced, so a wrong OUT can't wipe some other folder.
+        if not os.path.isfile(os.path.join(out, 'Metadata', 'project_settings.config')):
+            sys.exit('%s exists and is not a template folder; nothing written' % out)
+        shutil.rmtree(out)  # No file left over from an older template.
     for n, data in files.items():
         p = os.path.join(out, *n.split('/'))
         os.makedirs(os.path.dirname(p), exist_ok=True)

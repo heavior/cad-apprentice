@@ -1,5 +1,5 @@
 # Runs one request from run/requests/. Read from the repo on every request, so a fix here needs no
-# Fusion restart. A request is JSON: {"id": ..., "file": <a .py, relative to the kit folder, or a full path>, "func": "main",
+# Fusion restart. A request is JSON: {"id": ..., "file": <a .py, relative to the kit's fusion/ folder, or a full path>, "func": "main",
 # "args": {...}}. The file is run fresh, with cad_apprentice and the test modules (upsert_*) reloaded,
 # and func(args) gives the result. The result goes to run/results/<id>.json, with the time and the
 # open tabs before and after. A result with "status" "pass" or "fail" sets the request's status; any
@@ -8,12 +8,18 @@
 # args['resume'] set and its crash count up by one, unless it says "no_resume": true, and at most
 # twice. A request past its "expires" time (seconds since 1970) is refused, not run. A file that isn't
 # JSON goes to run/bad/. Any error in this file is written as the request's result, so nothing is
-# picked up again and again (once, 109 times in 3 minutes).
-import json, os, shutil, sys, time, traceback
+# picked up again and again (once, 109 times in 3 minutes). An id names a folder in run/results/ that is
+# cleared, so only a plain name is taken: letters, digits, '.', '-' and '_'.
+import json, os, re, shutil, sys, time, traceback
 
 KIT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 LIB = os.path.join(KIT, 'lib')
 TESTS = os.path.join(KIT, 'tests')
+ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,99}')
+
+
+def plain(rid):
+    return isinstance(rid, str) and bool(ID.fullmatch(rid)) and '..' not in rid
 
 
 def tabs(app):
@@ -56,8 +62,13 @@ def handle(app):
         name = waiting[0]
         os.replace(os.path.join(requests, name), os.path.join(active, name))
     rid, req = name[:-len('.json')], None
+    if not plain(rid):
+        rid = 'bad-request'
     try:
         req = json.load(open(os.path.join(active, name)))
+        if not plain(req.get('id', rid)):
+            return finish(name, rid, req, 'refused', 'the id must be a plain name: letters, digits, ".", "-" and "_"',
+                          active, results)
         rid = req.get('id', rid)
         if left:
             if req.get('no_resume'):
@@ -75,13 +86,20 @@ def handle(app):
         run(app, name, rid, req, active, results, resumed=bool(left))
     except:
         err = traceback.format_exc()
-        if req is None:
+        try:
+            if req is None:
+                os.makedirs(os.path.join(RUN, 'bad'), exist_ok=True)
+                os.replace(os.path.join(active, name), os.path.join(RUN, 'bad', name))
+                write(os.path.join(results, rid + '.json'), {'id': rid, 'status': 'unreadable', 'error': err})
+                note('%s is unreadable, moved to bad/:\n%s' % (name, err))
+            elif os.path.exists(os.path.join(active, name)):
+                finish(name, rid, req, 'runner error', err, active, results)
+        except:
+            # Even the error can't be written: move the request out of active/, or it would block the queue.
             os.makedirs(os.path.join(RUN, 'bad'), exist_ok=True)
-            os.replace(os.path.join(active, name), os.path.join(RUN, 'bad', name))
-            write(os.path.join(results, rid + '.json'), {'id': rid, 'status': 'unreadable', 'error': err})
-            note('%s is unreadable, moved to bad/:\n%s' % (name, err))
-        elif os.path.exists(os.path.join(active, name)):
-            finish(name, rid, req, 'runner error', err, active, results)
+            if os.path.exists(os.path.join(active, name)):
+                os.replace(os.path.join(active, name), os.path.join(RUN, 'bad', name))
+            note('%s moved to bad/ after an error the runner could not write:\n%s' % (name, err))
 
 
 def run(app, name, rid, req, active, results, resumed=False):

@@ -1,7 +1,7 @@
 """Clean up before a Fusion script run and collect its outputs after, in one allowed command each.
 
 Each run used to take a hand-written shell line with `rm`, which asked for permission every time.
-This script is on the allow list in .claude/settings.json, so it runs without asking. It only touches the
+One script is one command to allow. It only touches the
 script's own folder in Fusion's Scripts folder and the project's output folders.
 
 Usage:
@@ -113,8 +113,15 @@ def lock(d, rid):
             try:
                 pid = int(open(path).read().split()[0])
                 os.kill(pid, 0)
+            except FileNotFoundError:
+                continue  # the other run just finished
+            except PermissionError:
+                pass  # the process is alive, run by another user
             except (ProcessLookupError, ValueError, IndexError):
-                os.remove(path)  # left by a run that was killed
+                try:
+                    os.remove(path)  # left by a run that was killed
+                except FileNotFoundError:
+                    pass  # another run cleared it first
                 continue
             sys.exit('%s is already running (pid %d)' % (os.path.basename(d), pid))
     sys.exit("couldn't take %s" % path)
@@ -180,7 +187,8 @@ def run(a):
             print('request withdrawn, nothing ran')
         elif not os.path.exists(result) and os.path.exists(os.path.join(RUN, 'active', rid + '.json')):
             print('the run already started in Fusion; it will finish there')
-        os.remove(held)
+        if os.path.exists(held):
+            os.remove(held)
 
 
 def collect(a):
@@ -247,7 +255,8 @@ def mode(text):
     if m == 'probe':
         if not os.path.isfile(names):
             raise argparse.ArgumentTypeError('probe:%s: no such file' % names)
-        return text
+        # A full path: Fusion runs the probe from its own folder, not from this shell's.
+        return 'probe:' + os.path.abspath(names)
     if m not in MODES or (_ and (m not in ('check', 'night') or not names.strip(','))):
         raise argparse.ArgumentTypeError('%s: one of %s, or check:<names and tests> / night:<names and tests>' % (text, ', '.join(MODES)))
     return text
