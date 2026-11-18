@@ -54,17 +54,17 @@ def describe(b, v):
 def hand_joint(des):
     # A part and a joint, made by hand as a person would: no fusion_upsert attributes, after the script's joints.
     root = des.rootComponent
-    occ = root.occurrences.addNewComponent(adsk.core.Matrix3D.create())  # slow-ok: test setup
+    occ = root.occurrences.addNewComponent(adsk.core.Matrix3D.create())
     occ.component.name = 'Hand pin'
-    sk = occ.component.sketches.add(occ.component.xYConstructionPlane)  # slow-ok: test setup, one small sketch
+    sk = occ.component.sketches.add(occ.component.xYConstructionPlane)
     sk.sketchCurves.sketchLines.addTwoPointRectangle(P(0, 0, 0), P(0.5, 0.5, 0))
     ei = occ.component.features.extrudeFeatures.createInput(sk.profiles.item(0), New)
     ei.setDistanceExtent(False, vi('2 cm'))
-    occ.component.features.extrudeFeatures.add(ei)  # slow-ok: test setup, one small extrude
+    occ.component.features.extrudeFeatures.add(ei)
     base = root.occurrences.itemByName('Base:1')
     ai = root.asBuiltJoints.createInput(occ, base, None)
     ai.setAsRigidJointMotion()
-    j = root.asBuiltJoints.add(ai)  # slow-ok: test setup, one joint
+    j = root.asBuiltJoints.add(ai)
     j.name = 'Hand joint'
     return j
 

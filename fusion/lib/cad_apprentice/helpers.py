@@ -166,7 +166,7 @@ def loose_pieces(des, names=None):
 
 # ---------- Views and pictures ----------
 
-def camera(vp, target, eye, up, extent=None):  # slow-ok: the caller's "picture" line covers it
+def camera(vp, target, eye, up, extent=None):
     # target: a Point3D. eye: where the eye sits, as (dx, dy, dz) from target. extent: the view's width
     # in cm around target; without it the view fits everything shown.
     cam = vp.camera

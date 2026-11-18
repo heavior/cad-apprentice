@@ -8,7 +8,7 @@ import adsk.core, adsk.fusion
 import cad_apprentice
 
 LOG = os.path.join(OUT_DIR, 'FusionUpsertTest.log')
-PROGRESS = os.path.join(OUT_DIR, 'progress.log')  # every line as it comes, with a line around each slow call
+PROGRESS = os.path.join(OUT_DIR, 'progress.log')  # every line as it comes, with each Fusion call of a second or more timed
 NEW_BODY = adsk.fusion.FeatureOperations.NewBodyFeatureOperation
 MY_FILLET = 'My fillet, made by hand'
 
@@ -18,7 +18,7 @@ def point(x, y):
 
 
 def rectangle(width, depth):
-    def draw(s):  # slow-ok: the sketch step's "make" line covers it
+    def draw(s):
         lines = s.sketchCurves.sketchLines.addTwoPointRectangle(point(0, 0), point(2, 2))
         gc = s.geometricConstraints
         gc.addCoincident(lines.item(0).startSketchPoint, s.originPoint)
@@ -44,7 +44,7 @@ def top_edges(b, key):
     return c
 
 
-def extra_plane(b):  # slow-ok: the step's "make" line covers it
+def extra_plane(b):
     pi = b.comp.constructionPlanes.createInput()
     pi.setByOffset(b.comp.xYConstructionPlane, cad_apprentice.vi('5 mm'))
     return b.comp.constructionPlanes.add(pi)

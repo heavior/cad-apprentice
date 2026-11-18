@@ -2,7 +2,7 @@
 # A build script says what should exist, in timeline order. Rerunning it updates
 # the design and leaves alone anything this library didn't create.
 
-import hashlib, itertools, json, os, random, re, time
+import hashlib, itertools, json, os, random, re, threading, time
 import adsk.core, adsk.fusion
 import sys
 sys.modules.pop(__name__ + '.precheck', None)  # Fusion keeps Python running between scripts: drop the last run's copy too.
@@ -20,12 +20,83 @@ def _same(a, b):
     return re.sub(r'\s', '', a) == re.sub(r'\s', '', b)
 
 
+# Every Fusion call is timed, so a script never has to guess which calls are slow. Each call in
+# adsk.core, adsk.fusion and the rest goes through a function of a C module (adsk._core, adsk._fusion,
+# ...), and while a LiveLog is open each of those functions has a wrapper. A call that takes a second or
+# more gets a log line with its time. The call running now is kept in the log's .now file, so when a run
+# hangs that file names the call. Plain Python between the calls runs as before.
+_ORIGINALS = '_cad_apprentice_originals'  # Kept on each C module, so a fresh copy of this library can put them back.
+_logs = []      # The open LiveLogs; calls are logged to the last one.
+_inside = [False]  # A call Fusion makes while running another one is part of that one.
+_thread = [None]   # The run's thread. The runner add-in's watcher calls Fusion from another one.
+
+
+def _call_name(name):
+    # SWIG's names: Sketches_add, Parameter__get_value, Parameter__set_expression, adsk_doEvents.
+    cls, _, rest = name.partition('_')
+    if rest.startswith('_get_'):
+        return '%s.%s' % (cls, rest[5:])
+    if rest.startswith('_set_'):
+        return '%s.%s =' % (cls, rest[5:])
+    return '%s.%s' % (cls, rest)
+
+
+def _skip(name):
+    # SWIG's own bookkeeping, Python's ==, len() and the like, and what the garbage collector runs.
+    return (name.startswith(('_', 'new_', 'delete_', 'SWIG', 'SwigPy')) or '___' in name
+            or name.endswith(('_swigregister', '_swiginit')))
+
+
+def _timed(f, what):
+    def call(*args, **kwargs):
+        if _inside[0] or not _logs or threading.get_ident() != _thread[0]:
+            return f(*args, **kwargs)
+        log, t0, ok = _logs[-1], time.time(), False
+        _inside[0] = True
+        log.now(what, t0)
+        try:
+            out = f(*args, **kwargs)
+            ok = True
+            return out
+        finally:
+            _inside[0] = False
+            took = time.time() - t0
+            if took >= 1:
+                log.progress('    Fusion %s: %s %.1f s' % (what, 'done in' if ok else 'failed after', took))
+    return call
+
+
+def wrap_fusion(on):
+    # Puts the wrappers on (on=True) or takes them off. Any left from a run that never closed its log go first.
+    for key, mod in list(sys.modules.items()):
+        if not key.startswith('adsk._') or mod is None:
+            continue
+        old = getattr(mod, _ORIGINALS, None)
+        if old:
+            for name, f in old.items():
+                setattr(mod, name, f)
+            delattr(mod, _ORIGINALS)
+        if on:
+            old = {n: f for n, f in vars(mod).items() if callable(f) and not _skip(n)}
+            for name, f in old.items():
+                setattr(mod, name, _timed(f, _call_name(name)))
+            setattr(mod, _ORIGINALS, old)
+
+
+wrap_fusion(False)  # A new copy of the library means a new run.
+
+
 class LiveLog(list):
     # A log list that also writes each line to the file as it comes, with the time, so a long run can be
-    # watched with tail -f instead of waiting blind for the end.
+    # watched with tail -f instead of waiting blind for the end. While one is open, every Fusion call is timed.
     def __init__(self, path):
         list.__init__(self)
         self._file = open(path, 'w')
+        self._now = os.open(path + '.now', os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+        if not _logs:
+            _thread[0] = threading.get_ident()
+            wrap_fusion(True)
+        _logs.append(self)
 
     def append(self, line):
         list.append(self, line)
@@ -37,8 +108,17 @@ class LiveLog(list):
         self._file.write('%s %s\n' % (time.strftime('%H:%M:%S'), line))
         self._file.flush()
 
+    # The Fusion call that started last, with its start time, written over the one before.
+    def now(self, what, t0):
+        os.pwrite(self._now, ('%s %s' % (time.strftime('%H:%M:%S', time.localtime(t0)), what)).encode()[:200].ljust(200), 0)
+
     def close(self):
+        if self in _logs:
+            _logs.remove(self)
+            if not _logs:
+                wrap_fusion(False)
         self._file.close()
+        os.close(self._now)
 
 
 def progress(log, line):
@@ -51,11 +131,9 @@ def progress(log, line):
 
 
 class slow:
-    # Goes around every Fusion call that can take long: anything that makes Fusion recompute (a parameter
-    # or feature edit, a timeline move, a delete), a save, an open, an export, a doEvents. A line before
-    # says what's next; one after gives the time when it took a second or more. So a run that hangs names
-    # the call it hangs in, and a slow run shows where the time went. check_slow.py
-    # finds slow calls that have no slow() around them.
+    # Names a stretch of work in the log: a step, a save, a trial. A line before says what's next; one
+    # after gives the time when it took a second or more. Each Fusion call is timed on its own anyway
+    # (LiveLog); this says what the calls were for.
     def __init__(self, log, what):
         self.log, self.what = log, what
 
@@ -318,7 +396,7 @@ def close_groups(groups):
 
 # Closes a tab without saving. On its own so a test can make it refuse (K8): patching Fusion's
 # Document class didn't reach the tab's own close.
-def _close(doc):  # slow-ok: its one caller, _go_back, runs it inside slow()
+def _close(doc):
     doc.close(False)
 
 
@@ -588,7 +666,7 @@ class Builder:
         self.names_kept = []
         self.hand_kept = []
 
-    # Indented, so a slow call sits under the step it is for in the progress file.
+    # Indented, so the work sits under the step it is for in the progress file.
     def _slow(self, what):
         return slow(self.log, '    ' + what)
 
@@ -607,7 +685,7 @@ class Builder:
         if key in self.known:
             with self._slow('marker to the end'):
                 self.tl.moveToEnd()  # A part can't be read while an earlier edit has the timeline rolled back before it.
-        make = lambda: self.comp.occurrences.addNewComponent(adsk.core.Matrix3D.create())  # slow-ok: the step's "make" line covers it
+        make = lambda: self.comp.occurrences.addNewComponent(adsk.core.Matrix3D.create())
         return self.step(key, name, make).component
 
     def _note_top(self, ent):
@@ -667,7 +745,7 @@ class Builder:
                 a = attrs.itemByName(GROUP, prefix + o)
                 if a:
                     attrs.add(GROUP, prefix + name, a.value)
-                    a.deleteMe()  # slow-ok: an attribute
+                    a.deleteMe()
             self.params_set.append('%s renamed to %s' % (o, name))
             self.structure_changed = True
             break
@@ -692,7 +770,7 @@ class Builder:
             # one in use is refused (B15).
             was_unit = p.unit or 'none'
             try:
-                gone = p.deleteMe()  # slow-ok: Fusion deletes it only when nothing uses it
+                gone = p.deleteMe()
             except:
                 gone = False
             if not gone:
@@ -735,7 +813,7 @@ class Builder:
         r = attrs.itemByName(GROUP, 'range.' + name)
         want = ranges.store(*self.ranges[name]) if name in self.ranges else None
         if r and want is None:
-            r.deleteMe()  # slow-ok: an attribute
+            r.deleteMe()
             self.params_set.append('%s range removed' % name)
         elif want and (r is None or r.value != want):
             attrs.add(GROUP, 'range.' + name, want)
@@ -1043,7 +1121,7 @@ class Builder:
         ent.attributes.add(GROUP, 'key', key)
         fp = ent.attributes.itemByName(GROUP, 'fp')
         if fp:
-            fp.deleteMe()  # slow-ok: an attribute
+            fp.deleteMe()
         self.known[key] = ent
         return ent
 
@@ -1120,7 +1198,7 @@ class Builder:
         if off is None:
             return self.step(key, name, make, spec=(spec, make), uses=uses)
 
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             ent.definition.offset.expression = off()
         return self.step(key, name, make, update=update, spec=(spec, off(), make), uses=uses,
                          read=lambda ent: ent.definition.offset.expression)
@@ -1154,7 +1232,7 @@ class Builder:
     # profile its extrude points at, and Fusion then refuses a new one. So the redraw is a new
     # sketch right after the old one, and the old one goes once the extrude has moved over.
     def sketch(self, key, name, plane, draw, spec=(), uses=()):
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             s = self.comp.sketches.add(plane())
             s.name = name
             draw(s)
@@ -1231,7 +1309,7 @@ class Builder:
                 f.bodies.item(0).name = body_name
             return f
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.profile = pick()
             # Fusion can turn a Join that touched nothing into a New body, and an update never set it back:
             # rails stayed loose after the base they sat on moved under them.
@@ -1391,7 +1469,7 @@ class Builder:
 
         # A set that changes kind can't be edited, so the step is replaced. G4: a fillet with more than
         # one set fails here after its body is redrawn.
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             count = len(sets())
             for i in range(count):
                 s = sets()[i]
@@ -1476,7 +1554,7 @@ class Builder:
 
         # Same as a fillet's sets (G4). A set that changes kind can't be edited, so the step is
         # replaced.
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             count = len(sets())
             for i in range(count):
                 s = sets()[i]
@@ -1503,7 +1581,7 @@ class Builder:
 
     # A solid with no history, copied from elsewhere. make_body() returns a temporary body.
     def base_body(self, key, name, make_body, spec=(), body_name=None):
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             base = self.comp.features.baseFeatures.add()
             base.startEdit()
             self.comp.bRepBodies.add(make_body(), base)
@@ -1616,7 +1694,7 @@ class Builder:
                 ri.patternComputeOption = how
             return rp.add(ri)
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             want = as_collection()
             have = f.inputEntities
             if not _same_entities([want.item(i) for i in range(want.count)], [have.item(i) for i in range(have.count)]):
@@ -1650,13 +1728,13 @@ class Builder:
             n = _get(base).geometry.normal
             return offset if (n.x, n.y, n.z)[along] > 0 else '-(%s)' % offset
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             pi = comp.constructionPlanes.createInput()
             pi.setByOffset(_get(base), vi(off()))
             return comp.constructionPlanes.add(pi)
 
         # A new base can't be set on a finished plane in a way that was tested, so that replaces it.
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             if not _same_entity(ent.definition.planarEntity, _get(base)):
                 raise Exception('its base plane changed')
             ent.definition.offset.expression = off()
@@ -1668,12 +1746,12 @@ class Builder:
     def angled_plane(self, key, name, line, angle, plane, spec=(), uses=()):
         comp = self.comp
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             pi = comp.constructionPlanes.createInput()
             pi.setByAngle(_get(line), vi(angle), _get(plane))
             return comp.constructionPlanes.add(pi)
 
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             d = ent.definition
             if not _same_entity(d.linearEntity, _get(line)) or not _same_entity(d.planarEntity, _get(plane)):
                 raise Exception('its line or plane changed')
@@ -1686,12 +1764,12 @@ class Builder:
     def mid_plane(self, key, name, a, b, spec=(), uses=()):
         comp = self.comp
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             pi = comp.constructionPlanes.createInput()
             pi.setByTwoPlanes(_get(a), _get(b))
             return comp.constructionPlanes.add(pi)
 
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             ent.definition.redefine(_get(a), _get(b))
 
         return self.step(key, name, make, update, spec=(_axis_name(_get(a)), _axis_name(_get(b)), spec), uses=uses)
@@ -1703,12 +1781,12 @@ class Builder:
         by = {'two_planes': 'setByTwoPlanes', 'line': 'setByEdge', 'two_points': 'setByTwoPoints', 'normal': 'setByNormalToFaceAtPoint'}[how]
         args = lambda: [_get(x) for x in (a, b) if x is not None]
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             ai = comp.constructionAxes.createInput()
             getattr(ai, by)(*args())
             return comp.constructionAxes.add(ai)
 
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             ent.definition.redefine(*args())
 
         return self.step(key, name, make, update, spec=(how, _input(a), _input(b), spec), uses=uses)
@@ -1720,12 +1798,12 @@ class Builder:
         by = {'two_lines': 'setByTwoEdges', 'center': 'setByCenter', 'point': 'setByPoint'}[how]
         args = lambda: [_get(x) for x in (a, b) if x is not None]
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             pi = comp.constructionPoints.createInput()
             getattr(pi, by)(*args())
             return comp.constructionPoints.add(pi)
 
-        def update(ent):  # slow-ok: step() logs it as "edit"
+        def update(ent):
             ent.definition.redefine(*args())
 
         return self.step(key, name, make, update, spec=(how, _input(a), _input(b), spec), uses=uses)
@@ -1758,7 +1836,7 @@ class Builder:
                 f.bodies.item(0).name = body_name
             return f
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.profile = pick()
             f.axis = _get(axis)
             if f.operation != operation:
@@ -1790,7 +1868,7 @@ class Builder:
                 f.bodies.item(0).name = body_name
             return f
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.profile = pick()
             f.path = route()
             if f.operation != operation:
@@ -1822,7 +1900,7 @@ class Builder:
                 f.bodies.item(0).name = body_name
             return f
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.path = route()
             f.sectionSize.expression = size
             if hollow:
@@ -1841,7 +1919,7 @@ class Builder:
     def loft(self, key, name, sections, operation, participants=None, body_name=None, spec=(), uses=()):
         lf = self.comp.features.loftFeatures
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             li = lf.createInput(operation)
             for s in sections():
                 li.loftSections.add(s)
@@ -1854,7 +1932,7 @@ class Builder:
 
         # Points each section at its profile now, with the marker before the loft. A loft with a new
         # number of sections is replaced.
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             want = sections()
             if f.loftSections.count != len(want):
                 raise Exception('%d sections, not %d' % (f.loftSections.count, len(want)))
@@ -1888,7 +1966,7 @@ class Builder:
             return hf.add(hi)
 
         # Points and sizes are set again. Where Fusion can't move a finished hole, it is replaced.
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             if not hasattr(f, 'setPositionBySketchPoints'):
                 raise Exception('Fusion cannot move a finished hole')
             f.setPositionBySketchPoints(_collection(points()))
@@ -1922,7 +2000,7 @@ class Builder:
                 self._name_body(f, body_name)
             return f
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             want = items()
             have = f.inputEntities
             if not _same_entities(want, [have.item(i) for i in range(have.count)]):
@@ -1949,7 +2027,7 @@ class Builder:
                 ci.patternComputeOption = how
             return cp.add(ci)
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             want = items()
             have = f.inputEntities
             if not _same_entities(want, [have.item(i) for i in range(have.count)]):
@@ -1971,13 +2049,13 @@ class Builder:
         route = lambda: _route(feats, path(), chain)
         how, how_said, how_fixed = _compute(compute, False)
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             pi = pp.createInput(_collection(items()), route(), vi(n), vi(spacing), adsk.fusion.PatternDistanceType.SpacingPatternDistanceType)
             if how is not None:
                 pi.patternComputeOption = how
             return pp.add(pi)
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.quantity.expression, f.distance.expression = n, spacing
 
         return self.step(key, name, make, update, spec=(n, spacing, items, path, chain, spec) + how_said, uses=uses,
@@ -1989,10 +2067,10 @@ class Builder:
     def split_body(self, key, name, body, tool, extend=True, spec=(), uses=()):
         sf = self.comp.features.splitBodyFeatures
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             return sf.add(sf.createInput(body(), _get(tool), extend))
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.setSplittingTool(_get(tool), extend)
 
         return self.step(key, name, make, update, spec=(_axis_name(_get(tool)), extend, body, spec), uses=uses,
@@ -2007,7 +2085,7 @@ class Builder:
             si.insideThickness = vi(thickness)
             return sf.add(si)
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             want = faces()
             have = f.inputEntities
             if not _same_entities(want, [have.item(i) for i in range(have.count)]):
@@ -2023,10 +2101,10 @@ class Builder:
     def scale(self, key, name, bodies, point, factor, spec=(), uses=()):
         sf = self.comp.features.scaleFeatures
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             return sf.add(sf.createInput(_collection(bodies()), _get(point), vi(factor)))
 
-        def update(f):  # slow-ok: step() logs it as "edit"
+        def update(f):
             f.scaleFactor.expression = factor
 
         return self.step(key, name, make, update, spec=(factor, bodies, _axis_name(_get(point)), spec), uses=uses,
@@ -2034,7 +2112,7 @@ class Builder:
 
     # Takes body() out of the design from here on: a helper body that only shaped others.
     def remove(self, key, name, body, spec=(), uses=()):
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             return self.comp.features.removeFeatures.add(body())
 
         return self.step(key, name, make, spec=(body, spec), uses=uses)
@@ -2080,7 +2158,7 @@ class Builder:
         _check_motion(name, motion, axis)
         joints = self.comp.joints
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             ji = joints.createInput(self._joint_side(one), self._joint_side(two))
             _set_motion(ji, motion, axis)
             if offset is not None:
@@ -2091,7 +2169,7 @@ class Builder:
             return joints.add(ji)
 
         # New sides can remake the offset and angle, so those are read after, as with fillets.
-        def update(j):  # slow-ok: step() logs it as "edit"
+        def update(j):
             j.geometryOrOriginOne = self._joint_side(one)
             j.geometryOrOriginTwo = self._joint_side(two)
             _set_motion(j, motion, axis)
@@ -2114,13 +2192,13 @@ class Builder:
             raise Exception('%s: a %s as-built joint needs at=, the point it moves about' % (name, motion))
         joints = self.comp.asBuiltJoints
 
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             ai = joints.createInput(_get(one), _get(two), self._joint_side(at) if at is not None else None)
             _set_motion(ai, motion, axis)
             return joints.add(ai)
 
         # Fusion can't change which two parts it holds, so new parts replace it.
-        def update(j):  # slow-ok: step() logs it as "edit"
+        def update(j):
             if not _same_entities([j.occurrenceOne, j.occurrenceTwo], [_get(one), _get(two)]):
                 raise Exception('it joins other parts now')
             _set_motion(j, motion, axis, *([self._joint_side(at)] if at is not None else []))
@@ -2152,11 +2230,11 @@ class Builder:
                 p = self.des.userParameters.itemByName(n)
                 if p is None or p.dependentParameters.count == 0:
                     if p:
-                        p.deleteMe()  # slow-ok: nothing uses it
+                        p.deleteMe()
                     for prefix in ('wrote.', 'saw.', 'range.'):
                         a = attrs.itemByName(GROUP, prefix + n)
                         if a:
-                            a.deleteMe()  # slow-ok: an attribute
+                            a.deleteMe()
                     left.remove(n)
                     self.structure_changed = True
                     self.log.append('parameter removed: %s, the script no longer has it' % n)
@@ -2194,7 +2272,7 @@ class Builder:
         for collapsed in (group.isCollapsed, not group.isCollapsed):
             group.isCollapsed = collapsed
             try:
-                group.deleteMe(False)  # slow-ok: inside finish()'s "regroup" line
+                group.deleteMe(False)
                 return True
             except Exception as err:
                 why = str(err).split(' - ')[-1].strip()
@@ -2658,7 +2736,7 @@ class Builder:
             return False
         mark = self.des.attributes.itemByName(GROUP, 'go_back_to')
         if mark:
-            mark.deleteMe()  # slow-ok: an attribute
+            mark.deleteMe()
             self.whole_again = True
             self.log.append('this tab is whole again, so the mark of the last good version is gone')
         return True

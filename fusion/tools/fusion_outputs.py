@@ -10,14 +10,15 @@ Usage (from the repo root):
   python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py collect NAME PROJECT_DIR [--prune]
   python3 projects/hobby/cad-apprentice/fusion/tools/fusion_outputs.py new NAME PROJECT_DIR --doc "Design name"
 
-prep     reads the script's code first (precheck.py and check_slow.py, on the folder the entry file's
+prep     reads the script's code first (precheck.py, on the folder the entry file's
          CODE line names, and on the library) and stops on a problem, so a run never starts on a
          mistake these cheap checks can find. --no-check skips that. Then it deletes
          last run's log, pictures, STLs, probe scripts and stop file, writes mode.txt, leaves an empty
          log, and brings Fusion to the front.
 run      does prep, then has the UpsertTestRunner add-in run the script: no click on ▶, and it works
          behind a locked screen. It prints the log as it grows and stops when the
-         add-in writes its result, or after --wait minutes (default 30) with no new log line. Exit 0
+         add-in writes its result, or after --wait minutes (default 30) with no new log line; then it
+         names the Fusion call the run is stuck in, from the log's .now file. Exit 0
          only when the log ends in DONE and has no TRIAL FAILED, RANGE TOO WIDE, RERUN CHANGED
          SOMETHING or LOOSE PIECES line. Run it in the background; a big design takes minutes. One
          run per design at a time (run.lock). Stopped before Fusion starts it, it takes its request
@@ -36,13 +37,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 KIT = os.path.dirname(HERE)
 LIB = os.path.join(KIT, 'lib', 'cad_apprentice')
 sys.path.insert(0, LIB)
-import check_slow, precheck
+import precheck
 
 RUN = os.path.join(KIT, 'tests', 'run')
 TEMPLATE = os.path.join(KIT, 'template')
 SCRIPTS = os.path.expanduser('~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts')
 # What a run leaves in its folder. Anything else there (the entry file, the manifest) stays.
-OLD = ('*.log', '*.png', '*.stl', 'probe_*.py', 'stop')
+OLD = ('*.log', '*.now', '*.png', '*.stl', 'probe_*.py', 'stop')
 # Log lines that mean a check failed, though the build itself got to DONE.
 FAILED = ('TRIAL FAILED', 'RANGE TOO WIDE', 'RERUN CHANGED SOMETHING', 'LOOSE PIECES')
 # Output pattern -> folder inside the project.
@@ -69,14 +70,12 @@ def code_dir(d, name):
 
 
 def checks(d, name):
-    # Both checks on the script's code and the library. Returns the problems.
+    # precheck on the script's code and the library. Returns the problems.
     code = code_dir(d, name)
     paths = list(precheck.files([code, LIB]))
     keys = {p: precheck.literal_keys(p) for p in paths if p.startswith(code)}
     found = []
     for p in paths:
-        if check_slow.fusion_script(p):
-            found += check_slow.check(p)
         if p in keys:
             found += precheck.check(p, set().union(*(k for q, k in keys.items() if q != p)))[0]
     print('checked %d files in %s: %s' % (len(keys), os.path.relpath(code),
@@ -153,6 +152,9 @@ def run(a):
                 print('\n'.join(lines[seen:]), flush=True)
                 seen, last = len(lines), time.time()
             if time.time() - last > a.wait * 60:
+                now = open(log + '.now', encoding='utf-8').read().strip() if os.path.exists(log + '.now') else ''
+                if now:
+                    sys.exit('no new log line for %d minutes. The last Fusion call started: %s' % (a.wait, now))
                 sys.exit('no new log line for %d minutes. Is Fusion up, with the UpsertTestRunner add-in running? '
                          'Its log: %s' % (a.wait, os.path.join(RUN, 'runner.log')))
         text = open(log, encoding='utf-8').read() if os.path.exists(log) else ''

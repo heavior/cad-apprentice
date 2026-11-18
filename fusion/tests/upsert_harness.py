@@ -14,14 +14,14 @@ class Failed(Exception):
     pass
 
 
-def new_tab():  # slow-ok: the harness logs each scenario around it
+def new_tab():
     doc = app.documents.add(adsk.core.DocumentTypes.FusionDesignDocumentType)
     des = adsk.fusion.Design.cast(doc.products.itemByProductType('DesignProductType'))
     des.designType = adsk.fusion.DesignTypes.ParametricDesignType
     return doc, des
 
 
-# The helpers below take the scenario's note() as log, for a line around each slow call (fusion/rules.md).
+# The helpers below take the scenario's note() as log, to name their work in it (fusion/rules.md).
 def close_tab(doc, log=None):
     try:
         if doc and doc.isValid:
@@ -48,7 +48,7 @@ def build(doc, des, describe, v, log_path, save_note=None, go_back_to=None):
         describe(b, v)
         r['ok'] = b.finish()
         if r['ok'] and save_note:
-            b.save(save_note)  # slow-ok: Builder.save() logs it
+            b.save(save_note)
     except Exception as err:
         r['error'] = str(err)
         r['trace'] = traceback.format_exc()
@@ -166,14 +166,14 @@ def clear(des, log=None):
         left = [p for p in des.userParameters]
         for p in left:
             try:
-                p.deleteMe()  # slow-ok: the steps that used it are gone
+                p.deleteMe()
             except:
                 pass
         if not des.userParameters.count:
             break
     for owner in (des, des.rootComponent):
         for a in [a for a in owner.attributes if a.groupName == cad_apprentice.GROUP]:
-            a.deleteMe()  # slow-ok: an attribute
+            a.deleteMe()
 
 
 def file_of(doc):

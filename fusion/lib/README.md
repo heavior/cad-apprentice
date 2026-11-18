@@ -185,11 +185,12 @@ More on some of these:
   last good version in the design (attribute `go_back_to`). The next run in that tab goes back there
   if it fails too, and saves no restore point of the half-built tab. A run that finishes well clears
   the mark and saves, even when it changed nothing else. Nothing waits for a person.
-- **Slow calls:** `with cad_apprentice.slow(log, 'what'):` writes "what" before a call and "what:
-  done in 4.2 s" after it when it took a second or more ("failed after" if it raised). The library
-  does this around every Fusion call that can take long. `set_param(log, p, expr)` and
-  `catch_up(log)` (for `adsk.doEvents()`) do it in one line. [check_slow.py](cad_apprentice/check_slow.py) finds
-  slow calls with no `slow()` around them.
+- **Timing:** while a `LiveLog` is open, every call into Fusion's API is timed. A call that takes a
+  second or more writes "Fusion Class.method: done in 4.2 s" ("failed after" if it raised). The call
+  running now is kept in the log's `.now` file, so a stuck run names its call. Only the run's own
+  thread is timed, and the timers come off when the log closes. `with cad_apprentice.slow(log,
+  'what'):` names a stretch of work in the log, so the timings say what the calls were for.
+  `set_param(log, p, expr)` and `catch_up(log)` (for `adsk.doEvents()`) do it in one line.
 
 ## The parameter test
 
@@ -342,8 +343,8 @@ done was saved.
 
 | Message | Cause | Fix |
 | --- | --- | --- |
-| `fix these first (or --no-check)` | precheck or check_slow found problems in the code | fix them; `--no-check` only for a one-off rerun of an older script |
-| `no new log line for N minutes. Is Fusion up, ...` | Fusion is closed, the runner add-in isn't running, a dialog is open, or Fusion hangs | look at Fusion's window. A hung run stops only when Fusion quits; then close the `~recovered` tab without saving |
+| `fix these first (or --no-check)` | precheck found problems in the code | fix them; `--no-check` only for a one-off rerun of an older script |
+| `no new log line for N minutes. The last Fusion call started: ...` or `... Is Fusion up, ...` | Fusion is closed, the runner add-in isn't running, a dialog is open, or Fusion hangs | look at Fusion's window. A hung run stops only when Fusion quits; then close the `~recovered` tab without saving |
 | `runner: <status>` and an error | the runner couldn't run the script | read the error; often a wrong path in the entry file |
 | `the log does not end in DONE` | the script ended without finishing | read the log's last lines |
 | `<NAME>.log` holds only a traceback | the entry file couldn't run `build.py` | a syntax error, or the entry file's `CODE` path is wrong |
@@ -362,7 +363,7 @@ redraws more than it needs to. When a design costs time in a new way, add the fi
    run it again. Fusion reopens the design as a "~recovered" tab, holding that run's half-done changes;
    the runner refuses to work while it is open, so close it without saving.
 2. **Let the checks catch mistakes before Fusion does.** `prep` and `run` read the code first
-   ([precheck.py](cad_apprentice/precheck.py), [check_slow.py](cad_apprentice/check_slow.py)) and stop on a problem, in seconds
+   ([precheck.py](cad_apprentice/precheck.py)) and stop on a problem, in seconds
    instead of minutes into a run. When a run fails on something a check
    could have found (a typo in `uses`, a key built with `%` that read-ahead can't see), add that check
    to precheck.py with a case in [test_precheck.py](cad_apprentice/test_precheck.py).
@@ -378,7 +379,7 @@ redraws more than it needs to. When a design costs time in a new way, add the fi
    next design copies it. Put it in the library instead ([Adding a step type](#adding-a-step-type)).
 5. **One copy of each helper.** Before copying a function from another design script, move it into
    helpers.py. A copy that differs gets a parameter there, not a second version.
-6. **Read the timings.** The log says "done in N s" after every call that took a second or more. Spend
+6. **Read the timings.** The log says "done in N s" after every Fusion call that took a second or more. Spend
    effort on the slowest steps, for example a big sketch that a small change redraws whole. Do it after
    every run, and change the design where it can be built more simply (fusion/rules.md rule 33).
    Those timings are for the script's calls. For how long Fusion takes to recompute each feature,
@@ -415,10 +416,9 @@ redraws more than it needs to. When a design costs time in a new way, add the fi
    Every value in `spec` must either be set again by `update`, or be listed in `fixed=` so a change
    replaces the feature. A value in `spec` that `update` skips is logged "updated" and never applied:
    once a combine's operation stayed "join" for good this way.
-3. Wrap every slow Fusion call in `slow()`, or mark it `# slow-ok: <why>`. `check_slow.py` checks.
-4. No silent failures: when Fusion refuses something, raise with a message that says what and why.
-5. Add the name to `STEPS` in [precheck.py](cad_apprentice/precheck.py), so its keys and `uses` are checked.
-6. Add it to `test_features.py` (or a test of its own) with a first value and a changed one, and
+3. No silent failures: when Fusion refuses something, raise with a message that says what and why.
+4. Add the name to `STEPS` in [precheck.py](cad_apprentice/precheck.py), so its keys and `uses` are checked.
+5. Add it to `test_features.py` (or a test of its own) with a first value and a changed one, and
    run that through the runner. The change must edit in place, or the log must say why it replaced.
-7. Add a row to the [Supported steps](#supported-steps) table above, and to the plain list in the
+6. Add a row to the [Supported steps](#supported-steps) table above, and to the plain list in the
    [README](../../README.md#supported-steps).

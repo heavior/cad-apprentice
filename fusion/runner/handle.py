@@ -118,6 +118,12 @@ def run(app, name, rid, req, active, results, resumed=False):
         except:
             result['status'] = 'error'
             result['error'] = traceback.format_exc()
+    # A script that never closed its log leaves the library's timers on every Fusion call; take them off.
+    if 'cad_apprentice' in sys.modules:
+        try:
+            sys.modules['cad_apprentice'].wrap_fusion(False)
+        except:
+            result['unwrap_error'] = traceback.format_exc()
     result['seconds'] = round(time.time() - t0, 1)
     try:
         result['tabs_after'] = tabs(app)

@@ -45,11 +45,11 @@ def hand_block(des):
     # A separate block, made by hand as a person would: no fusion_upsert attributes. It sits after the step under test,
     # so replacing that step would be refused.
     comp = des.rootComponent
-    sk = comp.sketches.add(comp.xYConstructionPlane)  # slow-ok: test setup, one small sketch
+    sk = comp.sketches.add(comp.xYConstructionPlane)
     sk.sketchCurves.sketchLines.addTwoPointRectangle(adsk.core.Point3D.create(10, 10, 0), adsk.core.Point3D.create(11, 11, 0))
     ei = comp.features.extrudeFeatures.createInput(sk.profiles.item(0), New)
     ei.setDistanceExtent(False, vi('1 cm'))
-    f = comp.features.extrudeFeatures.add(ei)  # slow-ok: test setup, one small extrude
+    f = comp.features.extrudeFeatures.add(ei)
     f.name = 'Hand block'
     return f
 

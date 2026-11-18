@@ -346,7 +346,7 @@ def span(bodies, i):
 
 # A pattern's or shell's inputs can only be read with the marker before it ("Didn't roll editing feature
 # back" at the end), so read() runs there and the marker goes back to the end.
-def rolled(des, f, read):  # slow-ok: a read after the build, on a small test design
+def rolled(des, f, read):
     try:
         f.timelineObject.rollTo(True)
         return read()

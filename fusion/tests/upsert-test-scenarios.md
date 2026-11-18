@@ -432,5 +432,3 @@ Not needed: computer use (the runner needs no clicks, and a locked screen defeat
   although the log says they were deleted. `_remove_retired` doesn't check what `deleteMe()`
   returns, so a refused delete passes without a word. Why Fusion refused isn't known. **Proposed
   fix, not made:** check the delete's result, warn when it fails, find out why.
-- **Old Fusion scripts.** Scripts written before the log-line rule may still have slow calls with no
-  log line. Leave them until one is next edited; the hook lists them then.

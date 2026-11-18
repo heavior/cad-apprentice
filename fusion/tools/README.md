@@ -49,17 +49,13 @@ How `run` behaves:
 
 ## Checks
 
-Both are plain Python and need no Fusion. `prep` and `run` call them on the design's code and the
+It is plain Python and needs no Fusion. `prep` and `run` call it on the design's code and the
 library.
 
 - **[precheck.py](../lib/cad_apprentice/precheck.py)** reads a build script and finds step-key
   mistakes that would stop a run halfway: a key written twice, a fixed key inside a loop, a key in `uses=` that no step has, a
   chamfer after a round. It also stops an STL export that skips the library's `write_stl`, so every
   STL is made at High mesh refinement. `python3 K/fusion/lib/cad_apprentice/precheck.py <file or folder>`
-- **[check_slow.py](../lib/cad_apprentice/check_slow.py)** finds Fusion calls that can take long
-  with no `slow()` around them. `python3 K/fusion/lib/cad_apprentice/check_slow.py <file or folder>`.
-  It also runs as a hook after every file the agent writes. A call that is fine without one says why
-  in a `# slow-ok: <why>` comment.
 
 ## Runner scripts
 

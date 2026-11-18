@@ -15,11 +15,8 @@ def expect(ok, what):
 
 
 class FakeParam:
-    # A property, not a plain .value = ..., so precheck doesn't take it for a slow Fusion call.
-    value = property(lambda self: self.cm)
-
     def __init__(self, cm):
-        self.cm = cm
+        self.value = cm
 
 
 class FakeDesign:

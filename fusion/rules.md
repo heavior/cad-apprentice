@@ -242,25 +242,20 @@ with `tail -f` and a slow run told apart from a hung one. A log written only at 
   The library already does this for every step it builds. When Fusion freezes or crashes, the last
   line names the step it died in, and the lines above show what got done.
 
-**A log line around every slow call.** Any Fusion call that can take long goes inside
-`with cad_apprentice.slow(log, 'what'):`. It writes "what" before the call and "what: done in 4.2 s" after,
-so a run that hangs names the exact call, and a slow one shows where the time went. Slow calls: setting
-a parameter or a dimension, `adsk.doEvents()`, rolling or moving the timeline marker, adding or deleting
-a feature, `save`, `saveAs`, closing or opening a document, exporting, saving a picture.
-`cad_apprentice.set_param(log, p, expr)` and `cad_apprentice.catch_up(log)` do the common two in one line.
-Without these lines, a test row that once sat for 4.7 hours left one line in its log, the row's
-name at 05:57, and nothing told which of its parameter sets Fusion was stuck in.
+**Every Fusion call is timed.** While a log is open, the library times every call into Fusion's API,
+so nobody has to guess which calls are slow. A call that takes a second or more gets a line, for
+example "Fusion Parameter.expression =: done in 4.2 s". The call running right now is kept in the
+log's `.now` file, so when a run hangs, `run` names the exact call it is stuck in. Without this, a test
+row that once sat for 4.7 hours left one line in its log, the row's name at 05:57, and nothing told
+which of its parameter sets Fusion was stuck in.
 
-- The library does it for every step, and for every slow call of its own.
-- [check_slow.py](lib/cad_apprentice/check_slow.py) lists slow calls with no `slow()` around
-  them: `python3 projects/hobby/cad-apprentice/fusion/lib/cad_apprentice/check_slow.py <file or folder>`. A hook runs it after every
-  Edit or Write of a Fusion script, so a missing line shows up at once.
-- A call that's fine without one says why in a `# slow-ok: <why>` comment, on its line or on its
-  function's `def` line. Example: a sketch's draw function, which the step's own "make" line already
-  covers. Put the comment there rather than wrapping code inside a step's draw function: wrapping changes
-  the step's fingerprint, and the next run would rebuild it.
-- Scripts from before this rule may still have calls without one.
-  Fix them the next time a script is edited; the hook will list them.
+- Only the run's own calls are timed, not the runner add-in's. A call made inside another call counts
+  as part of the outer one.
+- The timers come off when the log closes, and the runner takes them off after every run.
+- `with cad_apprentice.slow(log, 'what'):` names a stretch of work in the log ("what", then "what:
+  done in 4.2 s"), so the timings say what the calls were for. Use it around a group of calls, such as
+  one trial or one export. Don't add it inside a step's draw function: that changes the step's
+  fingerprint, and the next run would rebuild it.
 
 **No silent failures anywhere.** This goes for the library and for every Fusion script.
 

@@ -111,7 +111,7 @@ def a4(S):
     doc, des, r = first(S)
     tl = des.timeline
     open_groups(tl)  # Steps in a collapsed group have no number, so the marker can't be put among them.
-    tl.markerPosition = 5  # slow-ok: the scenario's own setup, logged as the scenario
+    tl.markerPosition = 5
     r2 = S.run(doc, des, variant(), 'rolled back')
     S.need(r2)
     S.expect(tl.markerPosition == tl.count, 'the marker is at the end: %d of %d' % (tl.markerPosition, tl.count))
@@ -1417,7 +1417,7 @@ def j6(S):
     doc, des, r = first(S, v)
     ent = keyed(des, 'base').entity
     for a in [a for a in ent.attributes if a.groupName == cad_apprentice.GROUP]:
-        a.deleteMe()  # slow-ok: an attribute
+        a.deleteMe()
     ent.name = 'Hand base'
     want = M.label(v, 'base')
 

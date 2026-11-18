@@ -51,8 +51,8 @@ agent's rules are in [fusion/rules.md](fusion/rules.md).
   is faster.
 - **Fail fast.** Fusion work is slow, so the design goes through quick checks first. Scripts read
   the build script in seconds and stop the run on a mistake that would fail it halfway.
-- **Observability.** The log times each Fusion operation. The agent spots a stalled run and
-  reworks the slowest design steps.
+- **Observability.** The library times every Fusion call on its own, so the agent never guesses
+  what is slow. It names the call a stuck run is in and reworks the slowest design steps.
 - **Adaptability.** When a design needs a step the library doesn't have, the agent adds it to the
   library ([Contributing](#contributing)).
 
@@ -201,11 +201,11 @@ the [project README](demos/suspension-bridge/README.md).
 | Part | What it gives the agent | Where |
 | --- | --- | --- |
 | The library | builds the design from a script on the first run and updates it step by step on later runs ("upsert": update a step if it exists, insert it if it doesn't); names everything, saves versions, checks every feature | [fusion/lib/cad_apprentice/](fusion/lib/cad_apprentice/) |
-| Rules for designing in Fusion | 31 rules: working with you, sketches, parameters, the timeline, lessons from designs that broke | [fusion/rules.md](fusion/rules.md) |
+| Rules for designing in Fusion | Working with you, sketches, parameters, the timeline, best practices from Autodesk and its forums, lessons from designs that broke | [fusion/rules.md](fusion/rules.md) |
 | Rules for 3D print prep | which parts to print, STLs, a filament for each, the Bambu Studio project | [3dprinting/rules.md](3dprinting/rules.md) |
 | Runner add-in | lets the agent start a Fusion script without clicking ▶ for you | [fusion/runner/](fusion/runner/) |
 | `fusion_outputs.py` | starts a new design from the template, checks a script, runs it, prints the log as it grows, collects pictures and STLs | [fusion_outputs.py](fusion/tools/fusion_outputs.py) |
-| Checks | `precheck.py` reads a script before Fusion does; `check_slow.py` finds slow Fusion calls with no timer, and runs after every edit the agent makes | [precheck.py](fusion/lib/cad_apprentice/precheck.py), [check_slow.py](fusion/lib/cad_apprentice/check_slow.py) |
+| Checks | `precheck.py` reads a script before Fusion does | [precheck.py](fusion/lib/cad_apprentice/precheck.py) |
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
 | Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [fix](skills/fix/SKILL.md) |
@@ -347,7 +347,7 @@ history), or export STLs and the 3MF project before you approve the design.
 - If a feature breaks, the design goes back to the last saved version, so the next run starts from a
   good design.
 - When the log gets no new line for 30 minutes, `run` stops waiting, and the agent tells you the step
-  it got stuck in.
+  and the Fusion call it got stuck in.
 - When the runner add-in doesn't answer, the agent starts the run from Fusion's Scripts dialog
   itself, with the screen permission above.
 - When Fusion hangs inside a run, the agent force-quits Fusion, starts it again and tells you.

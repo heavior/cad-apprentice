@@ -87,7 +87,7 @@ def point(x, y):
 
 
 def rectangle(width, depth):
-    def draw(s):  # slow-ok: the sketch step's "make" line covers it
+    def draw(s):
         lines = s.sketchCurves.sketchLines.addTwoPointRectangle(point(0, 0), point(2, 2))
         gc = s.geometricConstraints
         gc.addCoincident(lines.item(0).startSketchPoint, s.originPoint)
@@ -116,7 +116,7 @@ def base_outline(width, depth):
 
 # The same outline, drawn by other code (C2).
 def base_outline_v2(width, depth):
-    def draw(s):  # slow-ok: the sketch step's "make" line covers it
+    def draw(s):
         lines = s.sketchCurves.sketchLines.addTwoPointRectangle(point(0, 0), point(3, 3))
         gc = s.geometricConstraints
         gc.addCoincident(lines.item(0).startSketchPoint, s.originPoint)
@@ -138,7 +138,7 @@ def make_fn(src, name):
 
 
 def circle(x, y, d):
-    def draw(s):  # slow-ok: the sketch step's "make" line covers it
+    def draw(s):
         c = s.sketchCurves.sketchCircles.addByCenterRadius(point(0.5, 0.5), 0.3)
         dims = s.sketchDimensions
         dims.addDiameterDimension(c, point(1, 1)).parameter.expression = d
@@ -154,7 +154,7 @@ def rib_outline(width, height):
 
 
 def mark_draw(b, d):
-    def draw(s):  # slow-ok: the sketch step's "make" line covers it
+    def draw(s):
         corner = tagged(b.known['base_sketch'], 'corner')
         p = s.project(corner).item(0)
         c = s.sketchCurves.sketchCircles.addByCenterRadius(p, 0.15)
@@ -228,7 +228,7 @@ def slab_box():
 
 
 def offset_plane(comp, base, off):
-    def make():  # slow-ok: the step's "make" line covers it
+    def make():
         pi = comp.constructionPlanes.createInput()
         pi.setByOffset(base(), vi(off))
         return comp.constructionPlanes.add(pi)
@@ -237,7 +237,7 @@ def offset_plane(comp, base, off):
 
 
 def plain_plane(comp, off):
-    def make():  # slow-ok: the step's "make" line covers it
+    def make():
         pi = comp.constructionPlanes.createInput()
         pi.setByOffset(comp.xYConstructionPlane, vi(off))
         return comp.constructionPlanes.add(pi)
@@ -385,7 +385,7 @@ def step_table():
 
     def rib_peek(b, v, S):
         comp = S['comp']
-        def make():  # slow-ok: the step's "make" line covers it
+        def make():
             body = b.body('rib')  # rib_join took it
             pi = comp.constructionPlanes.createInput()
             pi.setByOffset(body.faces.item(0), vi('1 mm'))

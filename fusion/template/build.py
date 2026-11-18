@@ -124,7 +124,7 @@ def run(context):
         if MAKE_STL:
             stls(des, out)
         if MODE in ('saved', 'check', 'clean'):
-            b.save(SAVE_NOTE)  # slow-ok: Builder.save() logs it
+            b.save(SAVE_NOTE)
         elif MODE == 'new':
             # A first build is saved as a new design (fusion/rules.md rule 4).
             with cad_apprentice.slow(out, 'save as %s' % SAVED_DOC):
