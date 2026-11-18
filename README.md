@@ -184,8 +184,8 @@ the skill's name.
    /cad-apprentice:pictures
    ```
 
-   The agent takes them in a new tab that links to your design, so your saved design isn't touched, and crops
-   them tight.
+   The agent takes them in a new tab that links to your design, so your saved design isn't
+   touched, and crops them tight.
 
 ## Demo: Golden Gate bridge
 
