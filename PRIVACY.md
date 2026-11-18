@@ -3,6 +3,17 @@
 cad-apprentice runs on your computer. It collects nothing and sends nothing to the kit's author or to
 anyone else. It has no server, no account, no analytics and no tracking.
 
+## In short
+
+- **Personal data collected:** none. The kit's author gets nothing from you.
+- **What it's used for:** nothing is collected, so nothing is used.
+- **Who receives it:** no one, from the kit. Your agent and Autodesk Fusion send their own data,
+  under their own policies (see below).
+- **How long it's kept:** the kit keeps no data of yours anywhere but your own computer. Files it
+  writes there stay until you delete them.
+- **Your controls:** delete your project folder, the kit folder and the entry file in Fusion's
+  Scripts folder, and nothing of the kit is left.
+
 ## What leaves your computer
 
 None of it is sent by the kit's own code. It comes from the tools the kit works with:

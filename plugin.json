@@ -22,10 +22,11 @@
         "shortDescription": "Design 3D parts in Fusion 360",
         "longDescription": "An AI agent designs a part with you in Autodesk Fusion and gets it ready for 3D printing. You ask, it builds and shows you pictures, you say what to change, until you approve. Each iteration is a saved version in Fusion, and your own edits in Fusion are kept. Needs Autodesk Fusion on your Mac.",
         "developerName": "Evgeny Balashov",
-        "category": "Productivity",
+        "category": "Design",
         "capabilities": [
-          "Read",
-          "Write"
+          "Build 3D parts in Fusion 360",
+          "Show pictures of each iteration",
+          "Export STL files for 3D printing"
         ],
         "websiteURL": "https://github.com/heavior/cad-apprentice",
         "supportURL": "https://github.com/heavior/cad-apprentice/issues",
