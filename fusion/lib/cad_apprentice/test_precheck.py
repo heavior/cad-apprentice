@@ -1,5 +1,5 @@
 # Tests for precheck.py. Plain Python, no Fusion needed:
-#   python3 lib/cad_apprentice/test_precheck.py
+#   python3 fusion/lib/cad_apprentice/test_precheck.py
 # Each case is a small script (line 1 is its first line); the test says which lines must be flagged
 # and checks nothing else is.
 import os, re, sys, tempfile, textwrap

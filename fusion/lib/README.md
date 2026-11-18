@@ -75,23 +75,23 @@ comes after it. Every step also takes `spec=()` (extra values that should count 
 | `mid_plane(key, name, a, b)` | a plane halfway between two | sides (built in the test, a change not tested) | `test_features.py` |
 | `axis(key, name, how, a, b=None)` | an axis: `'two_planes'`, `'line'`, `'two_points'`, `'normal'` | inputs (built in the test, a change not tested) | `test_features.py` |
 | `point(key, name, how, a, b=None)` | a point: `'point'`, `'two_lines'`, `'center'` | inputs (built in the test, a change not tested) | `test_features.py` |
-| `extrude(key, name, sketch, op, distance=, symmetric=, taper=, thin=, profile=, participants=, body_name=)` | an extrude | distance, symmetric distance, taper, operation, profile, participants, body name, thin wall thickness and side. Dropping `participants` replaces it | `test_features.py`, scenarios C |
-| `revolve(key, name, sketch, axis, op, angle='360 deg', symmetric=False, participants=None, body_name=None, profile=None)` | a revolve | angle, axis, operation, profile, participants, body name. Dropping `participants` replaces it | `test_features.py` |
-| `sweep(key, name, sketch, path, op, participants=None, body_name=None, profile=None, chain=True)` | a sweep | path, profile, operation, participants, body name. Dropping `participants` replaces it | `test_features.py` |
-| `pipe(key, name, path, size, op, hollow=None)` | a pipe | size, path, wall, participants, body name. A new operation, a wall added or taken away, or dropping `participants` replaces it | `test_features.py` |
-| `loft(key, name, sections, op)` | a loft | sections, also redrawn or moved to another sketch. A different number of sections, or dropping `participants`, replaces it | `test_features.py`, `test_edit_in_place.py` |
+| `extrude(key, name, sketch, operation, distance=, symmetric=, taper=, thin=, profile=, participants=, body_name=)` | an extrude | distance, symmetric distance, taper, operation, profile, participants, body name, thin wall thickness and side. Dropping `participants` replaces it | `test_features.py`, scenarios C |
+| `revolve(key, name, sketch, axis, operation, angle='360 deg', symmetric=False, participants=None, body_name=None, profile=None)` | a revolve | angle, axis, operation, profile, participants, body name. Dropping `participants` replaces it | `test_features.py` |
+| `sweep(key, name, sketch, path, operation, participants=None, body_name=None, profile=None, chain=True)` | a sweep | path, profile, operation, participants, body name. Dropping `participants` replaces it | `test_features.py` |
+| `pipe(key, name, path, size, operation, hollow=None, participants=None, body_name=None, chain=True)` | a pipe | size, path, wall, participants, body name. A new operation, a wall added or taken away, or dropping `participants` replaces it | `test_features.py` |
+| `loft(key, name, sections, operation, participants=None, body_name=None)` | a loft | sections, also redrawn or moved to another sketch. A different number of sections, or dropping `participants`, replaces it | `test_features.py`, `test_edit_in_place.py` |
 | `hole(key, name, points, diameter, depth=None, kind='simple', head=None)` | simple, counterbore or countersink holes | diameter, depth, head. A new kind, or a depth changed to or from through all, replaces it | `test_features.py` (all three kinds) |
-| `combine(key, name, target, tools, op, body_name=None)` | join, cut or intersect | target, tools, body name. A new operation replaces it | `test_features.py`, scenarios C |
+| `combine(key, name, target, tools, operation, body_name=None)` | join, cut or intersect | target, tools, body name. A new operation replaces it | `test_features.py`, scenarios C |
 | `fillet(key, name, sets)` | a fillet; each set is `(edges, r)`, `(edges, 'chord', length)` or `(edges, 'variable', start, end, mids)` | radius, chord, variable radii and mid points, edges, two sets at once | `test_features.py`, `test_edit_in_place.py` (G4) |
 | `chamfer(key, name, sets)` | a chamfer; each set is `(edges, d)`, `(edges, 'two', d1, d2)` or `(edges, 'angle', d, angle)` | distances, angle, edges. A set that changes kind is replaced | `test_features.py` |
-| `base_body(key, name, make_body)` | a base feature holding a body you make with the API | replaced | scenarios (model) |
+| `base_body(key, name, make_body, body_name=None)` | a base feature holding a body you make with the API | replaced | scenarios (model) |
 | `move(key, name, bodies, x, y, z)` | a move | distances, bodies | scenarios |
 | `turn(key, name, bodies, axis, angle)` | a move that rotates about an axis | angle | `test_features.py` |
-| `copy(key, name, body)` | a copy of a body | replaced | `test_features.py` |
+| `copy(key, name, body, body_name=None)` | a copy of a body | replaced | `test_features.py` |
 | `rect_pattern(key, name, bodies, axis1, n1, d1, axis2, n2, d2, adjust=False, compute=None)` | a rectangular pattern | counts, spacing, bodies, both directions (an edge counts by which edge it is). `compute` is `'identical'`, `'optimized'` or `'adjust'` ([rules.md rule 32](../rules.md)); a new one replaces the step. Left out (or `adjust=True`), nothing changes on designs built before it: Fusion's API default is Adjust, the slowest | `test_features.py`, scenarios |
 | `circular_pattern(key, name, items, axis, n, angle='360 deg', symmetric=False, adjust=False, compute=None)` | a circular pattern | count, angle, items, symmetric. With `symmetric=True` the angle covers both sides together, so double a one-side angle. A new axis or a new `compute` (see `rect_pattern`) replaces it | `test_features.py` |
-| `path_pattern(key, name, items, path, n, spacing, compute=None)` | a pattern along a path | count, spacing. New items, a new path, a new `chain` or a new `compute` (see `rect_pattern`) replaces it | `test_features.py` |
-| `mirror(key, name, items, plane, combine=False, compute=None)` | a mirror | plane, items, body name. Turning `combine` on or off, or a new `compute` (see `rect_pattern`), replaces it | `test_features.py` |
+| `path_pattern(key, name, items, path, n, spacing, chain=True, compute=None)` | a pattern along a path | count, spacing. New items, a new path, a new `chain` or a new `compute` (see `rect_pattern`) replaces it | `test_features.py` |
+| `mirror(key, name, items, plane, combine=False, body_name=None, compute=None)` | a mirror | plane, items, body name. Turning `combine` on or off, or a new `compute` (see `rect_pattern`), replaces it | `test_features.py` |
 | `split_body(key, name, body, tool, extend=True)` | a split; `extend` grows the tool to cut all the way through | tool. A new body replaces it | `test_features.py` |
 | `shell(key, name, faces, thickness)` | a shell | thickness, faces (a second open face added) | `test_features.py` |
 | `scale(key, name, bodies, point, factor)` | a scale | factor. New bodies or a new point replaces it | `test_features.py` |
@@ -99,7 +99,7 @@ comes after it. Every step also takes `spec=()` (extra values that should count 
 | `joint(key, name, one, two, motion='rigid', axis='z', offset=None, angle=None, flip=False)` | a joint between two parts; `motion` = `'rigid'`, `'revolute'` or `'slider'` | sides, motion, axis, offset, angle, flip | `test_joints.py` |
 | `as_built_joint(key, name, one, two, motion='rigid', axis='z', at=None)` | an as-built joint between two occurrences; `at` is needed unless rigid | motion, axis, `at`. Other parts replace it | `test_joints.py` |
 | `step(key, name, make, update=None, ...)` | anything else: `make()` builds it, `update(feature)` edits it | whatever `update` sets | every test |
-| `take_over(key, name, entity)` | tags a feature that is already there, so the script owns it from now on | — | scenario J6 |
+| `take_over(key, name, ent)` | tags a feature that is already there, so the script owns it from now on | — | scenario J6 |
 
 More on some of these:
 
@@ -132,6 +132,26 @@ More on some of these:
   you need: `from cad_apprentice.helpers import mm, p3, sketch_tools`.
 - **`tag(entity, name)` and `tagged(sketch, name)`** mark a sketch point or curve so another sketch
   can find and project it after a redraw.
+- **`operation`** is an `adsk.fusion.FeatureOperations` value, such as `JoinFeatureOperation`. The
+  template keeps `NewBodyFeatureOperation` as `New`.
+
+The Builder's other methods, for the end of a run and for checks:
+
+| Method | Does |
+| --- | --- |
+| `finish()` | puts the marker at the end and checks every feature; goes back if one is broken ([How a run works](#how-a-run-works)) |
+| `save(note)` | saves a version, only when the run changed something |
+| `abort(why)` | after an error: logs `STOPPED` and goes back to the last save |
+| `trials(...)` | the parameter test ([Running it](#running-it)) |
+| `back_to_saved()` | after the test: closes the tab without saving and reopens the saved version |
+| `problems()`, `warnings()` | timeline steps with an error, or a warning, as `name: message` |
+| `unresolved()` | the library's sketches that aren't fully constrained |
+| `foreign()` | the timeline steps the library didn't make |
+| `size()`, `bodies()` | the bodies' volume and counts, and each body's size and place, compared after each trial |
+
+Every other public function and class has a comment above it in the code. The kit's MCP server
+([mcp.json](../../mcp.json)) lists them all in its `fusion-library-reference` rule set, made from that
+code.
 
 ## How a run works
 

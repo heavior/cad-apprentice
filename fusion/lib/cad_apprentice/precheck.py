@@ -1,7 +1,7 @@
 # Reads a build script before its run changes the design, and finds step-key mistakes that would
 # otherwise stop the run halfway, after Fusion has already done slow work (A5). A cheap check here
 # saves time and tokens. Plain Python, no Fusion needed:
-#   python3 lib/cad_apprentice/precheck.py <file or folder>...
+#   python3 fusion/lib/cad_apprentice/precheck.py <file or folder>...
 # It finds:
 #   - one step key written twice in one function, where both can run (step() would stop: "used twice");
 #   - a key in uses= that no step in the script has: a typo, or a step that was renamed;
@@ -273,6 +273,8 @@ def read_ahead(read, visited, log):
                         % (os.path.basename(path), '\n'.join(problems)))
 
 
+# The .py files to check: each file given, and every .py file under each folder given
+# (run/ and __pycache__/ skipped).
 def files(args):
     for a in args:
         if os.path.isdir(a):

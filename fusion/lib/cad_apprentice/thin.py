@@ -10,6 +10,7 @@ def below(found, floor=NOZZLE_MM):
     return sorted(((n, v) for n, v in found if v < floor - 1e-9), key=lambda x: x[1])
 
 
+# [(name, mm)] -> 'name 0.21 mm, ...' for the log.
 def text(found):
     return ', '.join('%s %.2f mm' % (n, v) for n, v in found)
 
@@ -35,6 +36,7 @@ class Watch:
     def __call__(self, des, label):
         return self.note(sizes(des, self.names), label)
 
+    # Logs the parts in found that are under the floor, keeps the thinnest, and returns them.
     def note(self, found, label):
         thin = below(found, self.floor)
         self.checks += 1
@@ -45,6 +47,7 @@ class Watch:
                 self.thinnest = thin[0] + (label,)
         return thin
 
+    # One line on all the checks so far, logged and returned.
     def summary(self):
         if not self.hits:
             line = 'thin parts: none under %g mm in %d checks' % (self.floor, self.checks)

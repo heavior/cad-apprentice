@@ -12,6 +12,7 @@ def number(expr, unit):
     return float(m.group(1))
 
 
+# 12.5, 'mm' -> '12.5 mm'.
 def text(n, unit):
     return ('%g %s' % (round(n, 6), unit or '')).strip()
 
@@ -47,14 +48,17 @@ def _on_grid(v, lo, st):
     return abs(k - round(k)) < 1e-6
 
 
+# Every value from lo to hi in steps of st.
 def grid(lo, hi, st):
     return [lo + k * st for k in range(int(round((hi - lo) / st)) + 1)]
 
 
+# The range as the text kept on the parameter; load() reads it back.
 def store(lo, hi, st):
     return '%r;%r;%r' % (lo, hi, st)
 
 
+# The (low, high, step) that store() wrote.
 def load(value):
     lo, hi, st = (float(x) for x in value.split(';'))
     return lo, hi, st

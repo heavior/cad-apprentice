@@ -1,5 +1,5 @@
 # Tests for thin.py. Plain Python, no Fusion needed:
-#   python3 lib/cad_apprentice/test_thin.py
+#   python3 fusion/lib/cad_apprentice/test_thin.py
 import os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

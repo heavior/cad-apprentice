@@ -98,6 +98,7 @@ class LiveLog(list):
             wrap_fusion(True)
         _logs.append(self)
 
+    # Keeps the line and writes it to the file at once.
     def append(self, line):
         list.append(self, line)
         self.progress(line)
@@ -112,6 +113,7 @@ class LiveLog(list):
     def now(self, what, t0):
         os.pwrite(self._now, ('%s %s' % (time.strftime('%H:%M:%S', time.localtime(t0)), what)).encode()[:200].ljust(200), 0)
 
+    # Closes the file. The last open log to close takes the timers off Fusion's API.
     def close(self):
         if self in _logs:
             _logs.remove(self)
@@ -156,11 +158,13 @@ def set_param(log, p, expr):
         p.expression = expr
 
 
+# adsk.doEvents(), named in the log, so a slow catch-up says what it waited for.
 def catch_up(log, what='let Fusion catch up'):
     with slow(log, what):
         adsk.doEvents()
 
 
+# A Fusion ValueInput from an expression, such as '2 mm' or 'wall * 4'.
 def vi(expr):
     return adsk.core.ValueInput.createByString(expr)
 
@@ -331,6 +335,7 @@ def _print(x):
     return r
 
 
+# A short hash of a step's spec. A step whose fingerprint matches the one its feature stores is skipped.
 def fingerprint(*spec):
     return hashlib.sha1(_print(spec).encode()).hexdigest()[:16]
 
@@ -349,6 +354,7 @@ def tag(entity, name):
     entity.attributes.add(GROUP, 'tag', name)
 
 
+# The sketch point or curve that tag() marked with name. Raises when there is none.
 def tagged(sketch, name):
     for group in (sketch.sketchPoints, sketch.sketchCurves):
         for q in group:
@@ -388,6 +394,7 @@ def open_groups(tl):
     return closed
 
 
+# Collapses the groups open_groups() opened, skipping any deleted since.
 def close_groups(groups):
     for g in groups:
         if g.isValid:
@@ -576,6 +583,7 @@ class group_scope:
         self.b.current_group = self.outer
 
 
+# The with block behind Builder.component().
 class component_scope:
     def __init__(self, builder, key, name):
         self.b, self.key, self.name = builder, key, name
@@ -670,6 +678,7 @@ class Builder:
     def _slow(self, what):
         return slow(self.log, '    ' + what)
 
+    # A with block: the steps inside it go in a timeline group with this name.
     def group(self, name):
         return group_scope(self, name)
 
@@ -701,6 +710,7 @@ class Builder:
         if parent and parent.id != self.comp.id:
             raise Exception('%s is in component %s, but the script now puts it in %s. Move it by hand first.' % (name, parent.name, self.comp.name))
 
+    # Body i of the feature a step made. Raises with a clear message when the step has no such body.
     def body(self, key, i=0):
         bodies = self.known[key].bodies
         if i >= bodies.count:
@@ -1368,6 +1378,8 @@ class Builder:
         return self.step(key, name, make, update, spec=said, uses=tuple(uses) + (skey,), read=read,
                          fixed=(('participants', bool(participants)),))
 
+    # Joins, cuts or intersects: tools() (a list of bodies) into target() (one body). operation is a
+    # FeatureOperations value; a new one replaces the step. body_name names the result.
     def combine(self, key, name, target, tools, operation, body_name=None, spec=(), uses=()):
         cf = self.comp.features.combineFeatures
 
@@ -1592,6 +1604,7 @@ class Builder:
 
         return self.step(key, name, make, spec=(make_body, spec) + ((body_name,) if body_name else ()))
 
+    # Moves bodies() by x, y and z (expressions). The distances and the bodies edit in place.
     def move(self, key, name, bodies, x, y, z, spec=(), uses=()):
         mf = self.comp.features.moveFeatures
 
@@ -1851,7 +1864,7 @@ class Builder:
         return self.step(key, name, make, update, spec=said, uses=tuple(uses) + skey, fixed=(('participants', bool(participants)),),
                          read=lambda f: adsk.fusion.AngleExtentDefinition.cast(f.extentDefinition).angle.expression)
 
-    # profile swept along path(): a curve or a list of them, from any sketch (chain: see _route).
+    # profile swept along path(): a curve or a list of them, from any sketch (chain: also take the curves joined end to end to them).
     def sweep(self, key, name, sketch, path, operation, participants=None, body_name=None, profile=None, chain=True, spec=(), uses=()):
         sf = self.comp.features.sweepFeatures
         feats = self.comp.features
@@ -1881,7 +1894,7 @@ class Builder:
         return self.step(key, name, make, update, spec=(operation, path, chain, profile, participants, body_name, spec), uses=tuple(uses) + skey,
                          fixed=(('participants', bool(participants)),))
 
-    # A round bar along path() (a curve or a list, chain: see _route), size across. hollow: the wall, for a tube.
+    # A round bar along path() (a curve or a list; chain: also take the curves joined to them), size across. hollow: the wall, for a tube.
     def pipe(self, key, name, path, size, operation, hollow=None, participants=None, body_name=None, chain=True, spec=(), uses=()):
         pf = self.comp.features.pipeFeatures
         feats = self.comp.features
@@ -2041,7 +2054,7 @@ class Builder:
                          read=lambda f: '%s;%s' % (f.quantity.expression, f.totalAngle.expression),
                          fixed=(('axis', _axis_name(_get(axis))),) + how_fixed)
 
-    # items() copied along path() (a curve or a list, chain: see _route): n copies, spacing apart.
+    # items() copied along path() (a curve or a list; chain: also take the curves joined to them): n copies, spacing apart.
     # compute: see rect_pattern.
     def path_pattern(self, key, name, items, path, n, spacing, chain=True, compute=None, spec=(), uses=()):
         pp = self.comp.features.pathPatternFeatures
@@ -2151,7 +2164,8 @@ class Builder:
             with self._slow('marker after %s' % name):
                 ent.timelineObject.rollTo(False)
 
-    # A joint that puts one where two is. one and two are functions that give a side (see _joint_side).
+    # A joint that puts one where two is. one and two are functions that give a side: a
+    # JointGeometry, a joint origin, or a point (sketch point, vertex, construction point).
     # motion is rigid, revolute or slider, about or along axis (x, y or z of two). Offset, angle and flip
     # are set like in Fusion's joint dialog. Every value, the sides and the motion edit in place.
     def joint(self, key, name, one, two, motion='rigid', axis='z', offset=None, angle=None, flip=False, spec=(), uses=()):
@@ -2185,7 +2199,7 @@ class Builder:
         return self.step(key, name, make, update, spec=(one, two, motion, axis, offset, angle, flip, spec), uses=uses, read=read)
 
     # A joint that keeps two parts where they are now. one and two give the occurrences. A rigid one needs
-    # nothing more. A revolute or slider one turns or slides at at (see _joint_side), about or along axis.
+    # nothing more. A revolute or slider one turns or slides at at (a joint origin or a point), about or along axis.
     def as_built_joint(self, key, name, one, two, motion='rigid', axis='z', at=None, spec=(), uses=()):
         _check_motion(name, motion, axis)
         if motion != 'rigid' and at is None:
@@ -2348,6 +2362,7 @@ class Builder:
                 self.log.append('could not group %s: %s' % (n, str(err).split(' - ')[-1].strip()))
         self._made_groups([g.name for g in self.tl.timelineGroups if g.name in self.group_order])
 
+    # Timeline steps with an error, as 'name: message'.
     def problems(self):
         return ['%s: %s' % (it.name, it.errorOrWarningMessage) for it in timeline_items(self.tl) if it.healthState == ErrorState]
 
@@ -2359,9 +2374,11 @@ class Builder:
         return out + ['%s: the sketch did not solve, so it kept its old shape' % s.name for c in self.des.allComponents
                       for s in c.sketches if _attr(s, 'key') and s.healthState != Healthy]
 
+    # Timeline steps the library didn't make (they have no key): features made by hand.
     def foreign(self):
         return [it.name for it in timeline_items(self.tl) if not _attr(it.entity, 'key')]
 
+    # The library's sketches that aren't fully constrained.
     def unresolved(self):
         return [s.name for c in self.des.allComponents for s in c.sketches if _attr(s, 'key') and not s.isFullyConstrained]
 
@@ -2661,7 +2678,8 @@ class Builder:
         self.log.append('parameter test done: closing its unsaved changes')
         self._go_back()
 
-    # Something raised partway through.
+    # Something raised partway through: logs STOPPED, puts the marker and groups back, and goes back
+    # to the last saved version.
     def abort(self, why):
         self.log.append('STOPPED: %s' % why)
         try:

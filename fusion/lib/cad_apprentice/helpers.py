@@ -8,14 +8,17 @@ from . import slow, timeline_items
 
 # ---------- Numbers and points ----------
 
+# Fusion's API works in cm: v as mm, rounded to 0.01.
 def mm(v):
     return round(v * 10, 2)
 
 
+# A Point3D, in cm like the rest of the API.
 def p3(x, y, z=0.0):
     return adsk.core.Point3D.create(x, y, z)
 
 
+# A bounding box as text in mm: 'x 0.0..20.0  y 0.0..10.0  z 0.0..5.0'.
 def box(b, digits=1):
     f = '%%.%df' % digits
     return ('x {0}..{0}  y {0}..{0}  z {0}..{0}'.format(f)) % (mm(b.minPoint.x), mm(b.maxPoint.x), mm(b.minPoint.y), mm(b.maxPoint.y), mm(b.minPoint.z), mm(b.maxPoint.z))
@@ -23,6 +26,8 @@ def box(b, digits=1):
 
 # ---------- Sketches ----------
 
+# Logs a sketch's state: fully constrained or not, its counts, what was refused, and which
+# curves and points are still loose.
 def report_sketch(s, refused, out):
     out.append('sketch %s: fully constrained %s, %d dimensions, %d constraints, %d profile(s)' % (
         s.name, s.isFullyConstrained, s.sketchDimensions.count, s.geometricConstraints.count, s.profiles.count))
@@ -95,10 +100,12 @@ def flat_in(s, d):
     return abs(q.x - a.x) > abs(q.y - a.y)
 
 
+# H or V: the dimension direction that runs along the model direction d in this sketch.
 def along(s, d):
     return H if flat_in(s, d) else V
 
 
+# Makes line horizontal or vertical, whichever runs along the model direction d.
 def keep_along(s, line, d):
     gc = s.geometricConstraints
     return gc.addHorizontal(line) if flat_in(s, d) else gc.addVertical(line)
@@ -110,6 +117,7 @@ def level_along(s, a, b, d):
     return gc.addHorizontalPoints(a, b) if flat_in(s, d) else gc.addVerticalPoints(a, b)
 
 
+# All the sketch's profiles in one collection.
 def every_profile(s):
     c = adsk.core.ObjectCollection.create()
     for p in s.profiles:
@@ -141,6 +149,7 @@ def flat_face(body, normal, at):
     return max(found, key=lambda f: f.area)
 
 
+# A face's edges: the outer loop only, or every loop, holes included.
 def face_edges(face, outer_only):
     found = adsk.core.ObjectCollection.create()
     for loop in face.loops:
