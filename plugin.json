@@ -14,5 +14,27 @@
     "autodesk-fusion",
     "3d-printing",
     "parametric-design"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "CAD Apprentice",
+        "shortDescription": "Design parts in Autodesk Fusion with an AI agent, with pictures each iteration.",
+        "longDescription": "An AI agent designs a part with you in Autodesk Fusion and gets it ready for 3D printing. You ask, it builds and shows you pictures, you say what to change, until you approve. Each iteration is a saved version in Fusion, and your own edits in Fusion are kept. Needs Autodesk Fusion on your Mac.",
+        "developerName": "Evgeny Balashov",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://github.com/heavior/cad-apprentice",
+        "defaultPrompt": [
+          "Set up cad-apprentice for my Fusion 360 and check that it works."
+        ],
+        "brandColor": "#1F4E85",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      }
+    }
+  }
 }
