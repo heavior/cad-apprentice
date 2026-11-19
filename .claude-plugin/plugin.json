@@ -1,7 +1,7 @@
 {
   "name": "cad-apprentice",
   "displayName": "CAD Apprentice",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Human-friendly CAD, fast: an AI agent designs a part with you in Autodesk Fusion, with pictures each iteration, a saved version per iteration and your own edits kept.",
   "author": {
     "name": "Evgeny Balashov",
@@ -16,5 +16,27 @@
     "autodesk-fusion",
     "3d-printing",
     "parametric-design"
-  ]
+  ],
+  "commands": {
+    "setup": {
+      "source": "./skills/cad-apprentice-setup/SKILL.md",
+      "description": "Set up the kit for Fusion, or check that it still works"
+    },
+    "test": {
+      "source": "./skills/cad-apprentice-test/SKILL.md",
+      "description": "Run the parameter test on a design and fix what fails"
+    },
+    "print": {
+      "source": "./skills/cad-apprentice-print/SKILL.md",
+      "description": "Get an approved design ready to 3D print"
+    },
+    "fix": {
+      "source": "./skills/cad-apprentice-fix/SKILL.md",
+      "description": "Find and fix why a run failed or never started"
+    },
+    "pictures": {
+      "source": "./skills/cad-apprentice-pictures/SKILL.md",
+      "description": "Take gallery pictures of a finished design"
+    }
+  }
 }

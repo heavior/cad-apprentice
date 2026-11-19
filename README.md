@@ -65,8 +65,7 @@ The skill was tested on a Mac only. The logic should work anywhere, so you can a
 tune it for Windows. If you do, please consider contributing back ([Contributing](#contributing)).
 
 Give your agent these prompts in order. Each one works in plain words with any agent. In Claude
-Code, with the plugin installed, you can call a skill by name instead: `/cad-apprentice:` and
-the skill's name.
+Code, with the plugin installed, you can call a skill by its short name instead, as each step shows.
 
 1. **Set up the skill, once.**
 
@@ -223,7 +222,7 @@ the [project README](demos/suspension-bridge/README.md).
 | Checks | `precheck.py` reads a script before Fusion does | [precheck.py](fusion/lib/cad_apprentice/precheck.py) |
 | Picture tools | gallery pictures of a saved design, and trimming them | [gallery_shots.py](fusion/tools/gallery_shots.py), [trim_picture.py](fusion/tools/trim_picture.py) |
 | 3MF tools | make the Bambu Studio project, and put new meshes into it | [build_3mf.py](3dprinting/build_3mf.py), [update_3mf.py](3dprinting/update_3mf.py) |
-| Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep, gallery pictures and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [setup](skills/setup/SKILL.md), [test](skills/test/SKILL.md), [print](skills/print/SKILL.md), [pictures](skills/pictures/SKILL.md), [fix](skills/fix/SKILL.md) |
+| Skill files | tell the agent to use the kit for every CAD and Fusion 360 task: designing, setup, the parameter test, print prep, gallery pictures and fixing a failed run; the plugin installs them in Claude Code | [cad-apprentice](skills/cad-apprentice/SKILL.md), [cad-apprentice-setup](skills/cad-apprentice-setup/SKILL.md), [cad-apprentice-test](skills/cad-apprentice-test/SKILL.md), [cad-apprentice-print](skills/cad-apprentice-print/SKILL.md), [cad-apprentice-pictures](skills/cad-apprentice-pictures/SKILL.md), [cad-apprentice-fix](skills/cad-apprentice-fix/SKILL.md) |
 | Design rules server | the rules for agents that don't have the kit installed, over MCP, read-only; optional | [mcp.json](mcp.json) |
 
 Every tool, its commands and options: [fusion/tools/README.md](fusion/tools/README.md).

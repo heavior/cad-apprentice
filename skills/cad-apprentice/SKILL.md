@@ -24,12 +24,12 @@ skills alone, without the kit (for example `npx skills add`). If the folder abov
 2. If not, tell the person the skills came without the kit, the folder with the rules, library and
    tools they need. Ask to download it from https://github.com/heavior/cad-apprentice and where to
    put it (`~/cad-apprentice` if they don't mind). Only with their OK:
-   `git clone https://github.com/heavior/cad-apprentice <folder>`. Then use the setup skill.
+   `git clone https://github.com/heavior/cad-apprentice <folder>`. Then use the cad-apprentice-setup skill.
 
 - **Once per session,** check that Fusion uses this kit:
   `python3 <kit>/fusion/tools/fusion_outputs.py setup --check`. It changes nothing. If it says
   Fusion isn't set up for this kit (the first time, or after the plugin was updated and moved),
-  use the setup skill.
+  use the cad-apprentice-setup skill.
 - **Never update the kit yourself.** The kit changes only when the person updates it the way they
   installed it. If they ask how, point them to [How to start](../../README.md#how-to-start).
 
@@ -42,7 +42,7 @@ In the kit folder, read in this order:
    step type, how a run works and how to read a failed one.
 3. `fusion/rules.md`: the rules for every CAD job. Follow them. They cover working with the person,
    sketches, parameters, the timeline, build scripts and running them.
-4. Once a design is approved for printing, use the print skill.
+4. Once a design is approved for printing, use the cad-apprentice-print skill.
 
 Give a project folder as a full path. Keep the person's design projects outside the kit folder.
 
@@ -50,11 +50,11 @@ The `demos/` are full design projects made with the kit. You don't need to read 
 
 ## The other skills
 
-- **setup:** set up the kit for Fusion, or check that it still works. Use it before the first design.
-- **test:** run the parameter test and fix what fails.
-- **print:** get an approved design ready to 3D print.
-- **fix:** find and fix why a run failed or never started.
-- **pictures:** take gallery pictures and close-ups of a finished design.
+- **cad-apprentice-setup:** set up the kit for Fusion, or check that it still works. Use it before the first design.
+- **cad-apprentice-test:** run the parameter test and fix what fails.
+- **cad-apprentice-print:** get an approved design ready to 3D print.
+- **cad-apprentice-fix:** find and fix why a run failed or never started.
+- **cad-apprentice-pictures:** take gallery pictures and close-ups of a finished design.
 
 ## Start and run a design
 
@@ -75,7 +75,7 @@ Follow the workflow in the kit's README.md and fusion/rules.md:
 1. Show your understanding first: a picture of the idea and your questions, before any CAD.
 2. After the person confirms, start the design with `fusion_outputs.py new` and build it.
 3. Iterate with pictures. Each iteration is a saved version. Keep the person's own edits.
-4. When the person asks for the parameter test, use the test skill.
+4. When the person asks for the parameter test, use the cad-apprentice-test skill.
 
 ## Evolving the library
 

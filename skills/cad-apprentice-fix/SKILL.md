@@ -1,6 +1,6 @@
 ---
-name: fix
-description: Find and fix why a cad-apprentice run in Autodesk Fusion (Fusion 360) failed or never started. Reads the run's log from the bottom, matches its last lines, and fixes the build script or the library. Use when a run ends in BROKEN, STOPPED, a traceback or WARNINGS, or when the runner doesn't answer. A failed parameter test goes to the test skill.
+name: cad-apprentice-fix
+description: Find and fix why a cad-apprentice run in Autodesk Fusion (Fusion 360) failed or never started. Reads the run's log from the bottom, matches its last lines, and fixes the build script or the library. Use when a run ends in BROKEN, STOPPED, a traceback or WARNINGS, or when the runner doesn't answer. A failed parameter test goes to the cad-apprentice-test skill.
 ---
 
 # Fix a failed run
@@ -14,7 +14,7 @@ says.
    Features that survive parameter changes and Fusion facts that cost time.
 3. **A run that never started:** check the runner with `tests/ping.py`, as `fusion/tests/README.md`
    says. If it doesn't answer, follow Running a script in `fusion/rules.md`. If the add-in isn't
-   there at all, use the setup skill.
+   there at all, use the cad-apprentice-setup skill.
 4. **Fix the design's own script,** unless the library is at fault. Then follow the cad-apprentice
    skill's [Evolving the library](../cad-apprentice/SKILL.md#evolving-the-library), and run the
    library tests.

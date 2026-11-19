@@ -1,12 +1,12 @@
 ---
-name: pictures
+name: cad-apprentice-pictures
 description: Take gallery pictures of a finished cad-apprentice design in Autodesk Fusion (Fusion 360). It takes views of the whole model plus close-ups of its details, cropped tight, for a README, a model listing or a post. The saved design is never changed. Use when the person asks for good pictures, renders, a gallery, close-ups or a picture of the design's settings. The quick pictures that come with every run need no skill.
 ---
 
 # Take gallery pictures
 
 Find the kit as the cad-apprentice skill's [Find the kit](../cad-apprentice/SKILL.md#find-the-kit)
-says. If it isn't set up yet, use the setup skill first.
+says. If it isn't set up yet, use the cad-apprentice-setup skill first.
 
 ## Steps
 

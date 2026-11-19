@@ -1,12 +1,12 @@
 ---
-name: test
-description: Run the parameter test on a cad-apprentice design in Autodesk Fusion (Fusion 360) and fix what fails. It sets each parameter across its range, checks the design still builds, then checks it comes back the same. Use when the person asks to test a design, make it robust, or test some of its parameters. For a run that fails outside the test, use the fix skill.
+name: cad-apprentice-test
+description: Run the parameter test on a cad-apprentice design in Autodesk Fusion (Fusion 360) and fix what fails. It sets each parameter across its range, checks the design still builds, then checks it comes back the same. Use when the person asks to test a design, make it robust, or test some of its parameters. For a run that fails outside the test, use the cad-apprentice-fix skill.
 ---
 
 # Test a design
 
 Find the kit as the cad-apprentice skill's [Find the kit](../cad-apprentice/SKILL.md#find-the-kit)
-says. If it isn't set up yet, use the setup skill first.
+says. If it isn't set up yet, use the cad-apprentice-setup skill first.
 
 ## Read first
 

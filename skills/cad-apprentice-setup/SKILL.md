@@ -1,5 +1,5 @@
 ---
-name: setup
+name: cad-apprentice-setup
 description: Set up cad-apprentice for Autodesk Fusion (Fusion 360) on the person's Mac, or check that it still works. Points Fusion at the kit, adds the runner add-in to Fusion and checks that the runner answers. Use when the person asks to set up or check cad-apprentice, or when another cad-apprentice skill finds Fusion isn't set up for the kit. To design a part, use the cad-apprentice skill.
 ---
 

@@ -1,12 +1,12 @@
 ---
-name: print
+name: cad-apprentice-print
 description: Get a finished cad-apprentice design in Autodesk Fusion (Fusion 360) ready to 3D print. Picks the printable parts, exports STLs, gives each part a filament, and builds or updates the Bambu Studio .3mf project. Use when the person approves a design for printing, or asks for STLs, a 3MF project or test prints. To change the design, use the cad-apprentice skill.
 ---
 
 # Get a design ready to print
 
 Find the kit as the cad-apprentice skill's [Find the kit](../cad-apprentice/SKILL.md#find-the-kit)
-says. If it isn't set up yet, use the setup skill first.
+says. If it isn't set up yet, use the cad-apprentice-setup skill first.
 
 Read `3dprinting/rules.md` in the kit folder and follow it. In short:
 

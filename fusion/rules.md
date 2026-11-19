@@ -490,7 +490,7 @@ go on with step 6. More on keeping iterations fast: [lib/README.md § Faster ite
 ## Gallery pictures
 
 When the person asks for good pictures of a finished model, follow the
-[pictures skill](../skills/pictures/SKILL.md): which shots, the camera, and a picture of the settings.
+[cad-apprentice-pictures skill](../skills/cad-apprentice-pictures/SKILL.md): which shots, the camera, and a picture of the settings.
 
 ## Fusion facts that cost time
 
