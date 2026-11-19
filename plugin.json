@@ -4,7 +4,7 @@
   "version": "0.3.2",
   "description": "Human-friendly CAD, fast: an AI agent designs a part with you in Autodesk Fusion, with pictures each iteration, a saved version per iteration and your own edits kept.",
   "author": {
-    "name": "heavior",
+    "name": "Evgeny Balashov",
     "url": "https://github.com/heavior"
   },
   "license": "MIT",
@@ -22,7 +22,7 @@
         "displayName": "CAD Apprentice",
         "shortDescription": "Design 3D parts in Fusion 360",
         "longDescription": "An AI agent designs a part with you in Autodesk Fusion and gets it ready for 3D printing. You ask, it builds and shows you pictures, you say what to change, until you approve. Each iteration is a saved version in Fusion, and your own edits in Fusion are kept. Needs Autodesk Fusion on your Mac.",
-        "developerName": "heavior",
+        "developerName": "Evgeny Balashov",
         "category": "Creativity",
         "capabilities": [
           "Build 3D parts in Fusion 360",

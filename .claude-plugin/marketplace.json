@@ -1,7 +1,7 @@
 {
   "name": "cad-apprentice",
   "owner": {
-    "name": "heavior",
+    "name": "Evgeny Balashov",
     "url": "https://github.com/heavior"
   },
   "description": "cad-apprentice: design parts in Autodesk Fusion with an AI agent.",
