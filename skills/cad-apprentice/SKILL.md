@@ -16,6 +16,16 @@ folder, the kit is two folders up from this file (`skills/cad-apprentice/SKILL.m
 guidelines name their own copy of the kit, use that copy instead. The docs write the kit's folder as
 `<kit>`; put the real folder in its place.
 
+A folder is the kit only if it has `fusion/tools/fusion_outputs.py`. Some installers copy the
+skills alone, without the kit (for example `npx skills add`). If the folder above isn't the kit:
+
+1. Read `~/Library/Application Support/cad-apprentice/kit.txt`. If it names a folder that is the
+   kit, use it. Setup writes it.
+2. If not, tell the person the skills came without the kit, the folder with the rules, library and
+   tools they need. Ask to download it from https://github.com/heavior/cad-apprentice and where to
+   put it (`~/cad-apprentice` if they don't mind). Only with their OK:
+   `git clone https://github.com/heavior/cad-apprentice <folder>`. Then use the setup skill.
+
 - **Once per session,** check that Fusion uses this kit:
   `python3 <kit>/fusion/tools/fusion_outputs.py setup --check`. It changes nothing. If it says
   Fusion isn't set up for this kit (the first time, or after the plugin was updated and moved),
